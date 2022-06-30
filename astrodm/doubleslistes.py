@@ -312,7 +312,7 @@ def produire_liste_progammes(ch):
         
         # traiter le répertoire système
         # (en passant par-dessus la liste d'exclusions)
-        if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'planif'):
+        if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'planif', 'traitement'):
             lst_dates = list()
             lst_dates.append('s. o.')
             int_nbr_systemes_exam += 1
