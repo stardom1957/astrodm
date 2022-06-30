@@ -1,0 +1,12 @@
+*=requis
+transp=3
+seeing=bon
+temp_to=10.2*
+map=30237*
+humid=85
+press_bar=104.8
+note=note environnement acq S1 b01 pos
+remarques=map par masque Bahtinov; mirroir non bloque
+eval_quadrant=ne*
+filtre=aucun
+

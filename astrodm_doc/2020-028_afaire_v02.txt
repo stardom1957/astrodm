@@ -1,0 +1,452 @@
+2020-028
+2. Date et heures UTC-4, etc. comment traiter? Dans Astropy? : FAIT
+   - datetime (heure locale)
+   - objet astropy.Time (heure UTC)
+
+4. Dates Besselienmes FAIT
+   - méthode dans Coordinates_learn
+
+6. fichier observatoire :: si non trouvé ... à régler
+
+7. fichiers de données (dans rép. mesures) : vérifier conformité de la nomenclature des champs avec cds et autres.
+
+9. En vue de créer un sommaire de toutes les observations : stratégie pour enregistrer le résultat final (à partir du sommaire) des observations dans un fichier (csv?) dans le répertoire p. e. "...\STF205\STF205_p2020-018_resultat.csv"?
+
+15. attr row_limit pour une requète, comment ? FAIT dans queries.py
+
+18. doubles_reduction... Toutes les fonctions, écrire la documentation aux normes de Python.
+
+19. Astroquery, dans le résultat d'une requête, comment accéder aux métadonnées : p. ex. fata unit, format et description ?
+pour le champ 'WDS' : result_rech_WDS[0]['WDS'].info donne :
+'''
+name = WDS
+dtype = str10
+description = WDS name (based on J2000 position)
+class = MaskedColumn
+n_bad = 0
+length = 1
+'''
+
+donc, result_rech_WDS[0]['WDS'].info.description donnera : 'WDS name (based on J2000 position)'
+et, result_rech_WDS[0]['RAJ2000'].item() donnera la valeur du champ
+
+25. recherche_wds.py : le champ Notes contient des lettres, par ex pour 'STF  60' (AB), 'NO P' comment obtenir description de ces codes? Ces codes se trouvent dans le fichier suivant de WDS :
+    voir http://www.astro.gsu.edu/wds/Webtextfiles/wdsweb_format.txt.
+
+27. recherche_wds.py : type(wds_notes[0]) est 'astropy.table.table.Table'. Comment imprimer colonnes Text et RefCode seulement ? comme ceci : wds_notes[0].keep_columns(['Text', 'RefCode']) FAIT
+
+30. Structure des données et normalisations :
+ - programmes normalisés P2020-018, P2020-021 FAIT
+ - répertoire de programme = P2020-018 FAIT
+ - dans ..._info_source.csv : si ID WDS non disponible à partir d'une autre source, inscrire valeur obtenue dans script de recherche WDS. FAIT
+
+31 - echelleMG : serait-il avantageux d'utiliser un pd.dataFrame ?
+                     E      delta_E
+'microguide 2x'  12.22         0.03
+'microguide 5x'  15.51         0.03
+
+32. theta final évaluation de l'incertitude : ne peut être 0. doit être min 0.25° :: à régler
+
+33. doubles_reduction.py :
+- cas de N= NaN dans observations, no 1, il ne faut pas analyser. FAIT
+- voir comment traiter les éventuels fichiers _sep_Nx.csv.csv, etc, laissés dans mesures : OK ils ne sont pas pris en compte FAIT
+
+34. réduction de stfa43 (fichier _observations.csv créé par script) non fonctionnelle. à cause du encoding ascii vs encoding='ISO-8859-1', voir la question des encodages lorsque les fichiers sont créés par script ou par notepad Windows. La solution, bien sûr, est de créer les fichiers informations et observations uniquement par le script crée_structure_data_système_v03.py. réglé pour utf-8 FAIT
+
+35. doubles_reduction.py : dans observations.csv N doir commencer à 1 et utiliser la valeur N pour boucler et aussi charger les fichier data au fur et à mesure NON
+
+36. ...theta_Nx.csv : pourquoi "" en seconde ligne ? SAIS PAS, MAIS OK FAIT
+
+37. comment traiter les dtypes des valeurs des séries qui ont un NaN dans l'un des éléments? NaN semble être float64, alors 1 dans l'autre champ sera convertit en float64. FAIT pd.isna
+
+38. pour stfa 58 : source WDS non trouvée, et obs 2 est NaN, alors pourquoi ça fonctionne? pcq le broacasting ne tient pas compte des NaN FAIT
+
+39. pourquoi observations_df['N'][0] = 4 ne fonctionne pas ? OK il faut utiliser observations_df.loc(...) FAIT
+
+40. recherche_wds_v02.py : il faut retravailler la normalisation de strSource et strSource_format_pour_Notes : le cas STF 205 ne fonctionne pas pour wds notes. Voir aussi même fonction dans les autres scripts. FAIT
+
+41. crée_structure : FAIT
+ 1- intégrer demander lecture structure précédente (comme double_deduction ...) dans une fonction FAIT
+ 2- intégrer lecture fichiers informations etc dans une fonction FAIT
+ 3- demander enregistrement (oui|non) et intégrer enregistrement dans une fonction FAIT
+ 4- après lecture des fichiers en 2, demander si sauvegarde des df (oui|non), puis quitter le programme avec rappel des noms des dataFrames créés et rappel des commandes pour enregistrer après modification
+ 5- si non lecture de fichiers, alors créer les dataFrames à partir des variables internes et aller à 4 FAIT
+
+42. liste_progr_observations.py : continuer afin de valider si tous les renseignements désirés peuvent être tirés de l'architecture de données en l'état actuel.
+
+43. liste_progr_observations : comment compter le nombre de programmes d'observations ? FAIT
+
+44. BUG liste_progr_observations : liste_prog_df.fillna(' ', inplace=True), effet de bord étrange dans représentation des floats !!! --- NON UTILISÉ ---
+
+45. liste_progr_observations : comment ajouter un second index pour indiquer les unités à la liste? voir test_multiindex.py et tabulate module
+
+46. package astro_doubles :
+ 1- comment documenter à la manière de man?
+ 2- pour chaque package : écrire une fonction version pour rapporter la version
+
+47.  Produire une liste csv des sources :: nom, ad, dec, choisies. Ceci afin de servir aux script des éphémérides.
+
+48. BUG recherche_wds_v07.py :: recherche des notes dans WDS. Cas de "hj 1906" non traité correctement car déjà normalisé à 7 caractères. Pour lemoment, bypass p. d. f. sur valeurs à 7 car.
+
+NOUVELLE VERSION POUR LUCKY IMAGING
+Garder la même structure de fichiers pour ne pas casser le code pour Microguide et en concevoir une nouvelle pour lucky imaging (li).
+
+Différence majeure : le li produit beaucoup plus de données et la réduction sera faite par REDUC qui produira des fichiers txt (logs) de résultats en sortie. Le nouveau code produira les mêmes tableaux sommaires de planification et de résultats qu'avant (avec les csv du microguide), mais il sera adapté pour exploiter les fichiers csv de sortie des réductions du lucky imaging (produits par le nouveau module de astrodm). De cette façon, les quelques résultats obtenus avec le microguide ne seront pas perdus et le code fonctionnera avec les deux méthodes de mesure.
+
+49. Adaptations et développement pour le lucky imaging (d'abord dans dev\STTA254 et dev\SFT60) :
+ 49.0 - fichier _observations.csv : le champ 'instrument' aura comme valeurs possibles : 'Lucky Imaging', 'Microguide 5x' et 'Microguide 2x'. L'instrumentation détaillée se trouvera dans le dossier d'acquisition des observations (instrumentation.txt)?
+
+ 49.1 - fichier source_observations.csv : le nouveau champ index_cal_e contiendra l'index de calibration d'échelle (voir 57.6)
+
+ 49.2 - Modifier module crée_structure_data_système_v10.py pour tenir compte de l'instrumentation : Microguide, Lucky Imaging.
+
+ 49.3 - structure des dossiers, nouvelle tenant compte de limitation de Windows chemin max = 255 car
+
+ 49.4 - calibration (photo et échelle) :
+     Prévoir la réutilisation des fichiers de calibration photo et échelle d'une observation à une autre :: avec hiérarchie session /programme/bloc :
+  49.4.1 - nomenclature la plus concise possible des fichiers dark, bias et flats (inc. nom programme/bloc si besoin de référer?)
+  49.4.2 - tous les fichiers darks, bias et flat dans même dossier que acquisition des mesures
+  49.4.3 - nomenclature des fichiers fits avec le nom de la source
+
+50. Réviser la liste de codes des  notes. Placer dans un data frame? L pour li. Documenter la sructure des notes sur trois caractères par ex. 'C M'.
+
+51. Que peut-on tirer du log de FC pour inclure dans _observation.csv? FAIT
+52. Instrumentation, codes dans un dataframe : Microguide 2x, lucky imaging, etc.
+
+53. toutes les fonctions / modules : traitement en fonction de l'instrumentation.
+
+54. BUG crée_structure_data_système_v10 : il est possible de modifier les df information et observation dans Variable Explorer. Cependant la fonction enregistre_fichiers() ne reconnaît ces modifications car elle sauvegarde le jeu de données original du df tel que lu à partir du fichier csv en début de programme. Les deuc df en question montrent les bonnes données dans la console.
+
+ --- SOLUTION TEMPORAIRE --- 
+  Exécuter les commandes suivantes pour engegister :
+   informations_df.to_csv(nom_complet_fichier_information_systeme, index=False, encoding='utf-8'), suivi de 
+   observations_df.to_csv(nom_complet_fichier_observations, index=False, encoding='utf-8')
+
+55. doublesListeProgrammes_v05.py :: petits changements :
+ - pd.set_option('display.max_row', 1000) -> pd.set_option('display.max_row', 10000) # max de lignes listées FAIT
+ - 'N': obsN, -> 'N (obs)': obsN, # en-tête de colonne du no d'observation FAIT
+
+56. Les statistiques descriptives des mesures ne doivent pas être utilisées car les incertitudes proviennent de la résolution du microguide (= instrument à lecture analogique) et doivent être additionnées en quadrature. Le sigma de chaque mesure rho est donc 0.5 div (la moitié de la plus petite division). Le sigma de theta est 1° (l'échelle circulaire du microguide est divisée en 5° et l'estimation peut être faite à un degré près).
+
+ 56.1- les statistiques descriptives min max et moyenne sont OK
+
+ 56.2-  Il faudra ABSOLUMENT RÉVISER le calcul de la propagation des incertitudes et des valeurs finales rapportées : delta vs sigma :: propagation des incertitudes en quadrature sur le calcul de la moyenne. Référence Maths\ErrorAnalysis.pdf.
+
+57. Développement de la structure de fichiers des calibrations d'échelle(s) :
+ 57.1 - comprend un fichier maître des calibrations 'cal_e\master_calibrations_e.csv' qui contient toutes les valeurs de calibrations d'échelle. Les deux constantes de calibration E du Microguide 2x et 5x, calculée dans 2020-012 doivent être incluse et la structure de données versée dans cal_e
+
+ 57.3 - PRIORITÉ 1 le fichier _observations.csv doit contenir un nouveau champ pour accueillir l'index (un pointeur) de calibration d'échelle dans dossier cal_e, p. e. sous la forme 2021-10-08b01. Cet index permet : 
+   a) le cas échéant, de retrouver les données d'acquisition de la calibration et de réduction dans le dossier cal_e;
+   b) de retrouver les constantes de calibrations dans le fichier maître des calibrations.
+
+ 57.4 - lors des réductions des observations (anciennes et nouvelles), tous les modules de réductions doivent se référer à l'index de calibration pour l'observation concernée pour retrouver les constantes de calibration correspondantes dans le fichier maître des calibrations pour effectuer les calculs.
+
+ 57.5 - puisque chaque réduction pour fin de calibration d'échelle est effectuée à l'extérieur de astrodm (principalement dans REDUC), la maintenance du fichier maître des calibrations sera effectuée programmatiquement par le module astrodm reduc_cal_E.
+
+ 57.6 - PRIORITÉ 1 struture de master_calibrations.csv : FAIT
+Début
+  index_cal_e,val_E,sigma_E,type_cal,id_masque,id_filtre,note
+Fin
+
+index_cal_e, constitué de ::
+ date string len=10 (yyyy-mm-jj)
+ b car len=1 (séparateur de bloc d'observation)
+ nn short int len=2 (no bloc d'observation [01, 99], donc max 99 bloc par session d'observation)
+val_E :: float64 len=variable (échelle en "/px si type=p ou "/div si type=m)
+sigma_E :: float64 len=variable (écart type ou standard error of the mean)
+type_cal :: car len=1 (t=temps de dérive, f=masque à fentes)
+id_masque :: UPPER str (identité du masque à fente utilisé : p. e. A3mm ou B3mm)
+id_filtre :: car len=3 (identité du filtre utilisé, p. e. Ha1)
+note :: string len=[0, 100] (note entre '')
+
+ 57.7 - PRIORITÉ 1 dans cal_e : à partir de master_calibrations_e.csv des index id_masque, et id_filtre, créer des fichier csv des caractéristiques de chacun pour servir au modules qui ont besoins de ces valeurs pour calculer la séparation angulaire de la «paire artificielle» lors d'une calibration d'échelle. FAIT
+  57.7.1 - struture de master_masques_cal.csv :
+   Début
+    id_masque,LfplusDF,sigma_LfplusDf,note
+   Fin
+  57.7.2 -  la réductions de mesures est faite dans un cahier Jupyter lab (2021-021) et les résultats sont inscrits à la main dans le ficher
+
+ 57.7.2 - struture de master_filtres_cal.csv :
+  Début
+   id_filtre,val_Lo,sigma_Lo
+  Fin
+
+58. reductionv_02.py : pourquoi le fichier reduc_brut.csv créé a McIntosh CR au lieu de Windows (CRLF)? RÉGLÉ par écriture avec handle f au lieu de package csv. FAIT
+
+59. reduction_vxx.py :
+ 59.1 - intégrer sélection interactive du dossier de reduc FAIT
+
+ 59.2 - informations supplémentaires tirées des fichiers log de REDUC et de FC :
+   59.2.1 id de filtre et masque maintenant dans le fichier log d'acquisition de FC : l'us doit sélectionner ce fichier FAIT
+
+   59.2.2 dans master_calibrations_e la note doit être prise du log d'acquisition (voir aussi pourquoi l'encodage UTF-8 n'est pas correct car == à) SOLUTION NE PAS UTILISER D'ACCENTS
+
+   59.2.3 ajouter à «master_calibrations_e.csv» : température du to, date et heure du milieu d'acquisition FAIT
+
+   59.2.4 date et heure d'acquisition : toutes en utc FAIT
+
+   59.2.5 dans les cas où index_cal_e est déjà présent dans master_calibrations_e, s'abord demander à l'us s'il faut continuer et si oui, présenter la différence entre E et E_sigma calculés FAIT
+
+   59.2.6 ne pas oublier de trier master_calibrations_e_df sur index_cal_e avant d'écrire dans le fichier csv FAIT
+
+   59.2.7 dans master_calibrations_e_df, seulement les valeurs suivantes ont un espace au début : dt_obs, type_cal, id_masque et id_filtre. Je comprend que les valeurs numériques d'en ont pas,
+          mais pourquoi celles là? investiguer le format une fois les données écrites dans csv OK SI ÉCRITURE PAR df.to_csv()
+
+   59.2.9 lors de l'impression de master_calibrations_e_df, la valeur de temp_to pour 2021-10-08b01 est listé 9 au lieu de 9.3! Aussi, comment contrôler l'impression des décimales? RÉGLÉ!
+
+
+ 59.3 - développer et intégrer 57.6 et 57.7 dans ce module. FAIT
+
+ 59.4 - à partir de '2021-021_calibration_EdgeHD8_masque_v3.ipynb' :
+    59.4.1 terminer propagation des incertitudes pour calcul de Z. FAIT
+
+    59.4.2 terminer propagation des incertitudes pour calcul de E et vérifier soigneusement.
+
+ 59.5 - intégrer dans astrodm.doublesOutils.
+
+ 59.6 - module extrait_et_exporte_mesures_brutes() :
+   59.6.1 il faudra normaliser tous les index_ en mimuscules pour faciliter les recherches par ex 'a3mm' et 'ha1' FAIT
+
+   59.6.2 normaliser aussi dans les fichiers master FAIT
+
+ 59.7 -  la recherche des valeurs dans les fichiers master_* devrait vérifier si plus d'une occurence existe FAIT
+
+60. astrodm, tous les modules concernés : après lecture de observations, paramétriser traitement selon 'instrument' : 'Lucky Imaging', 'Microguide 2x' et 'Microguide 5x' en préparation pour instrumentation lucly imaging.
+ 60.1 crée_structure_data_système_v10 pour nlle structure FAIT
+ 60.2 package astrodm modules rech_wds et rech_wds_notes utiliser RE pour normaliser src à 7 car pour recherche des notes WDS et TESTER soigneusement pour un grand nombre de cas!!! FAIT
+ 60.2.1 cas des 'H 3 101' il faut normaliser à 'H x*' x=1, 3, etc FAIT
+ 60.3 module recherche_wds_v07.py utiliser astrodm pour recherches WDS FAIT
+
+61. crée_structure_data_système :
+ 61.1 pour information du système, déterminer constellation programmatiquement à partir de AD et DEC du système? Examiner astropy.coordinates.get_constellation!
+ 62.2 numérotation des blocs d'observations b1 devient b01.
+ 62.3 pour un système données, le résultat peut être transféré dans portable capture.
+
+JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES
+JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES JEUX DE DONNÉES
+
+62. dans dev, les dossiers suivants servent au développement :
+  62.1 D:\DOCUMENTS\Astronomie\dev\STF205\P2021-021\A,BC\mesures\N1\b01 pos et sep
+  62.1 D:\DOCUMENTS\Astronomie\dev\STF205\P2021-021\A,BC\mesures\N2\b01 pos et sep
+
+  62.2 D:\DOCUMENTS\Astronomie\dev\STFA58\P2021-023\AC\mesures\N1\b01 pos seulement
+  62.3 D:\DOCUMENTS\Astronomie\dev\STTA254\P2021-023\AB\mesures\N1\b01
+  62.4 D:\DOCUMENTS\Astronomie\dev\cal_e\2021-10-08b01 calibration E
+  62.5 D:\DOCUMENTS\Astronomie\dev\cal_e\2021-10-08b02 calibration E
+
+63. listeProgrammesDates_v05 saisir ordre de tri FAIT
+
+64. champ note dans doubleOutils.notes_obs_dict:
+  64.1 réviser? FAIT
+  64.2 créer à partir d'un csv ?
+
+65. doublesListeReductionsObservations_v09.imprime_reductions_ed :
+  65.1 saisir ordre de tri comme listeProgrammesDates_v05.
+
+66. nouveau module (indépendant?) : pour exploitation durant les acquisitions qui permet de créer la structure de fichiers de l'observation en cours. Ceci afin d'éviter d'utiliser le module astrodm.crée_structure_data_système.
+
+67. pour astrodm.rech_wds(src, paire) voir si WDSGaiaDR2_Ver3.xlsx contient des infos intéressantes pour src / paire!
+
+68. nouveau module pour lister les master_*.csv.
+
+##############################################################################################################
+### 2021-11-30 ############################### NOUVELLE STRUCTURE DE FICHIERS ################################
+##############################################################################################################
+
+2021-12-30
+69. à 72. passées date
+
+69. Très important. L'ancienne structure de dossiers et fichierS pour les observations au micro guide n'est pas  PASSÉ DATE
+compatible avec celle du LI. Pour référence voir P2021-023, STTA254 AB.
+  69.1 Le nouvel emplacement de _observations.csv est dans le répertoire de la paire : par ex. ... STTA254\P2021-023\AB\ contient le fichier STTA254_observations.csv
+
+TABLEAU DES PROGRAMMES D'OBSERVATIONS
+
+  69.2 Le fichier _observations.csv contiendra les infos pour la planification ainsi que les résultats des réductions.   PASSÉ DATE
+       a. Le module listeProgrammesDates_vxx.py sera modifié pour exploiter ces données pour lister les observations planifiées et les observations complétées.
+          Contrairement à la version précédente, qui calculait les réductions de toutes les observations valides pour toutes les paires sous la structure entière
+          de dev ou med, les résultats des réductions seront tirés du fichier _observations.csv correspondant de chaque paire et tous les blocs d'observations
+          seront listés, c.-à-d. que les moyennes ne seront pas calculées. Les observations planifiées seront également listées.
+
+SAISIE DES DONNÉES DE PLANIFICATION
+
+       b. Au départ, _observations.csv d'une paire ne contient qu'une seule ligne où N=0 avec seulement obs_prog, paire et 'P  ' dans note. Dans l'exemple qui suit,
+          avec l'information tirée de STTA254_observations.csv,  nous savons que nous avons planifié d'observer STTA254 AB dans le programme P2021-023 :
+
+EXEMPLE D'UN _observations.csv
+
+<<<<<
+N,obs_bloc,obs_prog,paire,obs_DH_UTC,obs_epoque_B,rho,rho_sigma,theta,theta_sigma,observatoire,observateur,transp,seeing,temp_to,humid,press_bar,telescope,index_cal_E,remarques,note
+0,,2021-023,AB,,,,,,,,,,,,,,,,,P  
+>>>>>
+
+      c. _observations.csv doit comprendre nom de la paire ou NPL. Le module crée_structure_data_système_*.py devra être modifié pour cette nouvelle structure. ############################
+
+CONDITIONS D'ENTRÉES DU MODULE reduction_*.py
+
+  69.3 reduction_*.py est le module de réduction pour les observations en «Lucky Imaging ». Il comprend deux types de réduction : le premier 'ech' pour calculer l'échelle à partir   PASSÉ DATE
+       des données de REDUC par l'expérience de Young. Le second « complète » calcule rho, thêta (avec sigma) moyens pour l'ensemble des N et tous les blocs bnn en dessous.
+
+    a. Le résultat de chaque réduction complète sera consigné dans le dossier du programme d'observation (voir exemple 69.2.b)
+
+  69.4 Les modalités sont les suivantes pour une observation « complète », par ex. pour STTA254 AB :
+    a. - STTA254\STTA254_info_système.csv contient les informations du système lues par le module lors de la réduction et listé dans le rapport pour référence. Evidemment,   PASSÉ DATE
+         les informations de la paire étudiées se trouvent dans ce fichier (produit par le module crée_structure_data_système_*.py).
+
+    b. - Au départ, comme tous les _observations.csv, STTA254\P2021-023\AB\STTA254_observations.csv comprend un N=0 pour la planification (voir 69.2) : cette ligne disparaîtra lors de la
+         réduction de N=1.
+
+    c. - Dans chaque répertoire Nx (p. e. ...\STTA254\P2021-023\AB\N1\ ), il y a un répertoire de tête pour chacun des blocs d'observation bnn :
+       i.  - FACULTATIF les données et le log des darks sont situées dans ...\STTA254\P2021-023\AB\N1\\bnn\cal
+      ii.  - les données et le log d'acquisition de la séparation sont situées dans ...\STTA254\P2021-023\AB\N1\\bnn\sep, le nom commence par le nom du système
+     iii.  - les données d'environement sont dans environement.txt
+      iv. - le log de REDUC pour la réduction de la sérapation se trouve dans ...\STTA254\P2021-023\AB\N1\\bnn\sep\reduc
+       v. - les données et le log d'acquisition de l'angle de position sont situées dans ...\STTA254\P2021-023\AB\N1\\bnn\pos
+      vi. - le log de REDUC pour la réduction de l'angle de position se trouve dans ...\STTA254\P2021-023\AB\N1\\bnn\pos\reduc
+
+PROCESSUS DE RÉDUCTION COMPLÈTE
+
+    Dans reduction_*.py, pour exécuter la réduction complète, le processus se déroule comme suit  :
+
+    d. - L'usager pointe vers ...\STTA254\AB\P2021-023. Le module reduction_*.py s'occupe du reste :
+       i. - Il vérifie s'il y a des données valides dans Nx et les dossiers blocs pour sep et pos dans la structure de fichiers selon les modalités stipulés dans 69.4.c.
+       
+      ii. - Il parcourt de manière itérative tous les bnn et calcule rho_moyen, rho_moyen_sigma, theta_moyen et theta_moyen_sigma pour l'observation N=1
+     iii. - Il demande à l'usager si l'observation est complète (en particulier si N=1, mais probablement pas nécessaire si N > 1).
+      iv. - Il inscrit les résultat pour N=1 dans STTA254_observations.csv. Par exemple :
+
+<<<<<
+N,obs_bloc,obs_prog,paire,obs_DH_UTC,obs_epoque_B,rho,rho_sigma,theta,theta_sigma,observatoire,observateur,transp,seeing,temp_to,humid,press_bar,telescope,index_cal_E,remarques,note
+"1,2,2021-023,AB,2021-10-08T23:45:25.598UTC,B2021.9445,12.58874,.00254,128.254,0.01,residence,Dominique Martel,3,moyen,10.5,85,101.2,Celestron EdgeHD 8,,2021-08-10b01,T  "
+>>>>>
+
+    d. - L'usager doit répéter 69.4.d pour chaque N du programme d'observation. Les résultats sont ajoutés au fichier observation.csv sous N et no_bloc pour chaque itération.
+
+TABLEAU DES RÉDUCTIONS
+
+70. Le module listeReductions_*.py sera modifié pour lister les réductions. En parcourant la structure de dev ou med, pour chaque système, paire, _info_systèmes.csv et _observations.csv seront   PASSÉ DATE
+    lus. Dans _observations.csv, une moyenne de rho et thêta (avec les incertitudes) seront calculée pour tous les N trouvés. La moyenne de rho et thêta (avec les incertitudes) sera alors listée
+    et l'indication N (1, 2, 3, etc) indiquera le nombre d'observations. Il est préférable d'avoir N=2 au moins. Le module devra être capable de :
+
+  70.1 Trier et filtrer sur différents obs_prog ,paire, const, etc.
+
+71. Pour reduction_v10, il y a des données d'acquisition dans D:\DOCUMENTS\Astronomie\dev\STTA254\AB\P2021-023\Nx ... NOTE
+
+72. reduc_cal_E_*.py devient reduction_*.py. (toutes les occurences renommées dans ce fichier et sur disque, de manière récursive dans dev\*). FAIT
+
+73. Nouveau module pour lister le fichier maître de calibrations et facultativement, les deux autres fichiers maîtres.
+
+74. reduction_v11.py :
+  74.1 do.lire_informations_et_observations(nom_complet_fichierInfo, nom_complet_fichier_observations) initialise do.informations_df et do.observations_df
+       - trouver pourquoi l'inpression de ces df est sur seulement 80 car au lieu de 130 OK
+       - type_reduc complete ligne 733   + nlle struct dossiers FAIT
+       - lire un jeux de données complet et valider tous les dtypes et le comportement si pas de données (NaN, etc.) FAIT OK sauf transp
+       - pourquoi transp lorsque vide donne dtype <na>??????????????????
+
+75. REDUC, PROCÉDURE pour (Nx,bnn), faire simultanément REDUC de pos et sep (deux instances de REDUC) : pos pour obtenir delta_matrice? Ensuite,
+    prendre valeur de delta_matrice de pos et placer dans delta_matrice de sep. Alors, dans reduction_v11.py, on pourra utiliser le theta et theta_sigma
+    du log REDUC de sep plutôt que cette de pos!?
+
+76. Optimisations :
+  76.1 ', '.join(liste) pour créer enregistrements FAIT
+  76.2 s. center. ljust et rjust FAIT
+  76.3 functions can return multiples values (list, tupple, etc) OK
+  76.4 augmented statement += for a list FAIT
+  
+77. reduction_v14.py :
+  77.1 mise en oeuvre de la classe Acquisition pour les données extraites du log acquisition pour 'ech' FAIT
+  77.2 mise en oeuvre de la classe Acquisition pour les données extraites du log acquisition pour 'complete' FAIT
+  77.3 extrait_du_log_acquisition() compléter suppression des anciennes variables globales FAIT
+  77.4 mise en oeuvre de la classe Reduction FAIT
+  77.5 plus de '\\', plutôt '/' sauf si s.split('\\') FAIT
+  77.6 tester STTA254 avec b02 fictif avec logs fictifs FAIT
+  77.7 lecture_mesures_brutes() modifier avec nom complet fichier fich_mesures_brutes en paramètre  FAIT
+  77.8 rendu à réduction po 'complete' FAIT
+  77.9 vérifier pertinence de toutes les variables globales ###
+  77.10 enlever #debug ... FAIT
+  77.11 vérifier traitement 'ech' b01 et b02 FAIT
+  77.12 vérifier traitement 'complete' N1 b01 et b02 FAIT
+  
+78. *_observations.csv : log_acquisition devient eval_quadrant :: évaluation du quadrant de l'angle de position basée sur
+    orientation image (au moment de l'acquisition). FAIT
+    
+79. Nouveau fichier environnement.txt :
+  79.1 contient les valeurs de l'environnement au moment de l'observation au lieu de modifier le log de FC. FAIT
+  79.2 enlever ces données originales dans les logs FC FAIT
+  
+80. reduction_vxx, mise en oeuvre des classes :
+  80.1 dans classes.py, version de base FAIT
+  80.2 dans reduction_v18.py --> reduction_vxx.py :
+    80.2.1 intégrer classes_v3 FAIT
+    80.2.2 pour typeObservation 'ech', l'us pointe par ex vers /cal_e/2021-10-08b02 et on fait le reste FAIT
+    80.2.3 pour typeObservation 'complete', traitement par lot, l'us pointe la paire et on fait le reste en itérant dans N1, N2, ..., etc
+    80.2.4 classe DoubleSessions contient un objet Systeme et une liste d'objets Observation FAIT
+      80.2.4.1 creeLstObjObservations pour 'complete' FAIT
+      80.2.4.2 rendu ligne 1001 calculs pour pos FAIT
+      80.2.4.3 structure de dossiers, inverser dossier programme d'observation et paire et changer code FAIT
+
+    80.2.5 nlle structure des classes : (comme dans DoubleSessions.hierarchie() )explorer l'itération avec attributs __dict__.keys() et __dict__[key] ????
+    80.2.6 objet Observation devrait donc comprendre le contenu de _info_système.csv en df NON, plutôt dans l'objet Systeme FAIT
+    80.2.7 objet Observation devrait donc comprendre le contenu de _observations.csv alimenté durant la reduction vs objet reduc ???
+    80.2.8 les objets master.*.csv restent des df individuels ???? OUI
+    80.2.9 garder la liste des observatoires pour planification via astroplan OK
+    80.2.10 ajouter map=xxxxx dans tous les environnement.txt FAIT
+      80.2.10.1 dans 'ech' --> intégrer map dans fichier master_index_cal.csv FAIT
+      80.2.10.2 dans 'complete' : dans sep, pos ? FAIT
+      80.2.10.3 ALERTE si celle de sep est «substantiellement» différente de cette de calibration échelle
+    80.2.11 _observations.csv disparaît
+  
+81. optimisation et nettoyage:
+  81.1 vérifier pertinence de toutes les variables globales
+  81.2 enlever #debug ...
+  81.3 terminer tous les doc strings
+
+82. Refonte de astrodm (v31) :
+  82.1 doubleoutils : observatoires et lireFichiersSupport FAIT
+  82.1 doubleoutils : nlle classe Systeme FAIT
+  82.2 lire_informations_et_observations dans doubleoutils v31, adapter avec classes et _informations et _observation 2 = FAIT
+  82.3 abandon du code relatif au traitement de l'oculaire astrométrique Microguide : nettoyage FAIT
+  82.4 doublesOutils.DoubleSessions.hier() :
+    82.4.1 mofifier pour lister systeme en en-tête FAIT
+    82.4.2 adapter pour le cas où type_observation == 'ech' : peut-être créer objet Systeme contenant index_cal_E
+  82.5 creeDateHeureLocale :: encore utile??
+
+83. doublesOutils.DoubleSessions.rapport(typeRapport) :
+  83.1 chargement de l'objet DoubleSessions en pickle.load() lorsqu'en mode lot
+  83.2 retourner un df selon type rapport NON
+  83.3 valider tous les noms des champs pour l'ensemble des classes
+  83.4 _observations.csv :
+    83.4.1 examiner les champs pour intégration ou non
+    83.4.2 supprimer le code relatif au chargement et traitement
+  83.5 conditions de VALIDITÉ : dans DoublesSessions, nous avons besoin d'une méthode qui vérifie la validité : ################
+    83.5.1 delta_matrix_pos == delta_matrix_sep
+    83.5.2 temp_pos observation == temp_pos index_cal_e
+    83.5.3 map observation == map index_cal_e
+    83.5.4 intervalle entre N1 et N2 <= 7 jours?
+    83.5.5 observations_df : fait partie de l'objet DoubleSessions : FAIT
+    83.5.6 note :
+      83.5.6.1 voir doublesOutils.notes_obs_dict : formater la note en fonction du résultat de la validation 
+      83.5.6.2 note doit devenir DoubleSessions.status et n'a plus rien à voir avec celles trouvée dans observations_df
+
+  83.6 rapport() :
+    83.6.1 le type de rapport 's' devrait être pareille à resultats_progr_observations.py FAIT
+    83.6.2 type de rapport 'm' :
+      83.6.2.1 intégrer comparaison avec WDS obs2
+      83.6.2.2 articuler le traitement en lot
+  
+84. nouveau module listeReductions_*.py à prévoir
+
+85. changements de noms : doublesOutils_v33 et reduction_v27 :
+  85.1 DoubleSessions.lstObservationsN -> N FAIT
+  85.2 Systeme.cheminSysteme -> rep FAIT
+  85.3 Systeme.nomSysteme -> nom FAIT
+  85.4 Observation.lstBlocs -> b FAIT
+  85.5 Observation.nbrBlocs -> FAIT
+  85.6 Observation.typeObservation -> tobs FAIT
+  85.7 Observation.progObservation -> prog FAIT
+  85.8 Bloc.acquisitionSep -> sep FAIT
+  85.9 Bloc.acquisitionPos -> pos FAIT
+  85.10 Observation.nomPaire -> paire (note : doit-on déplacer dans DoubleSessions.paire??) FAIT
+  85.11 _observations.obj -> _sessions.obj FAIT
+ 
+ 

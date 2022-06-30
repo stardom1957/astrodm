@@ -1,0 +1,86 @@
+parcourir structure de Sessions :
+s objet Sessions
+-nbrN nombre de sessions (N)
++systeme info_systeme_df tiré du csv
+	  id_system   id_WDS   RAJ2000   DEJ2000 id_system_alt1  id_system_alt2 const  remarques
+	
++reductions_des_observations_df
+    obs_prog id_system   id_WDS paire const  N bloc   obs_DH_UTC  obs_epoque_B    rho  rho_sigma  theta  theta_sigma \
+    observatoire  observateur  transp seeing  temp_to  humid  press_bar    map deltaMatrixReducValide  intervalleTempsAcqEchValide  \   
+     intervalleTemperatureValide  eval_Q   lstIndexCalE   E_moy  filtre  
+
++moyennes_par_session_df
+  prog id_system  pr  con  N dern_obs_utc  delai_entre_N   epoque   pa  pa_sig   sep   sep_sig WDS_o2 WDS_pa2  WDS_sep2 État  
+
+-paire = AB
+-prog  = P2021-023
+
+-E_moy = 0.1269107875968082
+-E_moy_sigma = 0.0005507074717247565
+-rho = 56.46967506919593
+-rho_sigma = 0.2522788880463764
+-theta = 89.54
+-theta_sigma = 0.06
+-delta_matrix_sep = -0.94
+-delta_matrix_pos = -0.94
+-dist_min = 444.04185038124507
+-dist_max = 445.93908447791387
+-dist_moy = 444.9556742851396
+-n_data = 51
+-dist_sigma = 0.4727620606278992
+
+lstObjSession liste des sessions
+ s.lstObjSession[0] observation 1
+  s.lstObjSession[0].lstBlocs liste des blocs
+   s.lstObjSession[0].lstBlocs[0] bloc 1
+        indexBloc = 1
+        typeSession = complete
+      s.lstObjSession[0].lstBlocs[0].sep objet AcquisitionSeparation
+	      typeMesure = sep
+	      transp = 3.0
+	      seeing = bon
+	      humid = 85.0
+	      press_bar = 104.8
+	      remarques = map par masque Bahtinov
+	      temp_to = 10.5
+	      date_utc_acq = 20211009
+	      heure_utc_acq = 002959.886
+	      dtime_utc_acq = 2021-10-09T00:29:59.886
+	      nbr_images_acq = 180
+	      strIdFiltre = aucun
+	      note = note environnement acq N1 b01 sep
+	      map = 30237
+	      ncfla = D:/DOCUMENTS/Astronomie/dev/med/STTA254/AB/P2021-023\N1\b01/sep\STTA254_20211008_202913_L(aucun_aucun_filtre).txt
+	      ncfle = D:/DOCUMENTS/Astronomie/dev/med/STTA254/AB/P2021-023\N1\b01/sep\environnement.txt
+      s.lstObjSession[0].lstBlocs[0].pos objet AcquisitionPosition
+        typeMesure = pos
+        transp = 3.0
+        seeing = bon
+        humid = 85.0
+        press_bar = 104.8
+        remarques = map par masque Bahtinov; mirroir non bloque
+        temp_to = 10.2
+        date_utc_acq = 20211009
+        heure_utc_acq = 003539.119
+        dtime_utc_acq = 2021-10-09T00:35:39.119
+        nbr_images_acq = 200
+        strIdFiltre = aucun
+        note = note environnement acq N1 b01 pos
+        map = 30237
+        ncfla = D:/DOCUMENTS/Astronomie/dev/med/STTA254/AB/P2021-023\N1\b01/pos\STTA254_20211008_203524_L(aucun_aucun_filtre).txt
+        ncfle = D:/DOCUMENTS/Astronomie/dev/med/STTA254/AB/P2021-023\N1\b01/pos\environnement.txt
+        eval_Q = NE
+      s.lstObjSession[0].lstBlocs[0].reduc objet ReductionComplete
+	      ncflr_sep = D:/DOCUMENTS/Astronomie/dev/med/STTA254/AB/P2021-023\N1\b01/sep/reduc/RLog_2021-12-02_12-32-56.txt
+	      ncflr_pos = D:/DOCUMENTS/Astronomie/dev/med/STTA254/AB/P2021-023\N1\b01/pos/reduc/RLog_2021-12-02_12-14-21.txt
+	      deltaMatrixReducValide = False
+	      intervalleTempsAcqEchValide = True
+	      intervalleTemperatureValide = True
+	      mapEchelle = 30237
+	      lstIndexCalE = ['2021-10-08b01', '2021-10-08b02']
+				reduc_brute_df :
+					         xA       yA      xB       yB      dist
+					0   486.005  236.015  40.986  246.989  445.1543
+					1   486.028  236.009  41.519  246.011  444.6215
+					2   485.972  236.025  41.397  246.201  444.6914
+					...

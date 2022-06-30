@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module doubleslistes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>doubleslistes</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:d%3A%5Cdocuments%5Castronomie%5Cdev%5Castrodm%5Cdoubleslistes.py">d:\documents\astronomie\dev\astrodm\doubleslistes.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-<br>
+#!&nbsp;/usr/bin/env&nbsp;python<br>
+############<br>
+#&nbsp;version&nbsp;10<br>
+############</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="astrodm.doublesoutils.html">astrodm.doublesoutils</a><br>
+<a href="glob.html">glob</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="ntpath.html">ntpath</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="pickle.html">pickle</a><br>
+<a href="re.html">re</a><br>
+<a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-est_un_programme"><strong>est_un_programme</strong></a>(chemin)</dt><dd><tt>&nbsp;&nbsp;Retourne&nbsp;True&nbsp;|&nbsp;False&nbsp;si&nbsp;le&nbsp;chemin&nbsp;passé&nbsp;en&nbsp;paramètre&nbsp;est&nbsp;un&nbsp;programme<br>
+&nbsp;&nbsp;d'observation&nbsp;valide&nbsp;selon&nbsp;le&nbsp;format&nbsp;Paaaa-nnn;&nbsp;où&nbsp;aaaa&nbsp;=&nbsp;année<br>
+&nbsp;&nbsp;et&nbsp;nnn&nbsp;=&nbsp;000&nbsp;à&nbsp;999&nbsp;(par&nbsp;ex.&nbsp;P2022-004).<br>
+&nbsp;&nbsp;<br>
+Paramètre&nbsp;positionnel<br>
+&nbsp;chemin&nbsp;--&nbsp;chemin&nbsp;du&nbsp;répertoire&nbsp;à&nbsp;vérifier.</tt></dd></dl>
+ <dl><dt><a name="-est_une_paire"><strong>est_une_paire</strong></a>(chaine)</dt><dd><tt>Retourne&nbsp;un&nbsp;Tupple&nbsp;(True,&nbsp;paire)&nbsp;si&nbsp;la&nbsp;chaine&nbsp;(nom&nbsp;d'un&nbsp;répertoire)&nbsp;passée<br>
+en&nbsp;paramètre&nbsp;«semble»&nbsp;être&nbsp;une&nbsp;paire&nbsp;valide.&nbsp;La&nbsp;valeur&nbsp;paire&nbsp;est&nbsp;extraire<br>
+de&nbsp;chaine&nbsp;pour&nbsp;servir&nbsp;à&nbsp;une&nbsp;forme&nbsp;de&nbsp;normalisation.<br>
+&nbsp;<br>
+Retourne&nbsp;(False,&nbsp;'aucune')&nbsp;si&nbsp;chaine&nbsp;ne&nbsp;«semble»&nbsp;pas&nbsp;être&nbsp;une&nbsp;paire&nbsp;valide.<br>
+&nbsp;&nbsp;<br>
+Paramètre&nbsp;positionnel<br>
+&nbsp;chaine&nbsp;--&nbsp;String&nbsp;nom&nbsp;de&nbsp;du&nbsp;répertoire&nbsp;(basename)&nbsp;à&nbsp;vérifier.</tt></dd></dl>
+ <dl><dt><a name="-imprime_liste_programmes"><strong>imprime_liste_programmes</strong></a>(chemin='', tri=0, impr_table_etat=True, sortie='T')</dt><dd><tt>Imprime&nbsp;un&nbsp;rapport&nbsp;détaillé&nbsp;des&nbsp;programmes&nbsp;d'observation&nbsp;et&nbsp;retourne&nbsp;un<br>
+Pandas&nbsp;DataFrame&nbsp;contenant&nbsp;la&nbsp;liste&nbsp;triée&nbsp;des&nbsp;programmes&nbsp;d'observation<br>
+et&nbsp;leurs&nbsp;états.<br>
+&nbsp;<br>
+Paramètres&nbsp;Keyword<br>
+&nbsp;chemin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;String&nbsp;chemin&nbsp;du&nbsp;répertoire&nbsp;de&nbsp;tête&nbsp;des&nbsp;systèmes<br>
+&nbsp;tri&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Int&nbsp;ordre&nbsp;de&nbsp;tri&nbsp;de&nbsp;1&nbsp;à&nbsp;4,&nbsp;selon&nbsp;dictionnaire<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;liste_de_tri_prog<br>
+&nbsp;impr_table_etat&nbsp;--&nbsp;Boolean&nbsp;imprime&nbsp;légende&nbsp;des&nbsp;états&nbsp;(par&nbsp;défaut&nbsp;True)<br>
+&nbsp;sortie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Car&nbsp;'T'&nbsp;pour&nbsp;terminal&nbsp;ou&nbsp;'D'&nbsp;pour&nbsp;disque<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+programmes_df&nbsp;:&nbsp;pandas.core.frame.DataFrame</tt></dd></dl>
+ <dl><dt><a name="-imprime_liste_reductions"><strong>imprime_liste_reductions</strong></a>(chemin='', tri=0, impr_table_etat=True)</dt><dd><tt>Imprime&nbsp;un&nbsp;rapport&nbsp;détaillé&nbsp;des&nbsp;programmes&nbsp;d'observations&nbsp;et&nbsp;retourne&nbsp;un<br>
+Pandas&nbsp;DataFrame&nbsp;trié&nbsp;contenant&nbsp;la&nbsp;liste&nbsp;des&nbsp;programmes&nbsp;d'observations.<br>
+&nbsp;<br>
+Paramètres&nbsp;Keyword<br>
+&nbsp;chemin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;String&nbsp;chemin&nbsp;de&nbsp;tête&nbsp;des&nbsp;systèmes&nbsp;(par&nbsp;défaut&nbsp;'')<br>
+&nbsp;tri&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;Int&nbsp;ordre&nbsp;de&nbsp;tri&nbsp;de&nbsp;1&nbsp;à&nbsp;4,&nbsp;selon&nbsp;dictionnaire<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;liste_de_tri_prog<br>
+&nbsp;impr_table_etat&nbsp;--&nbsp;Boolean&nbsp;imprime&nbsp;légende&nbsp;des&nbsp;états&nbsp;(par&nbsp;défaut&nbsp;True)</tt></dd></dl>
+ <dl><dt><a name="-liste_info_systemes"><strong>liste_info_systemes</strong></a>(sortie='terminal')</dt><dd><tt>Retourne&nbsp;un&nbsp;pandas&nbsp;dataframe&nbsp;des&nbsp;info_systemes.csv&nbsp;lus&nbsp;dans&nbsp;./med.</tt></dd></dl>
+ <dl><dt><a name="-produire_liste_progammes"><strong>produire_liste_progammes</strong></a>(ch)</dt><dd><tt>Parcoure&nbsp;le&nbsp;chemin&nbsp;ch&nbsp;et&nbsp;retourne&nbsp;un&nbsp;pandas&nbsp;dataframe&nbsp;des&nbsp;programmes<br>
+d'observations.<br>
+&nbsp;<br>
+Paramètre&nbsp;positionnel<br>
+ch&nbsp;--&nbsp;String&nbsp;chemin&nbsp;complet&nbsp;de&nbsp;la&nbsp;tête&nbsp;du&nbsp;répertoire&nbsp;des&nbsp;systèmes.</tt></dd></dl>
+ <dl><dt><a name="-produit_liste_reductions"><strong>produit_liste_reductions</strong></a>(chemin_des_systemes)</dt><dd><tt>Balais&nbsp;chemin_des_systemes&nbsp;et&nbsp;retourne&nbsp;une&nbsp;liste&nbsp;(List)&nbsp;des&nbsp;noms&nbsp;complets&nbsp;des&nbsp;fichiers<br>
+*.obj&nbsp;trouvés.<br>
+&nbsp;<br>
+Paramètre&nbsp;positionnel<br>
+&nbsp;chemin_des_systemes&nbsp;--&nbsp;String&nbsp;chemin&nbsp;complet&nbsp;de&nbsp;la&nbsp;tête&nbsp;du&nbsp;répertoire&nbsp;des&nbsp;systèmes.</tt></dd></dl>
+ <dl><dt><a name="-trouverFichierObjetSessions"><strong>trouverFichierObjetSessions</strong></a>(ch)</dt><dd><tt>Retourne&nbsp;le&nbsp;nom&nbsp;du&nbsp;fichier&nbsp;log&nbsp;de&nbsp;réduction&nbsp;(REDUC)&nbsp;RLog_*.txt&nbsp;<br>
+si&nbsp;présent&nbsp;dans&nbsp;le&nbsp;chemin&nbsp;passé&nbsp;en&nbsp;paramètre&nbsp;une&nbsp;chaîne&nbsp;vide&nbsp;sinon.<br>
+&nbsp;<br>
+Paramètre&nbsp;positionnel&nbsp;:<br>
+ch&nbsp;--&nbsp;String&nbsp;chemin&nbsp;du&nbsp;dossier&nbsp;d'où&nbsp;commencer&nbsp;la&nbsp;recherche.</tt></dd></dl>
+ <dl><dt><a name="-version"><strong>version</strong></a>()</dt><dd><tt>#&nbsp;%%&nbsp;FONCTIONS</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>liste_de_tri_prog</strong> = [['obs_prog', 'id_system'], ['id_system', 'obs_prog'], ['const']]<br>
+<strong>liste_de_tri_reduc</strong> = [['obs_prog', 'id_system'], ['id_system', 'obs_prog'], ['const'], ['Dates_UTC']]<br>
+<strong>maintenant</strong> = &lt;Time object: scale='utc' format='datetime' value=2022-04-13 00:53:41.749362&gt;<br>
+<strong>nversion</strong> = 20</td></tr></table>
+</body></html>
