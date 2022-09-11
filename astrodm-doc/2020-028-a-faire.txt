@@ -946,6 +946,11 @@ OBSOLÈTE
 
          devrait être 1 terminé.
 
+   131.2 changements :
+      131.2.1 demander ordre de tri
+      131.2.2 sortie au format texte avec nom de fichier incluant ordre de tri et systag (voir autres listes pour exemples)
+
+
 132. git :: vérifier les conséquences de ceci
 warning: in the working copy of 'astrodm/doubleslistes.py', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'astropy-tests/.ipynb_checkpoints/Untitled-checkpoint.ipynb', LF will be replaced by CRLF the next time Git touches it
@@ -958,7 +963,6 @@ warning: in the working copy of 'astropy-tests/coordinates/.ipynb_checkpoints/co
 warning: in the working copy of 'astropy-tests/coordinates/Coordinates-Intro.ipynb', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'astropy-tests/coordinates/coords_2.ipynb', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'astropy-tests/coordinates/coords_2.py', LF will be replaced by CRLF the next time Git touches it
-
   
 ORDRE DES PRIORITÉS
 131.
