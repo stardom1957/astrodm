@@ -1,0 +1,16 @@
+*_/
+# __pycache__/
+med/
+*.bak
+# _build/
+# _static
+# _templates
+astrodm-VERSIONS-DE-DEVELOPPEMENT/
+build/
+Cahier Jupyter/
+utilitaires-archives/
+*.log
+out.txt
+astrodm-backup/
+utilitaires-archives-tests/
+modeles/

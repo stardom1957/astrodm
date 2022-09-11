@@ -1,0 +1,149 @@
+Projet mesures d'étoiles doubles - état de situation et questions
+
+Bonjour Florent,
+
+Pour faire suite à notre dernière conversation après le téléchargement de la version 5.39 de REDUC en juin dernier, je désire te livrer un état de situation de mon projet. Bien entendu, je vais profiter de l'occasion pour poser quelques questions qui, par ailleurs, seront clairement manquées dans le texte (Q).
+
+
+OBJECTIFS DU PROJET
+-------------------
+J'ai 64 ans et je suis retraité. Je désire mesurer des étoiles doubles, beaucoup d'étoiles doubles, pour le plaisir et les nombreux défis et pour faire un « peu de science ». Pour le plaisir, oui, mais aussi pour de vrai et avec rigueur. Je n'ai pas été formé aux rigueurs de la recherche expérimentale, mais je veux apprendre. Je ne connais personne de mon entourage qui s'intéresse comme moi à ce sujet (même au sein de mon club d'astronomie local) et je ne fréquente pas les forums de discussion en astronomie (peut être que je devrais ;).
+
+Je m'engage aussi dans ce projet avec cet objectif : produire des résultats valables pour la publication.
+
+Il y a loin de la coupe aux lèvres. Lors de notre dernière communication tu m'as offert ton aide. Je te livre donc cet état de la situation afin que tu puisses décider si tu récidives dans ton offre pas.
+
+Maintenant au travail!
+
+
+INTRODUCTION
+------------
+D'entrée de jeu, je dois signaler que j'avais commencé un programme d'observation en 2020. J'ai développé les procédures durant le printemps et l'été et j'ai fais mes premières mesures à l'automne à l'aide d'un oculaire astrométrique Baader Planetarium Microguide. Pour être honnête, exactement quatre mesures. Comme je ne sors pas par temps froid, j'ai cessé d'observer dès la première neige en novembre. De décembre 2020 à janvier 2021, (en plein confinenent de la COVID-19 au Québec) j'ai développé un package en langage Python pour la réduction des observations effectuées avec le Microguide.
+
+Au début de février j'ai conçu l'idée d'installer mon télescope en permanence sous un abri. Après discussion côté budgétaire avec ma douce, nous avons aménagé le terrain et construit l'abri entre mars et mai. Début juillet, j'ai effectué la mise en service initiale du télescope (un Celestron EdgeHD, f/10, objectif de 200 mm sur monture iOptron CEM60).
+
+Une conséquence de l'installation permanente : j'ai dû abandonner l'utilisation du Microguide car l'abri du télescope est trop étroit pour me permettre d'observer en visuel. Je dois travailler à distance. Je travaille confortablement dans ma cabane de jardin pendant que le télescope se les gèle dehors. C'est dans l'ordre des choses!
+
+
+UN APPERÇU DE L'ÉQUIPEMENT
+--------------------------
+Mon installation comprend deux trains optiques avec des caméras monochromes : la première est de type « imagerie du ciel profond », avec un capteur 4/3 qui sert aux repérages et la seconde est du type « imagerie planétaire », qui sert aux mesures. Les deux caméras sont installées de chaque côté d'un coudé à miroir basculant qui permet de passer rapidement de la caméra de repérage à la caméra de mesure.
+
+En ce qui concerne le côté opérationnel, je travaille depuis quelques mois au développement et au perfectionnement de mon « flux de travail ». J'ai effectué mes premières tentatives de mesures par « Lucky Imaging » au début d'octobe 2021.
+
+En d'autres termes, au moment d'écrire ces lignes, mon projet en est encore à l'étape de la mise au point de la « mécanique » (quelques fois céleste, tout de même! ;) de mon « flux de travail ».
+
+
+
+FLUX DE TRAVAIL ET MÉTHODOLOGIE
+-------------------------------
+En ce moment, mon flux de travail se décline comme suit :
+
+Planification --> Programme d'observations --> Acquisition des données de mesures + Acquisition des données de calibration --> ...
+ ... pré réduction par REDUC --> post réduction (programmatiquement) --> (Publication :)
+
+
+Planification et établissement des programmes d'observations
+-------------------------------------------------------------
+
+En cette période de développement, je dois concentrer tous mes efforts au développement et au perfectionnement des procédures, à l'apprentissage du mode d'emploi des instruments et des logiciels qui servent aux diverses étapes de mon travail. Donc jusqu'à nouvel ordre, en ce qui concerne ces deux premières étapes, mes programmes d'observations consistent à choisir des paires bien documentées et qui sont faciles à mesurer. J'ai l'embarras du choix en toute saison, grâce à l'abri.
+
+À tant qu'amateur, certaines de mes lectures au sujet des étoiles doubles me donnent de bonnes idées et d'autres ajoute une certaine confusion.
+
+
+Acquisition des données de mesures et de calibration
+-----------------------------------------------------
+
+Dans la mesure du possible, je me propose d'effectuer au moins deux observations au cour de sessions espacées de quelques jours à une semaine. Chaque observation comprendra au moins deux bloc d'acquisitions d'images pour les darks (cal), deux autres pour les images de séparation (sep) et deux pour l'angle de position (pos) par dérive. Pour parer à de possibles modifications des caractéristiques du train optique au cours de la nuit, je ferai au moins deux acquisitions de calibration : l'une au début et une autre à la fin de la session.
+
+Comme je l'ai dit, je suis vraiment encore dans le montage de la mécanique!
+
+(Q1) Que penses-tu de cette procédure?
+
+
+REDUC ET LA QUESTION DE LA CALIBRATION
+---------------------------------------
+
+C'est le nerf de la guerre! Pour le moment, je désire choisir l'une de ces méthodes :
+
+- la paire étalon;
+- la mesure de la dérive d'une étoile de déclinaison connue dans le champ de la caméra et,
+- l'utilisation d'un masque à fentes multiples avec un filtre Ha.
+
+
+Calibration par une paire étalon
+--------------------------------
+
+Reduc favorise l'utilisation d'une paire étalon pour la calibration afin de déterminer les constantes instrumentales E et delta matrice lors de la réduction. Voici ce que je crois comprendre concernant l'application de cette méthode.
+
+Après avoir observé une paire étalon adéquate pour mon instrument, il me faudrait ensuite en utiliser les éléments orbitaux de cette paire [3] pour calculer rho et thêta pour l'époque de l'observation [1] et utiliser ces valeurs lors de la calibration de REDUC pour finalement obtenir les constantes instrumentales de calibration E et delta_matrice. J'ai comme projet de télécharger le catalogues des éphémérides [3] pour examen des orbites de grade 1 à 3. Quant au calcul des éphémérides, je n'ai pas trouvé d'outil informatique sur Internet. Je pourrais aussi comme projet écrire mon propre programme en langage Python pour exécuter cette tâche, mais pas tout de suite! Donc, pour le moment, pas de calibration par paire étalon.
+
+(Q2) Peux-tu me suggérer un outil informatique qui me permettrait de calculer les éphémérides à partir des éléments orbitaux?
+
+Calibration par chronométrage du temps de dérive d'une étoile
+-------------------------------------------------------------
+
+J'ai utilisé cette méthode pour calibrer l'échelle linéaire de mon oculaire astrométrique Microguide durant l'été 2020. Pour la caméra, l'enjeu en est un d'exactitude du chronométrage fourni par mon logiciel d'acquisition (FireCapture) qui, tous de même, indique les chronos à la milliseconde. Je compte expérimenter avec cette méthode dans le futur. Pour le moment, je n'envisage pas d'utiliser cette méthode pour calibrer l'échelle de ma caméra.
+
+Calibration par l'expérience de Young
+-------------------------------------
+
+La lecture d'un article du « Journal of double star observations » [2] m'a vraiment éclairé à ce sujet. Durant l'hiver 2020, je me suis fait fabriquer un masques avec des fentes et des espacements de 3 mm. Pour l'application, j'utilise un filtre Ha. Tenant compte des mesures et la longueur d'onde du flitre, j'ai calculé une séparation angulaire entre le maximum central et le maximum (Z) d'ordre 1 de 22.23 arcsec ± 0.13 arcsec.
+
+Comme tu peux le voir, je suis bien en selle pour utiliser cette méthode pour la calibration.
+
+Je discute plus bas de l'application avec REDUC.
+
+
+Acquisition des données
+-----------------------
+
+
+
+La question de la propagation des incertitudes
+
+Là je me trouve en terrain moins connu, mais dans ma quête de livrer les meilleurs résultats possible je me pose certaines questions.
+
+Discussion de la méthode Reduc1
+
+... m'astreint à une gymnastique rigoureuse d'acquisition : images sep, darks, images ex. de young, images pos et une fois toutes ces données en boîte, elles peuvent être réduites de diverses manières jusqu'à satiété. Par exemple, pour la détermination de E comparer les résultats avec les variantes suivantes de REDUC :
+
+Incertitude sur l'échelle de la caméra (Sampling = E)
+
+Soit la valeur théorique de Z tirée de la mesure de l'expérience de Young (Z = lambda/D) * 206... = 22.1515 arcsec ± .003 arcsec
+
+- REDUC de l'acquisition de l'ex. de Young pour déterminer Sampling (E):
+ Méthode Reduc1 : ELI --> AutoReduc --> calibration, saisie de Z dans rho ---> mesures --> sortie fichier log RLog_*.txt --> E = Sampling ± incertitude inconnue
+ Méthode Reduc2 : ELI --> AutoReduc --> sortie fichier log RLog_*.txt --> Z / moyenne valeurs brutes coord. centroïdes = E ± incertitude connue
+ 
+ Reduc1 calcule automatiquement E (Sampling) à partir de z et avec la moyenne des distance en pixels, rho est aussi automatiquement calculé et la réduction se termine et le log qui indique rho ± sigma. Je me demande d'où vient le sigma.
+Dans la méthode Reduc2, un programme en langage Python est utilisé pour analyser les données brutes qui sont récupérées du fichier RLog_*.txt et à l'aide des statistiques descriptives (écart type, etc) nous connaissons l'incertitude de la moyenne des distances S et puisque que nous connaissons l'incertitude de Z on connait celle de E = Z/S.
+
+post réduction des observations
+
+Il va sans dire que la même méthode Reduc2 doit être utilisée pour la réduction de toutes les mesures des paires et les résultats sont obtenu en appliquant les valeurs instrumentales E obtenue plus haut et delta matrice obtenue la réduction « par synthetic drift » d'images acquises dans le même bloc d'observation. C'est de cette façon, je pense, que toutes les mesures rho et theta des paires mesurées peuvent être accompagnée des incertitudes; ceci, comme il convient de le faire pour la publication des résultats.
+
+
+INTÉRETS
+
+Sujets possibles :
+
+- Méthodologie accompagnée des résultats d'un programme d'observation.
+- Comparaison réduction avec E selon procédures Reduc1 et Reduc2.
+- La question de la propagation des incertitudes dans Reduc (des améliorations demandées ;)
+- Cheminement
+
+
+AU SUJET DE LA RIGUEUR DE LA DÉMARCHE EXPÉRIMENTALE SCIENTIFIQUE
+
+Références
+[1] P. Duffett-Smith, Practical astronomy with your calculator, section 59, Binary-star orbits, pp. 130-134, Second Edition, Cambridge University Press, 1981
+
+[2] J. David Cotterell, Calibrating the Plate Scale of a 20 cm Telescope with a Multiple-Slot Diffraction Mask, Journal of Double Star Observations, Vol. 11 No 4, November 1, 2015
+
+[3] 6th Catalog of Orbits of Visual Binary Stars, http://www.astro.gsu.edu/wds/orb6.html, USNO, Washington, DC
+
+
+<<<<<
+ Dans la phrase précédente je dois écrire (rapidement) parce que le train optique de repérage est à la focale f/10 alors que celui des mesures est à la focale f/20 (ce qui est préférable je pense); la caméra de mesure étant montée derrière une Barlow, cela a pour conséquence que les deux trains optiques ne sont plus parfocaux. Même avec un système de mise au point électronique, cet arrangement complique beaucoup les opérations. 
+>>>>>
