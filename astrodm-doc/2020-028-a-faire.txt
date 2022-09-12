@@ -937,32 +937,24 @@ OBSOLÈTE
      else:
        # on est en appel de fonction
 
+DEBUT vvvvvvvvvvvvv branch liste-reductions-en-texte
 131. doublelistes.imprime_liste_reductions : (dev)
-   131.1 bug : décompte des programmes différents et objets sessions examinés incorrects
+   131.1 bug : décompte des programmes différents et nombres d'objets sessions examinés semblent incorrects
 
    États des 1 enregistrements
  -----------------------------------
     0 terminés.
 
          devrait être 1 terminé.
-
    131.2 changements :
       131.2.1 demander ordre de tri
       131.2.2 sortie au format texte avec nom de fichier incluant ordre de tri et systag (voir autres listes pour exemples)
+FIN ^^^^^^^^^^^^^^^^ branch liste-reductions-en-texte
 
 
-132. git :: vérifier les conséquences de ceci
-warning: in the working copy of 'astrodm/doubleslistes.py', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/.ipynb_checkpoints/Untitled-checkpoint.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/.ipynb_checkpoints/astroplan_1-checkpoint.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/Untitled.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/astroplan_1.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/calcZeropoint.py', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/coordinates/.ipynb_checkpoints/Coordinates-Intro-checkpoint.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/coordinates/.ipynb_checkpoints/coords_2-checkpoint.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/coordinates/Coordinates-Intro.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/coordinates/coords_2.ipynb', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'astropy-tests/coordinates/coords_2.py', LF will be replaced by CRLF the next time Git touches it
+132. git :: vérifier les conséquences de ceci OK, git ne devrait pas à faire cela dans Windows TERMINÉ
+     warning: in the working copy of 'astrodm/doubleslistes.py', LF will be replaced by CRLF the next time Git touches it
+     ...
   
 ORDRE DES PRIORITÉS
 131.
