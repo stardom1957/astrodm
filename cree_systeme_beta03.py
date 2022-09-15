@@ -105,8 +105,8 @@ def traiter_obj_sys(obj_s, cahier=True):
           os.path.basename(obj_s.ncfinfo_systeme) +'»')
     
     if cahier:    
-        print('  création du dossier : «' + os.path.dirname(obj_s.ncfinfo_systeme) + '/med-planification»')
-        print('    ... création du cahier de notes «' +obj_s.nom +'_notes.ipynb»')
+        print('  création du dossier : «' + os.path.dirname(obj_s.ncfinfo_systeme) + '/planif»')
+        print('    ... création du cahier de notes «systeme-notes.ipynb»')
     
     rep = input("Enregistrer les données sur disque (o|n) ? ").upper()
     if 'O' in rep:
@@ -117,7 +117,7 @@ def traiter_obj_sys(obj_s, cahier=True):
 
 def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
     """
-    Créer structure des répertoires d'un système et enregistrer _info_système.csv.
+    Créer structure des répertoires d'un système et enregistrer info-systeme.csv.
     
     Également crée cahier Jupyter dans ./med-planification
 
@@ -132,11 +132,11 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
     """
     assert objet_systeme != None, 'Rien à enregister sur disque!'
 
-    ### création du répertoire du système et med-planification
+    ### création du répertoire du système et planif
     # il n'y a pas de mal à tenter de créer des répertoires même s'ils existes
     dir_systeme = os.path.dirname(objet_systeme.ncfinfo_systeme)
     os.makedirs(dir_systeme, exist_ok=True)
-    os.makedirs(dir_systeme + "/med-planification/", exist_ok=True)
+    os.makedirs(dir_systeme + "/planif/", exist_ok=True)
     
     ### vérification de la présence d'un fichier information système
     bool_fichier_info_existe = os.path.exists(objet_systeme.ncfinfo_systeme)
@@ -153,7 +153,7 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
 
     #
     # Dans le cas où fichier info n'existe pas, le traitement est le même
-    # avec ou sans traitement en lot : on doit créer _informations.csv
+    # avec ou sans traitement en lot
     #
 
     if not bool_fichier_info_existe:
@@ -163,8 +163,8 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
         # système
         if cahier:
             source = ncf_cahier_modele
-            destination = dir_systeme + "/med-planification/" + objet_systeme.nom +\
-                '_notes.ipynb'
+            #destination = dir_systeme + "/med-planification/" + objet_systeme.nom + '_notes.ipynb'
+            destination = dir_systeme + "/planif/systeme-notes.ipynb"
             shutil.copy(source, destination)
         return True
     else:
@@ -197,7 +197,7 @@ def selectionner_et_lire_info_systeme():
     root.withdraw()
     
     # sélectionner le fichier des informations de la source
-    ncfi = askopenfile(mode ='r', filetypes =[('Fichiers «info_système»', '*.csv')],\
+    ncfi = askopenfile(mode ='r', filetypes =[('Fichiers «info-systeme»', '*.csv')],\
      title = 'Sélectionnez le fichier information système')
 
     # trouver racine du répertoire système
@@ -227,7 +227,7 @@ pd.set_option('display.width', 120)
 
 # %% INITIALISATIONS
 dossier_des_modeles = os.getcwd() + r'/modeles'
-ncf_cahier_modele = dossier_des_modeles + r'/système_notes.ipynb'
+ncf_cahier_modele = dossier_des_modeles + r'/systeme-notes.ipynb'
 
 # %% PRINCIPAL
 if __name__ == '__main__':
@@ -331,7 +331,7 @@ if __name__ == '__main__':
         print('\n')
 
         for idx in lot_choisis.index:
-            print("Traitement de {0:<4} {1:>7}".format(idx,\
+            print("Traitement de {0:<4} : {1:>7}".format(idx,\
                                           lot_choisis.loc[idx,'id_system']))
 
             # valide système
@@ -369,8 +369,8 @@ if __name__ == '__main__':
                 
                 if not enregistrer_sur_disque(obj_sys, traitement_en_lot=True):
                     # ajouter message d'erreur dans journal
-                    lst_journal.append("Système {0} : _info_système.csv existe déjà!\n".\
-                                       format(lot_choisis.loc[idx].id_system))
+                    #lst_journal.append("Système {0} : _info_système.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
+                    lst_journal.append("Système {0} : info-systeme.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
 
             else:
                 # placer message d'erreur dans journal

@@ -46,7 +46,8 @@ if __name__ == '__main__':
     assert int(tri) in range(len(liste_de_tri)), 'Oups «{0}» is illégal! Bye!'.format(tri)
 
     ch = os.getcwd() + '/med'
-    dirs = glob.glob(ch + r'\**\*_info_système.csv', recursive=True)
+    # debug dirs = glob.glob(ch + r'\**\*_info_système.csv', recursive=True)
+    dirs = glob.glob(ch + r'\**\info-systeme.csv', recursive=True)
     info_systemes_df = pd.read_csv(dirs[0])
     dirs.pop(0)
     
@@ -65,7 +66,7 @@ if __name__ == '__main__':
         tempo = "(" + tempo + ")"
         ncfis = os.getcwd() + '/med/med-planification/LISTES/astrodm-liste-info-systemes-trie' + tempo + "-"  + systag + '.txt'
         ancien_stdout = sys.stdout
-        f = open(ncfis, 'w')
+        f = open(ncfis, mode='w', encoding="utf-8")
         sys.stdout = f
 
     # trier le df

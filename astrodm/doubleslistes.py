@@ -60,7 +60,8 @@ def liste_info_systemes(sortie='terminal'):
     Retourne un pandas dataframe des info_systemes.csv lus dans ./med.
     """
     ch = os.getcwd() + '/med'
-    dirs = glob.glob(ch + r'\**\*_info_système.csv', recursive=True)
+    #debug dirs = glob.glob(ch + r'\**\*_info_système.csv', recursive=True)
+    dirs = glob.glob(ch + r'\**\info-systeme.csv', recursive=True)
     info_systemes_df = pd.read_csv(dirs[0])
     dirs.pop(0)
     for dir in dirs:
@@ -312,7 +313,7 @@ def produire_liste_progammes(ch):
         
         # traiter le répertoire système
         # (en passant par-dessus la liste d'exclusions)
-        if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'med-planification'):
+        if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'med-planification', '.ipynb_checkpoints'):
             lst_dates = list()
             lst_dates.append('s. o.')
             int_nbr_systemes_exam += 1
@@ -320,10 +321,10 @@ def produire_liste_progammes(ch):
             id_system = path.basename(path.dirname(dir_systeme))
             #debug print('traitement ' + id_system)
 
-            # rechercher fichier '_info_système.csv'»
-            lstFichiers = glob.glob(dir_systeme + '/*_info_système.csv')
-            assert len(lstFichiers) == 1, "Erreur : plus d'un _info_système.csv dans «{0}»".\
-                  format(id_system)
+            # rechercher fichier 'info-systeme.csv'»
+            lstFichiers = glob.glob(dir_systeme + '/info-systeme.csv')
+            assert len(lstFichiers) == 1, "Erreur de recherche *info-systeme.csv dans «{0}»".\
+                  format(dir_systeme)
                  
             # lire info_système
             # ouvrir le fichier info_source
@@ -340,9 +341,9 @@ def produire_liste_progammes(ch):
             lstPairesPotentielles = glob.glob(dir_systeme + '/*/')
             
             # EXCLUSIONS dans la liste des répertoires du système
-            # enlever 'med-planification'
+            # enlever 'planif'
             for r in lstPairesPotentielles:
-                if path.basename(r.rstrip(r'\\')) in 'med-planification':
+                if path.basename(r.rstrip(r'\\')) in 'planif':
                     lstPairesPotentielles.remove(r)
             
             # dans le cas où il n'y a pas de paire, automatiquement il n'y a
@@ -639,7 +640,6 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
     # redirection de stdout vers un fichier le cas échéant
     #
     if sortie == 'F':
-        # sortie vers fichier ./med/med-planification/Liste_programmes_<systag>.txt
         systag = do.produire_systag()
         
         # construire chaîne ordre de tri
@@ -650,7 +650,7 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
         tempo = tempo.rstrip("+")
         ncfis = os.getcwd() + '/med/med-planification/LISTES/astrodm-liste-prog-obs-trie(' + tempo + ")-" + systag + '.txt'
         ancien_stdout = sys.stdout
-        f = open(ncfis, 'w')
+        f = open(ncfis, mode='w', encoding="utf-8")
         sys.stdout = f
     
     ### parcourir le répertoire racine
