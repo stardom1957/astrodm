@@ -648,7 +648,7 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
             tempo = tempo + eltri + "+"
             
         tempo = tempo.rstrip("+")
-        ncfis = os.getcwd() + '/med/med-planification/LISTES/astrodm-liste-prog-obs-trie(' + tempo + ")-" + systag + '.txt'
+        ncfis = os.getcwd() + '/med/med-planification/LISTES/prog-obs-par(' + tempo + ")-" + systag + '.txt'
         ancien_stdout = sys.stdout
         f = open(ncfis, mode='w', encoding="utf-8")
         sys.stdout = f
