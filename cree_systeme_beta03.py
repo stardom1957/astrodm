@@ -30,6 +30,15 @@ import shutil
 if 'D:\DOCUMENTS\Astronomie\dev' not in sys.path:
     sys.path.insert(0, 'D:\DOCUMENTS\Astronomie\dev')
 from astrodm import doublesoutils as do
+# %% INITIALISATIONS
+### pandas options d'affichage des tables
+pd.set_option('display.expand_frame_repr', True)
+pd.set_option('display.colheader_justify', 'right')
+pd.set_option('display.max_colwidth', 100)
+pd.set_option('display.max_column', 15)
+pd.set_option('display.width', 200)
+pd.set_option('display.max_row', 10000)
+pd.set_option("precision", 1)
 
 # %% FONCTIONS
 def estNan(val):

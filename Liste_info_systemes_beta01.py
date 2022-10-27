@@ -17,11 +17,11 @@ from astrodm import doublesoutils as do
 ### pandas options d'affichage des tables
 pd.set_option('display.expand_frame_repr', True)
 pd.set_option('display.colheader_justify', 'right')
-pd.set_option('display.max_colwidth', 75)
+pd.set_option('display.max_colwidth', 100)
 pd.set_option('display.max_column', 15)
-pd.set_option('display.width', 200)
+pd.set_option('display.width', 300)
 pd.set_option('display.max_row', 10000)
-pd.set_option("precision", 1)
+pd.set_option("precision", 6)
 
 if __name__ == '__main__':
     # demander sortie au terminal ou fichier

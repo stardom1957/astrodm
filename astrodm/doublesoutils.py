@@ -2287,7 +2287,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         inscrire_dans_log("Traitement terminée.")
         ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
         
-        return sessions
+        return session
 
 
 def convertToFloat(strVal):
@@ -3602,7 +3602,7 @@ pd.set_option('display.colheader_justify', 'right')
 pd.set_option('display.max_colwidth', 50)
 pd.set_option('display.max_column', 30)
 pd.set_option('display.width', 140)
-pd.set_option("display.precision", 4)
+pd.set_option("display.precision", 6)
 
 # time scale and format for astropy Time objects
 t_scale = 'utc'
