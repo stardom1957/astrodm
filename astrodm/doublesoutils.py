@@ -682,7 +682,8 @@ class Systeme:
             self.nom = path.basename(chemin_systeme)
 
             # nom complet du fichier info système
-            self.ncfinfo_systeme = chemin_systeme + '/' + self.nom + '_info_système.csv'
+            # debug self.ncfinfo_systeme = chemin_systeme + '/' + self.nom + '_info_système.csv'
+            self.ncfinfo_systeme = chemin_systeme + '/info-systeme.csv'
             assert path.exists(self.ncfinfo_systeme),\
                 'doublesOutils.Systeme.__init__ :: ' +\
                     self.ncfinfo_systeme + ' non trouvé.'
@@ -690,13 +691,13 @@ class Systeme:
             # chemin du système
             self.rep = chemin_systeme
             
-            # lire le fichier _info_système qui contient tous les autres 
+            # lire le fichier info-systeme qui contient tous les autres 
             # attributs
             try:
                 # Pandas df du système
                 self.informations_df = pd.read_csv(self.ncfinfo_systeme)
             except FileNotFoundError:
-                print('doubleOutils.Systeme.__init__ :: fichier _info_système non lisible.')
+                print('doubleOutils.Systeme.__init__ :: fichier info-systeme non lisible.')
                 sys.exit()
             
             return
@@ -726,9 +727,9 @@ class Systeme:
             # s'assurer  que certains attributs texte soient entourés de "
             self.normalise_attributs_chaines()
             
-            # nom complet du (futur) fichier _info_systeme.csv
-            self.ncfinfo_systeme = chemin_systeme +\
-                '/' + self.nom + '/' + self.nom + '_info_système.csv'
+            # nom complet du (futur) fichier info-systeme.csv
+            #debug self.ncfinfo_systeme = chemin_systeme + '/' + self.nom + '/' + self.nom + '_info_système.csv'
+            self.ncfinfo_systeme = chemin_systeme + '/' + self.nom + '/info-systeme.csv'
 
             
             #
@@ -788,7 +789,7 @@ class DoubleSessionsComplete:
         if typeSession == 'complete':
             self.typeSession = typeSession
             
-            # créer objet Systeme avec fichier _info_système.csv qui se trouve
+            # créer objet Systeme avec fichier info-systeme.csv qui se trouve
             # dans le chemin chProg
             self.systeme = Systeme(chemin_systeme=path.dirname(path.dirname(chProg.rstrip('\\'))))
 
@@ -1817,7 +1818,7 @@ class DoubleSessionsComplete:
             if sortie.upper() == 'FICHIER':
                 # sortie vers fichier out.txt dans rép d'exécution
                 ancien_stdout = sys.stdout
-                f = open('out.txt', 'w')
+                f = open('out.txt', mode='w', encoding="utf-8")
                 sys.stdout = f
     
             print('-'*102)
@@ -2002,7 +2003,7 @@ def inscrire_dans_log(strinscription):
     lst_log_post_reduction.append(strinscription)
 
 def ecrire_log_sur_disque(ncflog=''):
-    with open(ncflog, 'w') as f:
+    with open(ncflog, mode='w', encoding="utf-8") as f:
         # écrire le contenu du log
         for ligne in range(len(lst_log_post_reduction)):
             f.write(lst_log_post_reduction[ligne])
@@ -2286,7 +2287,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         inscrire_dans_log("Traitement terminée.")
         ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
         
-        return sessions
+        return session
 
 
 def convertToFloat(strVal):
@@ -2900,7 +2901,7 @@ def extraire_mesure_brutes_logReduc(ses, bloc, typeMesure):
         
             # écrire le tampon de lignes dans reduc_brut.csv
             entete_csv = 'xA,yA,xB,yB'
-            with open(path.dirname(ncflr) + '/' + fich_mesures_brutes, 'w') as f:
+            with open(path.dirname(ncflr) + '/' + fich_mesures_brutes, mode='w', encoding="utf-8") as f:
                 # écrire l'en-tête
                 f.write(entete_csv + NL)
         
@@ -3601,7 +3602,7 @@ pd.set_option('display.colheader_justify', 'right')
 pd.set_option('display.max_colwidth', 50)
 pd.set_option('display.max_column', 30)
 pd.set_option('display.width', 140)
-pd.set_option("display.precision", 4)
+pd.set_option("display.precision", 6)
 
 # time scale and format for astropy Time objects
 t_scale = 'utc'

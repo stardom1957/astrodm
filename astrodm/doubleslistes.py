@@ -60,7 +60,8 @@ def liste_info_systemes(sortie='terminal'):
     Retourne un pandas dataframe des info_systemes.csv lus dans ./med.
     """
     ch = os.getcwd() + '/med'
-    dirs = glob.glob(ch + r'\**\*_info_système.csv', recursive=True)
+    #debug dirs = glob.glob(ch + r'\**\*_info_système.csv', recursive=True)
+    dirs = glob.glob(ch + r'\**\info-systeme.csv', recursive=True)
     info_systemes_df = pd.read_csv(dirs[0])
     dirs.pop(0)
     for dir in dirs:
@@ -129,7 +130,7 @@ def produit_liste_reductions(chemin_des_systemes):
 
     return glob.glob(chemin_des_systemes+r'\**\*.obj', recursive=True)
 
-def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True):
+def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True, sortie='T'):
     """
     Imprime un rapport détaillé des programmes d'observations et retourne un
     Pandas DataFrame trié contenant la liste des programmes d'observations.
@@ -139,8 +140,27 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True):
      tri             -- Int ordre de tri de 1 à 4, selon dictionnaire
                         liste_de_tri_prog
      impr_table_etat -- Boolean imprime légende des états (par défaut True)
+     sortie          -- T (terminal) ou F (fichier)
     """
     
+    if sortie == 'F':
+        # sortie vers fichier ./med/med-planification/....txt
+        systag = do.produire_systag()
+        
+        # construire chaîne ordre de tri
+        tempo = ""
+        for eltri in liste_de_tri_reduc[int(tri)]:
+            tempo = tempo + eltri + "+"
+        tempo = tempo.rstrip("+")
+        tempo = "(" + tempo + ")"
+        ncfliste = os.getcwd() + '/med/med-planification/LISTES/reductions-par' + tempo + "-"  + systag + '.txt'
+        
+        # rediriger sortie vers f
+        ancien_stdout = sys.stdout
+        f = open(ncfliste, mode='w', encoding="utf-8")
+        sys.stdout = f
+
+
     lst_ncor = produit_liste_reductions(chemin)
     
     # enregistrements pour produire df
@@ -200,15 +220,15 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True):
                 #
                 # faire le décompte des États 'XECPT'
                 #
-                # tempo = obj_sessions.resultats_pour_publication_df.loc[index_s,'État']
-                # if 'C' in tempo:
-                #    nbr_etat_C += 1
-                # elif 'T' in tempo:
-                #    nbr_etat_T += 1
-                # elif 'E' in tempo:
-                #    nbr_etat_E += 1
-                # elif 'X' in tempo:
-                #    nbr_etat_X += 1
+                tempo = obj_sessions.resultats_pour_publication_df.loc[index_s,'État']
+                if 'C' in tempo:
+                   nbr_etat_C += 1
+                elif 'T' in tempo:
+                   nbr_etat_T += 1
+                elif 'E' in tempo:
+                   nbr_etat_E += 1
+                elif 'X' in tempo:
+                   nbr_etat_X += 1
         
                 # ajouter à lst_reduc
                 liste_reductions.append(enr_dict)
@@ -216,6 +236,13 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True):
     # créer reductions_df à partir de lst_reduc et trier
     if len(liste_reductions) == 0:
         print("Il n'y a aucune réductions.")
+        
+        # rétablir sortie vers sys.stdout
+        if sortie == 'F':
+            # rétablir stdout
+            sys.stdout = ancien_stdout
+            f.close()
+            print("Sortie dans :\n  {0}".format(ncfliste))
         return None
     else:
         reductions_df = pd.DataFrame(liste_reductions)
@@ -231,9 +258,9 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True):
         pd.set_option('display.colheader_justify', 'right')
         pd.set_option('display.max_colwidth', 50)
         pd.set_option('display.max_column', 18)
-        pd.set_option('display.width', 200)
+        pd.set_option('display.width', 300)
         pd.set_option('display.max_row', 10000)
-        pd.set_option("precision", 1)
+        pd.set_option("precision", 3)
     
         print(reductions_df)
         #print('-' * 176)
@@ -262,6 +289,14 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True):
         print("reductions.query(\"État == 'P  '\")")
         print("reductions.query(\"const == 'And'\")")
         print("reductions.query(\"const == 'And' or const == 'Gem'\")")
+
+
+        # rétablir sortie vers sys.stdout
+        if sortie == 'F':
+            # rétablir stdout
+            sys.stdout = ancien_stdout
+            f.close()
+            print("Sortie dans :\n  {0}".format(ncfliste))
         return reductions_df
     
 
@@ -312,7 +347,7 @@ def produire_liste_progammes(ch):
         
         # traiter le répertoire système
         # (en passant par-dessus la liste d'exclusions)
-        if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'med-planification'):
+        if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'med-planification', '.ipynb_checkpoints'):
             lst_dates = list()
             lst_dates.append('s. o.')
             int_nbr_systemes_exam += 1
@@ -320,10 +355,10 @@ def produire_liste_progammes(ch):
             id_system = path.basename(path.dirname(dir_systeme))
             #debug print('traitement ' + id_system)
 
-            # rechercher fichier '_info_système.csv'»
-            lstFichiers = glob.glob(dir_systeme + '/*_info_système.csv')
-            assert len(lstFichiers) == 1, "Erreur : plus d'un _info_système.csv dans «{0}»".\
-                  format(id_system)
+            # rechercher fichier 'info-systeme.csv'»
+            lstFichiers = glob.glob(dir_systeme + '/info-systeme.csv')
+            assert len(lstFichiers) == 1, "Erreur de recherche *info-systeme.csv dans «{0}»".\
+                  format(dir_systeme)
                  
             # lire info_système
             # ouvrir le fichier info_source
@@ -340,9 +375,9 @@ def produire_liste_progammes(ch):
             lstPairesPotentielles = glob.glob(dir_systeme + '/*/')
             
             # EXCLUSIONS dans la liste des répertoires du système
-            # enlever 'med-planification'
+            # enlever 'planif'
             for r in lstPairesPotentielles:
-                if path.basename(r.rstrip(r'\\')) in 'med-planification':
+                if path.basename(r.rstrip(r'\\')) in 'planif':
                     lstPairesPotentielles.remove(r)
             
             # dans le cas où il n'y a pas de paire, automatiquement il n'y a
@@ -639,7 +674,6 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
     # redirection de stdout vers un fichier le cas échéant
     #
     if sortie == 'F':
-        # sortie vers fichier ./med/med-planification/Liste_programmes_<systag>.txt
         systag = do.produire_systag()
         
         # construire chaîne ordre de tri
@@ -648,9 +682,9 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
             tempo = tempo + eltri + "+"
             
         tempo = tempo.rstrip("+")
-        ncfis = os.getcwd() + '/med/med-planification/LISTES/astrodm-liste-prog-obs-trie(' + tempo + ")-" + systag + '.txt'
+        ncfis = os.getcwd() + '/med/med-planification/LISTES/prog-obs-par(' + tempo + ")-" + systag + '.txt'
         ancien_stdout = sys.stdout
-        f = open(ncfis, 'w')
+        f = open(ncfis, mode='w', encoding="utf-8")
         sys.stdout = f
     
     ### parcourir le répertoire racine
@@ -721,8 +755,7 @@ liste_de_tri_prog = [['obs_prog', 'id_system'],\
     
 liste_de_tri_reduc = [['obs_prog', 'id_system'],\
                ['id_system', 'obs_prog'],
-               ['const'],
-               ['Dates_UTC']]
+               ['const']]
 
 # maintenant utilisé pour calculer les échéances
 # format de <class 'astropy.time.core.Time'> avec scale utc car
