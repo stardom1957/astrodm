@@ -1,7 +1,7 @@
-Help on module astrodm.doublesoutils in astrodm:
+Help on module doublesoutils:
 
 NAME
-    astrodm.doublesoutils - @author: Dominique Martel
+    doublesoutils - @author: Dominique Martel
 
 DESCRIPTION
     Comprend diverses fonctionnalités pour planifier, réduire les observations
@@ -774,4 +774,3 @@ FILE
     d:\documents\astronomie\dev\astrodm\doublesoutils.py
 
 
-None
