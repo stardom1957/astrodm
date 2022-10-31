@@ -1,0 +1,776 @@
+Help on module doublesoutils:
+
+NAME
+    doublesoutils - @author: Dominique Martel
+
+DESCRIPTION
+    Comprend diverses fonctionnalités pour planifier, réduire les observations
+    à partir des données d'acquisition d'étoiles doubles et de pré-réduction
+    produites par le logiciel REDUC (de Florent Losse) et produit également
+    diverses listes.
+
+CLASSES
+    builtins.object
+        Acquisition
+            AcquisitionEchelle
+            AcquisitionPosition
+            AcquisitionSeparation
+        Bloc
+        DoubleSessionsComplete
+        Reduction
+            ReductionComplete
+            ReductionEchelle
+        Session
+        Systeme
+    
+    class Acquisition(builtins.object)
+     |  Contient les données d'acquisition pour un bloc d'observation. Cette classe
+     |  abstraite contient les données communes au trois d'acquisitions :
+     |    (angle de) position 'pos', séparation 'sep' et échelle 'ech' utilisées
+     |  dans les deux types de réductions 'ech' et 'complete'.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class AcquisitionEchelle(Acquisition)
+     |  AcquisitionEchelle(typeMesure)
+     |  
+     |  Étend la classe Acquisition pour une acquisition de type 'ech' echelle
+     |  
+     |  Method resolution order:
+     |      AcquisitionEchelle
+     |      Acquisition
+     |      builtins.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, typeMesure)
+     |      Paramètre positionnel :
+     |          
+     |          typeMesure -- String
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Acquisition:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class AcquisitionPosition(Acquisition)
+     |  AcquisitionPosition(typeMesure)
+     |  
+     |  Étend la classe Acquisition pour une acquisition de type 'pos' position
+     |  
+     |  Method resolution order:
+     |      AcquisitionPosition
+     |      Acquisition
+     |      builtins.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, typeMesure)
+     |      Paramètre positionnel :
+     |      
+     |      typeMesure -- String
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Acquisition:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class AcquisitionSeparation(Acquisition)
+     |  AcquisitionSeparation(typeMesure)
+     |  
+     |  Étend la classe Acquisition pour une acquisition de type 'sep' séparation.
+     |  
+     |  Method resolution order:
+     |      AcquisitionSeparation
+     |      Acquisition
+     |      builtins.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, typeMesure)
+     |      Paramètre positionnel :
+     |      
+     |      typeMesure -- String
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Acquisition:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class Bloc(builtins.object)
+     |  Bloc(noBloc, typeSession)
+     |  
+     |  Un bloc d'observation est un constituant d'un objet Session.
+     |  
+     |  Si le type d'observation est 'complete', un bloc comprend un objet
+     |  AcquisitionSeparation, un objet AcquisitionPosition et un objet
+     |  ReductionComplete.
+     |  
+     |  Si le type d'observation est 'ech', un bloc comprend un objet
+     |  AcquisitionEchelle et un objet ReductionEchelle.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, noBloc, typeSession)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  validations(self, nsession)
+     |      Valide le bloc d'observation.
+     |      
+     |      Cette fonction renseigne les attributs suivants :
+     |          reduc.deltaMatrixReducValide :: la valeur de delta_matrix de REDUC
+     |           de pos est la même que celle de sep.
+     |           
+     |          self.reduc.delaiDepuisAcqEchValide :: l'intervalle de temps
+     |           entre les acquisitions d'échelle
+     |           et de sep <= MAX_DELAI_DEPUIS_ACQUISITIONS_ECHELLE.
+     |           
+     |          self.reduc.deltaTemperatureValide :: différence de température
+     |           entre les acquisitions <= MAX_DELTA_TEMPERATURE
+     |      
+     |      Paramètre positionnel :
+     |      nsession -- int numéro de la session
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class DoubleSessionsComplete(builtins.object)
+     |  DoubleSessionsComplete(typeSession='complete', chProg='')
+     |  
+     |  Contient toutes les données des session d'observations (S=1, 2, ...), la
+     |  liste des blocs (b=1, 2, ...), pour le système et la paire concernés.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, typeSession='complete', chProg='')
+     |      Paramètres Keyword :
+     |       typeSession -- String type d'observation :
+     |         'complete' -- observation complète avec pos et sep
+     |       chProg -- String chemin du dossier du programme d'observation
+     |        (par défault '')
+     |  
+     |  calculer_moyennes_par_session(self)
+     |      À partir de reductions_des_observations_df, calcule les moyennes des
+     |      sessions d'observations (N) du programme d'observations et produit
+     |      le pandas dataframe moyennes_par_session_df. Pour une session, les
+     |      moyennes doivent être calculées à partir des résultats des blocs
+     |      d'observations, mais les mouennes sont valides seulement si les blocs
+     |      respectent Les critères de validité des facteurs environnementaux suivants :
+     |         - mises au point (map) inchangées au cours des acquisitions;
+     |           -- indiqué par
+     |         - les écarts de température <= MAX_DELTA_TEMPERATURE;
+     |         - le délai depuis la dernière aquisition d'échelle
+     |            <= MAX_DELAI_DEPUIS_ACQUISITIONS_ECHELLE
+     |      
+     |      moyennes_par_session_df contient les moyennes calculées
+     |      pour chacune des sessions d'observation valides avec les critères
+     |      de validité.
+     |      
+     |      moyennes_par_session_df sera utilisé pour resultats_pour_publication_df,
+     |      aussi bien dans le Jupyter notebook des observations que
+     |      dans le module listeReductions.
+     |  
+     |  calculer_pour_publication(self)
+     |      À partir de moyennes_par_session_df, regroupe les observations qui
+     |      respectent Le délai entre la première et la dernière observation
+     |      <= MAX_DELAI_ENTRE_OBSERVATIONS et produit
+     |      resultats_pour_publication_df.
+     |      
+     |      resultats_pour_publication_df sera utilisé pour le sommaire final des
+     |      observations, aussi bien dans le Jupyter notebook des observations que
+     |      dans le module listeReductions.
+     |      
+     |      Le champ «État» de resultats_pour_publication_df présente un sommaire
+     |      des résultats du programme.
+     |      
+     |      On en profite aussi pour déterminer l'état de chaque sessions.
+     |  
+     |  cree_liste_objets_Session(self)
+     |      parcoure cheminProgramme et retourne un Tupple contenant la liste
+     |      (List) des objets Session et un int du nombre de sessions.
+     |      
+     |      Retourne None, 0 si erreur ou aucun S*.
+     |      
+     |      Paramètres positionnels :
+     |       typeSession -- String type d'observation ('ech' ou 'complete')
+     |       cheminProgramme -- String chemin complet du programme d'observation
+     |      
+     |      Paramètre Keyword :
+     |       nomSysteme -- String nom du système (par défaut None
+     |                                            si observation d'échelle)
+     |  
+     |  creer_reductions_des_observations_df(self)
+     |      Crée le Pandas dataframe reductions_des_observations_df qui contient
+     |      le  détail de toutes les réductions.
+     |  
+     |  hier(self, sortie='terminal')
+     |      Produit (Print) la hiérarchie complète de l'objet DoubleSessions (self)
+     |      
+     |      Paramètre Keyword :
+     |       sortie -- String 'terminal' :
+     |        par défaut sortie au terminal
+     |       sortie -- String 'fichier'
+     |        Sortie dans fichier ./out.txt (écrasement contenu si fichier présent)
+     |  
+     |  imprimerRapport(self, typeRapport='m')
+     |      Imprime le rapport selon le type passé en paramètre.
+     |      
+     |      Paramètres Keyword :
+     |       typeRapport -- 'l' champs partiels
+     |       typeRapport -- 'c' données complète des sessions
+     |       typeRapport -- 'm' moyennes des sessions (par défaut)
+     |  
+     |  liste_etat(self)
+     |  
+     |  liste_fichiers_logs(self)
+     |  
+     |  toutes_les_sessions_reduites(self)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class Reduction(builtins.object)
+     |  La classe (abstraite) Reduction contient les données de base d'une réduction.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  relecture_mes_brutes(self, ncfmb)
+     |      Lecture des mesures brutes à partir de fich_mesures_brutes dans un df.
+     |      
+     |      Paramètre positionnel :
+     |       ncfmb -- String nom complet du fichier des mesures brutes
+     |      
+     |      Retourne
+     |       Un Pandas df des mesures brutes.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class ReductionComplete(Reduction)
+     |  Contient les données de base d'une réduction complète.
+     |  
+     |  Method resolution order:
+     |      ReductionComplete
+     |      Reduction
+     |      builtins.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  calcule_sep(self)
+     |      À partir de reduc_brute_df calcule la distance entre chaque point et
+     |      produit les statistiques descriptives des données.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Reduction:
+     |  
+     |  relecture_mes_brutes(self, ncfmb)
+     |      Lecture des mesures brutes à partir de fich_mesures_brutes dans un df.
+     |      
+     |      Paramètre positionnel :
+     |       ncfmb -- String nom complet du fichier des mesures brutes
+     |      
+     |      Retourne
+     |       Un Pandas df des mesures brutes.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Reduction:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class ReductionEchelle(Reduction)
+     |  Contient les données de base d'une réduction de type ech échelle.
+     |  
+     |  Method resolution order:
+     |      ReductionEchelle
+     |      Reduction
+     |      builtins.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  calcule_E(self)
+     |      Calcule l'échelle E de la caméra (arcsec/pixel) en multipliant la
+     |      distance moyenne entre les centroïdes des maxima de premier ordre
+     |      par la valeur de Z (l'angle de séparation) calculée.
+     |                          
+     |      Produit les statistiques descriptives des données qui se trouvent dans
+     |      reduc_brute_df (tableau des distances mesurées).
+     |      
+     |      Parameters
+     |      ----------
+     |       aucun
+     |      
+     |      Returns
+     |      -------
+     |      rien
+     |  
+     |  calcule_Z(self, LfplusDf, LfplusDf_sigma, Lo, Lo_sigma)
+     |      Calcule Z (angle de séparation) en " du maxima de premier ordre du patron
+     |      d'interférence produit par un masque à fentes et un filtre dont les
+     |      caractéristiques se trouvent dans les Pandas dataframes info_masque_df
+     |      et info_filtre_df.
+     |      
+     |      Paramètres positionnels :
+     |      LfplusDf       -- somme largeurs des fentes et distance entre les fentes
+     |      LfplusDf_sigma -- incertitude de LfplusDf
+     |      Lo             -- Longueur d'onde du filtre en m
+     |      Lo_sigma       -- incertitude de Lo
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Reduction:
+     |  
+     |  relecture_mes_brutes(self, ncfmb)
+     |      Lecture des mesures brutes à partir de fich_mesures_brutes dans un df.
+     |      
+     |      Paramètre positionnel :
+     |       ncfmb -- String nom complet du fichier des mesures brutes
+     |      
+     |      Retourne
+     |       Un Pandas df des mesures brutes.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Reduction:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class Session(builtins.object)
+     |  Session(noSession, typeSession)
+     |  
+     |  Contient la liste des blocs (lstBlocs) d'observation d'une session
+     |  d'observation.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, noSession, typeSession)
+     |      Paramètres positionnels :
+     |      noSession           -- no de l'observation (S dans les rapports et structures)
+     |      typeSession -- 'ech' Échelle, ou 'complete' Complète
+     |  
+     |  ajouteBloc(self, no_bloc, type_ses)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class Systeme(builtins.object)
+     |  Systeme(chemin_systeme='', nom_systeme_WDS='', id_sys_alt1='', id_sys_alt2='', remarques='')
+     |  
+     |  Structure des informations d'un système d'étoiles doubles ou multiples.
+     |  
+     |  Contient les informations de base d'un système.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, chemin_systeme='', nom_systeme_WDS='', id_sys_alt1='', id_sys_alt2='', remarques='')
+     |      Peut prendre en paramètres soit le chemin d'un dossier contenant un
+     |      fichier csv qui contient les informations du système, soit le nom du
+     |      système avec la série des attributs requis pour le système. Dans tous
+     |      cas, certains attributs sont renseignés par une recherche astroquery
+     |      dans le catalogue WDS et par diverses méthodes des packages
+     |      astropy et astroplan.
+     |      
+     |      Paramètres Keyword :
+     |       (Tous '' par défaut)
+     |       chemin_systeme    -- String nom complet du fichier info_système
+     |       nom_systeme_WDS   -- String id WDS du système (non normalisé) :
+     |         par ex. stfa254 ou stf60
+     |       Dict dict_systeme -- Dict des attributs du système :
+     |         id_src_alt1 -- String nom alternatif 1
+     |         id_src_alt2 -- String nom alternatif 2
+     |       remarques   -- String remarques, notes
+     |  
+     |  normalise_attributs_chaines(self)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+
+FUNCTIONS
+    UTCaHeureLocale(dhl)
+        Retourne la représentation datetime UTC aware de String dhl.
+        
+        Paramètre positionnel :
+         dhl -- String date au format iso par ex. '2020-11-08T23:48:00UTC-4'
+    
+    ajoute_ckecksum(objet_hash, fich)
+    
+    calcule_ckecksum_fichiers(chemin_programme)
+    
+    convertToFloat(strVal)
+    
+    diff_dt(dt1, dt2)
+        Retourne un objet astropy.time.TimeDelta de la différence absolue
+        (intervalle) entre dt1 et dt2 en J.jj.
+        
+        Paramètres positionnels :
+         dt1 -- objet astropy.time.core.Time dt1, la première date
+         dt2 -- objet astropy.time.core.Time dt2, la seconde date
+         
+         où;
+         
+         dt1 -- String première date au format isot, ex. '2022-02-07T12:35:45.235'
+         dt2 -- String seconde date au format isot, ex. '2022-02-07T12:35:45.235'
+    
+    drive(distance, d=0, m=0, s=0)
+        Retourne le temps de parcourt (en s) par dérive sidérale pour parcourir la
+        distance distance pour un objet ayant une déclinaison d m s.
+        
+        Paramètres positionnels :
+           'dist' int distance en secondes d'arc
+           déclinaison de la cible :
+             'd' degrées (par défaut 0)
+             'm' arc min (par défaut 0)
+             's' arc sec (par défaut 0)
+    
+    ecrire_log_sur_disque(ncflog='')
+    
+    extraire_Log_acq_env(ses, bloc, typeMesure)
+        Pour le bloc courant, repère les fichiers log d'acquisition et log de
+        réduction et récupère diverses données dépendant du type de réduction
+        ('ech' ou 'complete') et du types de mesure ('ech', 'sep' ou 'pos').
+        Également, le fichier« environnement.txt» est lu et traité.
+        
+        S'il sagit d'une réduction d'échelle ('ech'), on en profite pour récupérer id_masque
+        et id_filtre qui se trouvent dans environnement.txt.
+        
+        Les données sont colligées dans les objets Acquisition appropriés de l'objet Session (ses)
+        passé en paramètre.
+        
+        Note : dans le cas d'une réduction d'échelle ('ech') le type de mesure (.typeMesure) est
+        toujours 'sep', noSession==1 et no_bloc==1.
+        
+        Paramètres positionnels :
+        ses -- objet Session
+        bloc -- objet Bloc
+        typeMesure -- String 'pos' ou 'sep'
+    
+    extraire_mesure_brutes_logReduc(ses, bloc, typeMesure)
+        Pour le bloc courant, repère le fichier Rlog*.txt produit par reduc et
+        écrit les mesures brutes de la réduction dans un nouveau fichier csv.
+        
+        Les données sont colligées dans les objets Reduction appropriés de l'objet
+        Session (ses) passé en paramètre.
+        
+        Note : dans le cas d'une réduction d'échelle ('ech') les paramètres sont
+        toujours «objet ses», 1, 1.
+        
+        Paramètres positionnels :
+         ses        -- objet Session
+         noBloc     -- int no du bloc traité
+         typeMesure -- String 'pos' ou 'sep'
+    
+    imprime_rapport_E(ses)
+        Imprime rapport.
+    
+    info_src_wds(src, paire, notes=True)
+        Recherche et imprime les résultats de recherche dans le catalogue WDS.
+        
+        Parameters
+        ----------
+        src : TYPE src
+            La désignation de découvreur du système recherché.
+        paire : TYPE
+            La paire, sous la forme 'ab', 'a,bc', etc ou '*' si toutes les paires
+            sont recherchées.
+        notes : TYPE, bool, optional
+            True :: recherche et imprime les notes si présentent au catalogue
+            'B/wds/notes'.
+            La valeur par défaut est True.
+        
+        Returns
+        -------
+        None. Impression des résultats.
+    
+    inscrire_dans_log(strinscription)
+    
+    lire_fichier_observatoires()
+    
+    lire_fichiers_support(typeSession, chemin_prog)
+        Lecture des fichiers maîtres de calibration,
+        lecture fichiers filtres et masques si typeSession 'ech',
+        lecture fichier des observatoires
+        
+        retourne False
+        
+        Paramètres positionnels :
+         typeSession -- String type session :
+             'ech' échelle
+             'complete' complète
+         chemin_prog -- String chemin du programme
+    
+    listeLogsReduc(ch)
+        Retourne une liste des noms complets des fichiers Rlog_* de réduction (REDUC)
+        RLog_*.txt présents dans le chemin passé en paramètre ou une chaîne vide sinon.
+        
+        Seuls les RLog_* qui se trouvent dans les dossiers educ\ sont pris en
+        compte
+        
+        Paramètre positionnel :
+        ch -- String chemin du dossier d'où commencer la recherche.
+    
+    liste_blocs(ch)
+        Parcourt le chemin passé en paramètre et retourne la liste (List()) des
+        chemins des rép des bloc d'observations (c.-à-d. les répertoires b01, b02,
+        ..., présents dans le chemin).
+        
+        Paramètre positionnel :
+        ch -- String chemin complet à parcourir
+    
+    liste_variables_environnement()
+        Liste les variables d'environnement.
+        
+        Parameters
+        ----------
+        Aucun
+        
+        Returns
+        -------
+        None.
+    
+    maj_master_calibrations(data)
+        Met à jour l'enregistrement lié à l'index de calibration présent dans data
+        passé en paramètre dans le fichier maître des calibrations «master_calibrations_e.csv».
+            
+        Il ne peut exister qu'un seul enregistrement lié à l'index de calibration
+        dans le fichier «master_calibrations_e.csv». Si l'index de calibration
+        courant existe déjà dans «master_calibrations_e.csv», alors on assume
+        que l'usager désire effectuer une nouvelle réduction avec un nouveau jeu
+        de données produit par REDUC. 
+        
+        Dans ce cas, il faut présenter l'usager avec les résultats de la présente
+        réduction en même temps que celle trouvée dans «master_calibrations_e.csv»
+        pour le même index de calibration. L'usager devra alors décider laquelle
+        des deux réductions il désire conserver.
+        
+        Paramètre positionnel
+         data -- objet AcquisitionEchelle
+    
+    norm_WDS_src(source)
+        Retourne un String avec nom de la source normalisée au normes WDS,
+        c.-à-d. avec un seul espace entre découvreur (3 ou 4 lettres) et
+        no (1 à 4 chiffres) ssi len(source) < 7.
+        
+        Paramètre positionnel :
+         source -- String La désignation de découvreur du système recherché.
+    
+    norm_WDS_src_notes(source)
+        Normalise source sur 7 caractères.
+        
+        Paramètres
+        ----------
+        source : TYPE String
+            La désignation de découvreur du système recherché.
+        
+        Retourne
+        --------
+        String désignation normalisée sur WDS_SRC_LEN_NOTES.
+    
+    post_reduction(type_session='complete', ch_prog='')
+        Effectue la post-réduction des données du chemin passé en paramètre selon le
+        type d'observation.
+        
+        Si ch_prog contient des résultats de pré-réduction :
+        
+        - pour une observation de type 'ech', retourne un objet Sessions.
+        - Pour une observation de type 'complete', retourne un objet DoubleSessions.
+        
+        Si ch_prog ne contient pas de résultats de pré-réduction, mais contient
+        des données d'acquisition :
+        
+        - pour une observation de type 'ech', retourne None.
+        - Pour une observation de type 'complete', retourne un objet DoubleSessions
+          avec les attributs qui décrivent les acquisitions des sessions d'observations.
+        
+        
+        Retourne None en cas d'erreur.
+        
+        Inscrit les avertissements dans le fichier «post-réduction.log» dans ch_prog.
+        
+        Paramètres keywords :
+        type_session -- String :
+           'ech'         -- réduction d'échelle
+           'complete'    -- réduction complète (par défaut)
+        ch_prog -- String chemin du dossier du programme d'observation
+    
+    produire_liste_delais(liste_tup_dates)
+        Parameters
+        ----------
+        lst_dates : TYPE
+            DESCRIPTION.
+        
+        Returns
+        -------
+         lst_des_delais
+    
+    produire_systag()
+        Retourne un systag (système tag), c.-à-d. la date du système au format iso
+    
+    rech_wds(src, paire)
+        Recherche les informations de src et paire au catalogue WDS ('B/wds/wds').
+        
+        Parameters
+        ----------
+        src : TYPE str
+            La désignation de découvreur du système (source) recherché.
+        paire : str
+            La paire, sous la forme 'ab', 'a,bc', etc ou '*' si toutes les paires
+            sont recherchées.
+        
+        Returns
+        -------
+        TYPE astroquery.utils.commons.TableList
+            Le résultat de la recherche sous la forme d'une table.
+    
+    rech_wds_notes(src)
+        Recherche les notes au sujet de src dans les notes au WDS ('B/wds/notes'), si présentes.
+        
+        Parameters
+        ----------
+        src : TYPE str
+            La désignation de découvreur du système recherché.
+        
+        Returns
+        -------
+        TYPE astroquery.utils.commons.TableList
+            Il s'agit d'une table des résultats.
+    
+    str_dh_a_str_isot(d, h)
+        Retourne une chaîne Time au format isot de astropy avec d et h, p. ex.
+        «2021-10-08T22:22:31.258». Toutes les dates en UTC.
+        
+        Paramètres positionnels :
+         d -- String date au format yyyymmdd, ex. 20220207
+         h -- String h heure au format hhmmss.sss, ex. 222855.248
+    
+    str_dt_isot_a_TimeIsot(date='', heure='', dt=None)
+        Convertit date et heure UTC au format Time isot UTC et retourne un objet
+        astropy.time.core.Time.
+        
+        Paramètres Keyword :
+         date -- String date au format 'aaaammjj' (par défaut '')
+         heure -- String heure au format 'hhmmss.sss' (par défaut '')
+         dt -- String dt isot (par défaut None)
+    
+    trouverLogReduc(ch)
+        Retourne le nom du fichier log de réduction (REDUC) RLog_*.txt 
+        si présent dans le chemin passé en paramètre une chaîne vide sinon.
+        
+        Paramètre positionnel :
+        ch -- String chemin du dossier d'où commencer la recherche.
+    
+    trouverLogsAetE(chemin)
+        Parcourt chemin et retourne ncfla et ncfle contenant respectivement le nom
+        du fichier log d'acquisition (txt) et le nom du fichier environnement.txt
+        présents dans chemin.
+        
+        Puisque le nom du fichier log d'acquisition est à la discrétion de
+        l'observateur, la validité de celui-ci est vérifiée par la présence de la
+        chaîne 'FireCapture' sur la première ligne du premier fichier txt trouvé
+        autre que «environnement.txt».
+        
+        Paramètres positionnels :
+        chemin     -- String chemin complet à parcourir
+        nomSysteme --  String nom du système (ex. 'STTA254')
+    
+    valide_nom_systeme(chaine)
+        Valide silencieusement si chaine est un nom de système et existe bien dans
+        le WDS et retourne tupple True | False et résultats de la recherche WDS | None.
+        
+        Paramètre positionnel :
+         chaine -- String chaine à valider.
+    
+    version()
+        # %% FONCTIONS
+
+DATA
+    MAX_DELAI_DEPUIS_ACQUISITIONS_ECHELLE = 120.0
+    MAX_DELAI_ENTRE_OBSERVATIONS = 7.0
+    MAX_DELTA_TEMPERATURE = 5.0
+    NL = '\n'
+    WDS_SRC_ESPACE_LEN = 1
+    WDS_SRC_LEN_NOTES = 7
+    codes_etat_obs_dict = {'..I': ['Méthode de mesure par interférométrie ...
+    fich_mesures_brutes = 'mesures_brutes.csv'
+    no_version = 50
+    nom_fich_m_cal = 'master_calibrations_e.csv'
+    nom_fich_m_filtres = 'master_filtres_cal.csv'
+    nom_fich_m_masques = 'master_masques_cal.csv'
+    observatoires_df = None
+    resultatOK = True
+    root = <tkinter.Tk object .>
+    t_format = 'isot'
+    t_scale = 'utc'
+    viz = <astroquery.vizier.core.VizierClass object>
+
+FILE
+    d:\documents\astronomie\dev\astrodm\doublesoutils.py
+
+

@@ -736,6 +736,8 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
         print("liste_des_programmes_df.query(\"État == 'P  '\")")
         print("liste_des_programmes_df.query(\"const == 'And'\")")
         print("liste_des_programmes_df.query(\"const == 'And' or const == 'Gem'\")")
+        print("avec la variable rech = ['STT545', 'STF60'] :")
+        print('  liste_des_programmes_df.query("id_system == @rech")')
 
     if sortie == 'F':
         # rétablir stdout
