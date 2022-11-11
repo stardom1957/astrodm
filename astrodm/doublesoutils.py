@@ -703,13 +703,14 @@ class Systeme:
             return
         
         if chemin_systeme != '' and nom_systeme_WDS != '':
-            # création à l'aide des autres paramètres complétée par une 
+            # création à l'aide des arguments. Ceci inclus une
             # recherche astroquery dans le WDS et par diverses méthodes des
             # packages astropy et astroplan
             #
             # id_sys_alt1, id_sys_alt2 et remarques sont facultatifs
             
             # s'assurer que nom du système est en majuscules
+            
             self.nom = nom_systeme_WDS.replace(' ', '').upper()
             informations_dict = {
               'id_system': self.nom,
@@ -739,16 +740,15 @@ class Systeme:
             # recherche de l'enregistrement de self.nom (nom de découvreur)
             # dans catalog='B/wds/wds' et inscrire id, ra et dec dans df
             result_rech_WDS = rech_wds(self.nom, '*')
-            self.informations_df.loc[0, 'id_WDS'] = result_rech_WDS[0]['WDS'].item(0)
+            self.informations_df.loc[0, 'id_WDS'] = result_rech_WDS['WDS'].item(0)
             
-            # selon WDS, l'AD et la DEC sont celles de la primaire de la paire
-            raj2000 = result_rech_WDS[0]['RAJ2000'].item(0)
-            dej2000 = result_rech_WDS[0]['DEJ2000'].item(0)
+            # prendre AD et DEC à partir de l'enregistrement 0
+            raj2000 = result_rech_WDS['RAJ2000'].item(0)
+            dej2000 = result_rech_WDS['DEJ2000'].item(0)
             self.informations_df.loc[0, 'RAJ2000'] = raj2000
             self.informations_df.loc[0, 'DEJ2000'] = dej2000
             
-            # trouver la constellation d'après les coordonnées et incrire dans
-            # le df
+            # trouver la constellation d'après les coordonnées de l'enr 0
             coordonnees = SkyCoord(ra=raj2000, dec=dej2000, frame='fk5', unit=(u.hourangle, u.deg))
             self.informations_df.loc[0, 'const'] = coordonnees.get_constellation(short_name=True)
 
@@ -3408,16 +3408,14 @@ def rech_wds(src, paire):
 
     """
     
-    # formater pour recherche WDS
-    # si nécessaire, remplacer 4e car par '?', p. e. «stfa 60» devient «stf? 60»
-    
     viz.CACHE = False
     viz.ROW_LIMIT = 120000 # au cas où ?
     global strSource_format_pour_Notes
+
     # normaliser pour recherche WDS
     strSource = norm_WDS_src(src)
     
-    # le cas échéant, remplacer 4e car alpha par '?'
+    # si nécessaire, remplacer 4e car par '?', p. e. «stfa 60» devient «stf? 60»
     # split sur ' ' puisque strSource est normalisé avec un espace
     spl = strSource.split(' ')
     if len(spl[0]) == 4:
@@ -3425,21 +3423,33 @@ def rech_wds(src, paire):
     
     ### soumettre la requête
     #strSource = 'H 3*'
-    return viz.query_constraints(catalog='B/wds/wds', Disc=strSource, Comp=paire)
+    resultat = viz.query_constraints(catalog='B/wds/wds', Disc=strSource, Comp=paire)
+    if resultat != []:
+        # enlever les sources en trop
+        idx = []
+        # normaliser source
+        src_norm = norm_WDS_src_notes(src)
+        for r in range(len(resultat[0])):
+            if resultat[0]['Disc'].item(r) == src_norm:
+               idx.append(r)
+        nouveau = resultat[0][idx]
+        return nouveau
+    else:
+        return []
 
     # variations avec critère Obs2
     #result = viz.query_constraints(catalog='B/wds/wds', Disc=source, Comp=paire, Obs2='<=2015')
     ##result = viz.query_constraints(catalog='B/wds/wds', Disc=source, Comp=paire, Obs2='2011..2015')
     
 
-def rech_wds_notes(src):
+def rech_wds_notes(wds_src):
     """
     Recherche les notes au sujet de src dans les notes au WDS ('B/wds/notes'), si présentes.
 
     Parameters
     ----------
-    src : TYPE str
-        La désignation de découvreur du système recherché.
+    wds_src : TYPE str
+        L'identité WDS de la source'.
 
     Returns
     -------
@@ -3447,13 +3457,7 @@ def rech_wds_notes(src):
         Il s'agit d'une table des résultats.
 
     """
-    ### obtenir WDS Notes
-    # il faut normaliser strSource sur 7 car pour la recherche dans les notes
-    # du WDS
-    nom_src_format_pour_notes = norm_WDS_src_notes(src)
-
-    notes_q = viz.query_constraints(catalog='B/wds/notes', Disc=nom_src_format_pour_notes)
-    #wds_notes
+    notes_q = viz.query_constraints(catalog='B/wds/notes', WDS=wds_src)
     if notes_q != []:
         # garder seulement les deux dernières colonnes
         notes_q[0].keep_columns(['Text', 'RefCode'])
@@ -3487,30 +3491,29 @@ def info_src_wds(src, paire, notes=True):
     ### soumettre la requête à WDS
     qres = rech_wds(strSource, strPaire)
     
-    if qres != []:
-        longueur = qres[0].__len__()
-        print('\nIl y a {0} résultats pour «{1}», paire = «{2}».\n'.format(longueur, strSource, strPaire))
+    if len(qres) != 0:
+        print('\nIl y a {0} résultats pour «{1}», paire = «{2}».\n'.format(len(qres), strSource, strPaire))
         # trier sur WDS et composants
-        qres[0].sort(['Disc', 'Comp'])
-        #qres[qres.keys()[0]].pprint()
+        qres.sort(['Disc', 'Comp'])
+        #NOTE qres[qres.keys().pprint()
     
         print('Données tirées du Washington Double Stars Catalog (WDS)')
         print('Tris sur "Disc" et "Comp"')
         print('-' * 120)
-        qres[0].pprint(show_unit=True, max_width=120, max_lines=150)
+        qres.pprint(show_unit=True, max_width=120, max_lines=150)
         print('-' * 120)
         
-        ### obtenir WDS Notes
-        # il faut normaliser strSource sur 7 car
-        wds_notes = rech_wds_notes(strSource)
         
         if notes:
+            # obtenir WDS Notes
+            # obtenir l'id WDS de la source
+            id_WDS = qres['WDS'].item(0)
+            wds_notes = rech_wds_notes(id_WDS)
             if wds_notes != []:
                 print('\n ***** WSD Notes pour {0} *****'.format(strSource))
                 wds_notes[0].pprint(max_width=120)
             else:
                 print('Aucune note trouvée.')
-    
     else:
         print("La requête pour '{0}' n'a donné aucun résultat".format(strSource))
         sys.exit()
@@ -3544,7 +3547,7 @@ def liste_variables_environnement():
 
     
 # %% INITIALISATIONS
-no_version = 50
+no_version = 51
 
 '''
 Crée un dictionnaire des codes de notes pour les
