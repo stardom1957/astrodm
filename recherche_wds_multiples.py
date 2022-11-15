@@ -44,14 +44,20 @@ if __name__ == '__main__':
         lignesLues = f.readlines()
     f.close()
 
-    # convertir en une liste
+    # lire les sources dans un set (pour éliminer doublons)
     if lignesLues != '':
-        entreeSources = []
+        # entreeSources = []
+        sources = set()
         for l in lignesLues:
-            entreeSources.append(l.strip('\n'))
+            #entreeSources.append(l.strip('\n'))
+            sources.add(l.strip('\n'))
     else:
         print("Erreur, {0} est vide!".format(nf))
         sys.exit()
+
+    # créer une liste à partir du set
+    entreeSources = list(sources)
+    del sources
 
     # effectuer la première recherche
     collige = do.rech_wds(entreeSources[0], '*')
@@ -66,4 +72,4 @@ if __name__ == '__main__':
             print("{0} non trouvé dans WDS!".format(entreeSources[idx]))
 
     collige.sort(['Disc', 'Comp'])
-    collige.pprint(show_unit=True, max_width=120, max_lines=150)
+    collige.pprint(show_unit=True, max_width=120, max_lines=1500)
