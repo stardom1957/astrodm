@@ -3547,7 +3547,7 @@ def liste_variables_environnement():
 
     
 # %% INITIALISATIONS
-no_version = 51
+no_version = 52
 
 '''
 Crée un dictionnaire des codes de notes pour les
