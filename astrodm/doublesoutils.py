@@ -709,9 +709,12 @@ class Systeme:
             #
             # id_sys_alt1, id_sys_alt2 et remarques sont facultatifs
             
-            # s'assurer que nom du système est en majuscules
+            # debug s'assurer que nom du système est en majuscules
+            #self.nom = nom_systeme_WDS.replace(' ', '').upper()
             
-            self.nom = nom_systeme_WDS.replace(' ', '').upper()
+            # normaliser source sur 7 car
+            self.nom= norm_WDS_src_notes(nom_systeme_WDS)
+
             informations_dict = {
               'id_system': self.nom,
               'id_WDS': ['à venir'],
@@ -2130,7 +2133,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         ###################################################
         # Dans l'objet sessions, l'objet Systeme sera créé à partir du chemin du système.
         # Remonter au dossier du système à partir du dossier de ch_prog
-        # par «STTA254» dans D:\DOCUMENTS\Astronomie\...\STTA254\AB\P2021-023
+        # par ex. «STTA254» dans D:\DOCUMENTS\Astronomie\...\STTA254\AB\P2021-023
         objet_sessions = DoubleSessionsComplete(typeSession=type_session, chProg=ch_prog)
         
         # inscrire nom complet du fichier de log réduction
@@ -3268,14 +3271,16 @@ def valide_nom_systeme(chaine):
     Paramètre positionnel :
      chaine -- String chaine à valider.
     """
+    
+    ch = chaine.lower()
 
-    if len(chaine) > 7:
+    if len(ch) > 7:
         return False, None
 
     # recherche du discoverer
     str_re_pat = r'^[a-z]+'
     obj_pat = re.compile(str_re_pat)
-    obj_match = obj_pat.match(chaine)
+    obj_match = obj_pat.match(ch)
     
     str_id_disc = obj_match.group(0)
     if str_id_disc == '' or len(str_id_disc) > 4:
@@ -3287,13 +3292,13 @@ def valide_nom_systeme(chaine):
     str_re_pat = r'[0-9*]+'
     obj_pat = re.compile(str_re_pat)
     
-    obj_match = obj_pat.search(chaine)
+    obj_match = obj_pat.search(ch)
     str_no_sys = obj_match.group(0)
     if str_no_sys == '' or len(str_no_sys) > 5:
         return False, None
 
     # valide si le système existe dans le WDS
-    result_rech_WDS = rech_wds(chaine, '*')
+    result_rech_WDS = rech_wds(ch, '*')
     if len(result_rech_WDS) != 0:
         return True, result_rech_WDS
     else:
