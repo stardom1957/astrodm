@@ -812,7 +812,7 @@ class DoubleSessionsComplete:
             
             lstCol = ['obs_prog', 'id_system', 'id_WDS', 'paire',\
              'const', 'S', 'no_bloc', 'Date_UTC',\
-             'obs_epoque_B', 'sep', 'sep_sigma', 'pa',\
+             'obs_epoque_J', 'sep', 'sep_sigma', 'pa',\
              'pa_sigma', 'observatoire', 'observateur',\
              'transp', 'seeing', 'temp_to', 'humid',\
              'press_bar', 'map', 'deltaMatrixReducValide',\
@@ -1219,7 +1219,7 @@ class DoubleSessionsComplete:
                              b.no_bloc,\
                              b.sep.dtime_utc_acq.value,\
                              #debug b.sep.dtime_utc_acq,\
-                             b.sep.dtime_utc_acq.byear,\
+                             b.sep.dtime_utc_acq.jyear,\
                              b.reduc.sep,\
                              b.reduc.sep_sigma,\
                              b.reduc.pa,\
@@ -1614,7 +1614,7 @@ class DoubleSessionsComplete:
                     idx = session_df.index[0]
                     sep_moy    = session_df.loc[idx,'sep']
                     pa_moy  = session_df.loc[idx,'pa']
-                    epoque_moy = session_df.loc[idx,'obs_epoque_B']
+                    epoque_moy = session_df.loc[idx,'obs_epoque_J']
                     dern_obs_utc = session_df.loc[idx,'Date_UTC'].split('T')[0]
                     pa_sigma_moy = session_df.loc[idx,'pa_sigma']
                     sep_sigma_moy = session_df.loc[idx,'sep_sigma']
@@ -1660,7 +1660,7 @@ class DoubleSessionsComplete:
     
                     sep_moy      = session_df.loc[interval_idx,'sep'].mean()
                     pa_moy    = session_df.loc[interval_idx,'pa'].mean()
-                    epoque_moy   = session_df.loc[interval_idx,'obs_epoque_B'].mean()
+                    epoque_moy   = session_df.loc[interval_idx,'obs_epoque_J'].mean()
                     dern_obs_utc = session_df.loc[interval_idx,'Date_UTC']\
                         [session_df.index[1]].split('T')[0]
             
@@ -1761,7 +1761,7 @@ class DoubleSessionsComplete:
                          'S',\
                          'bloc',\
                          'Date_UTC',\
-                         'obs_epoque_B',\
+                         'obs_epoque_J',\
                          'pa',\
                          'pa_sigma',\
                          'sep',\
@@ -3552,7 +3552,7 @@ def liste_variables_environnement():
 
     
 # %% INITIALISATIONS
-no_version = 52
+no_version = 53
 
 '''
 Crée un dictionnaire des codes de notes pour les
