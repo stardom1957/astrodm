@@ -7,4 +7,4 @@ résultats d'observation des étoiles doubles visuelles.
 """
 # IMPORTS
 from . import doublesoutils
-from . import doubleslistes
+#from . import doubleslistes

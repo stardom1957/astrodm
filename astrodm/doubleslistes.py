@@ -749,7 +749,7 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
       
 # %% INITIALISATIONS
 nversion = 20
-# construire la liste de tri
+# construire la liste de tri pour les listes
 liste_de_tri_prog = [['obs_prog', 'id_system'],\
                ['id_system', 'obs_prog'],
                ['const']]

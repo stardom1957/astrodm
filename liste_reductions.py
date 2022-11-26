@@ -11,7 +11,7 @@ import sys
 # insérer le chemin suivant dans sys.path pour trouver le package astrodm
 if 'D:\DOCUMENTS\Astronomie\dev' not in sys.path:
     sys.path.insert(0, 'D:\DOCUMENTS\Astronomie\dev')
-from astrodm import doubleslistes as dl
+from astrodm import doublesoutils as do
 
 if __name__ == '__main__':
     # demander vers quelle sortie
@@ -22,16 +22,16 @@ if __name__ == '__main__':
 
     # demander ordre de tri
     i = 0
-    for t in dl.liste_de_tri_reduc:
+    for t in do.liste_de_tri_reduc:
         print(i, t)
         i+=1
-    tri = input("\nIndiquez ordre de tri [0-" + str(len(dl.liste_de_tri_reduc)-1) + "] : ") or '1'
+    tri = input("\nIndiquez ordre de tri [0-" + str(len(do.liste_de_tri_reduc)-1) + "] : ") or '1'
     del t, i
     
-    if int(tri) in range(len(dl.liste_de_tri_reduc)):
+    if int(tri) in range(len(do.liste_de_tri_reduc)):
         # dernier paramètre == True, imprime tables des notes
 
-        reductions = dl.imprime_liste_reductions(os.getcwd() + '/med', int(tri), True, sortir_ici)
+        reductions = do.imprime_liste_reductions(os.getcwd() + '/med', int(tri), True, sortir_ici)
     else:
         print('Oups «{0}» is illégal! Bye!'.format(tri)) 
 
