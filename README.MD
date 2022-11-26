@@ -33,9 +33,10 @@ Les autres date et heure présentes dans le fichier ne sont pas utilisées.
 
 ## 1.0 Travail de planification – astrométrie et documentation
 
-Pré-requis – script Python
+Pré-requis
 
-Préférablement Spyder, console, charger «cree_systeme_*.py»
+- Script Python
+- Préférablement Spyder, console, charger «cree_systeme_*.py»
 
 PROCÉDURE
 
@@ -78,7 +79,8 @@ Figure 3: Exemple de la structure d'un fichier de traitement en lot. Seules les 
 ## 3.0 Travail d'acquisition des données d'observation
 
 Pré-requis
-La structure de fichiers des figures 4 et 5 doivent être respectées à la lettre.
+
+- La structure de fichiers des figures 4 et 5 doivent être respectées à la lettre.
 
 PROCÉDURE
 
@@ -95,3 +97,58 @@ PROCÉDURE
 3.4. Acquisition des données de séparation (sep)
 
 3.5. Acquisition des données (d’angle) de position (pos)
+
+![Figure 4 : Exemple de structure des données pour l’acquisition de sep et pos](astrodm-doc/images/struct-donnees-observation.jpg)
+
+Figure 4 : Exemple de structure des données pour l’acquisition de sep et pos
+
+![Figure 5 : Exemple de structure des fichiers d'acquisition ech (d'échelle)](astrodm-doc/images/struct-donnees-echelle.jpg)
+
+Figure 5 : Exemple de structure des fichiers d'acquisition ech (d'échelle)
+
+## 4.0 Travail de pré-réduction
+
+Pré-requis
+
+- Structure de données selon figure 5 pour acquisition d'observation ou 6 pour une acquisition d'échelle.
+
+### Utilisation de REDUC
+
+La pré-réduction s’effectue avec le logiciel REDUC en travaillant simultanément dans deux instances de ce logiciel : une instance s’occupe de la réduction de pos et l’autre celle de sep.
+
+À l’aide de REDUC, la procédure de réduction complète suivante est répétée pour chaque bloc d’observation (b01, b02, …).
+
+### SOMMAIRE Pré-réduction POS et SEP
+
+On effectue d’abord la réduction de POS afin d’obtenir l’orientation de l’image delta_matrix. Le log de la réduction POS est inscrit dans un fichier Rlog… pos\reduc\Rlog*.txt.  On effectue ensuite (ou simultanément) la réduction de sep et on copie le delta_matrix de pos dans delta_matrix de sep. Le log de la réduction sep est versé dans un fichier Rlog… dans sep\reduc.
+
+PROCÉDURE
+4.1 Pré-réduction ‘complete’ (pos et sep):
+
+    4.1.1. pos : voir logigramme PRÉ-RÉDUCTION-POS
+
+    4.1.2. sep :  voir logigramme PRÉ-RÉDUCTION-SEP-ECH
+
+4.2. Pré-réduction d'échelle (‘ech’) : voir logigramme PRÉ-RÉDUCTION-SEP-ECH
+
+## 5.0 Travail de post-réduction
+
+Pré-requis
+
+- peut être exécutée à n’importe quel moment lorsque qu’il y a au moins une pré-réduction complétée pour un des blocs d’une session.
+
+PROCÉDURE
+5.1. Post-réduction :
+
+    5.1.1. Au terminal ipython (Spyder, par ex. ) : exécuter le script reduction_*.py. Il s’agit du mode interactif; le script demande le chemin du programme et exécute la réduction.
+
+    5.1.2. Dans le cahier de notes Jupyter Lab, exécuter la ligne suivante :
+
+```do.post_reduction(type_session='complete', ch_prog=’chemin_du_programme’)```
+
+    5.1.3. Suite à la post-réduction, dans les deux cas :
+    - le log de post-réduction «post-réduction.log» placé dans le dossier de programme donne un bref apperçu du résultat de la post-réduction.
+    - Le fichier ‘*_sessions.obj’ est un pickle d’un objet de classe astrodm.DoubleSessionsComplete.
+
+5.2. Exploitation de l’objet issue du script du script reduction *.py.
+
