@@ -123,6 +123,7 @@ La pré-réduction s’effectue avec le logiciel REDUC en travaillant simultané
 On effectue d’abord la réduction de POS afin d’obtenir l’orientation de l’image delta_matrix. Le log de la réduction POS est inscrit dans un fichier Rlog… pos\reduc\Rlog*.txt.  On effectue ensuite (ou simultanément) la réduction de sep et on copie le delta_matrix de pos dans delta_matrix de sep. Le log de la réduction sep est versé dans un fichier Rlog… dans sep\reduc.
 
 PROCÉDURE
+
 4.1 Pré-réduction ‘complete’ (pos et sep):
 
     4.1.1. pos : voir logigramme PRÉ-RÉDUCTION-POS
@@ -138,6 +139,7 @@ Pré-requis
 - peut être exécutée à n’importe quel moment lorsque qu’il y a au moins une pré-réduction complétée pour un des blocs d’une session.
 
 PROCÉDURE
+
 5.1. Post-réduction :
 
     5.1.1. Au terminal ipython (Spyder, par ex. ) : exécuter le script reduction_*.py. Il s’agit du mode interactif; le script demande le chemin du programme et exécute la réduction.
@@ -151,4 +153,3 @@ PROCÉDURE
     - Le fichier ‘*_sessions.obj’ est un pickle d’un objet de classe astrodm.DoubleSessionsComplete.
 
 5.2. Exploitation de l’objet issue du script du script reduction *.py.
-
