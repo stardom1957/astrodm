@@ -1,80 +1,133 @@
 # Package astrodm
 
-## Emplacement du package
+## INTRODUCTION
 
-![Figure 1 : Liste des modules opérationnels du package astrodm.](astrodm-doc/images/emplacement-package.jpg)
+Le package astrodm; [**a**stronomie **d**oubles **m**esures] contient un seul module : **doublesoutils**, écrit en langage Python. Ce module comprend différentes classes d'objets qui exposent des méthodes et des attributs qui visent à assister l'observateur dans la planification et le suivi des observations ainsi que la réduction des mesures de l'angle de position ($\theta$) et la séparation ($\sigma$) des étoiles doubles.
 
-Figure 1 : Liste des modules opérationnels du package astrodm.
+astrodm propose également des scripts d'exploitation qui permettent de produire différentes listes afin d'assister à la planification et au suivi, au jour le jour des observations.
 
-![Figure 2 : Archives des modules de développement du package astrodm.](astrodm-doc/images/archives-des-modules.jpg)
+### Mode d'exploitation du package
 
-Figure 2 : Archives des modules de développement du package astrodm.
+Ce package ne nécessite aucune installation (voir figure 1) car il est destiné à être exécuté dans un IDE, par exemple Anaconda. Chaque script d'exploitation indiqué plus bas, lorsqu'exécuté dans le terminal d'un tel IDE, comprend un point d'entrée qui prépare l'environnement d'exécution pour l'importation du package astrodm. Lorsqu'un script se termine, l'espace de nom des variables est complètement préservé. De cette façon, certaines variables qui contiennent des objets demeurent disponibles avec leur méthodes et leurs attributs. Par exemple, le contenu d'une liste pourra être modifié et triée différemment.
 
-## Structure générale de développement
+### Emplacement du package
+![Figure 1 : Emplacement du package astrodm.](astrodm-doc/images/emplacement-package.jpg)
 
-Le dossier astrodm (figure 1) contient les versions opérationnelles des modules. Le sous dossier dev/ VERSIONS_DE_DÉVELOPPEMENT (figure 2) contient les différentes versions des modules qui y sont versés avec un no de version en suffixe. Le no de version est inscrit dans les commentaires au début de chaque module et peut être obtenu avec la méthode version() du module.
+Figure 1 : Emplacement du package astrodm.
 
-## Définition du temps
+### Les scripts d'exploitation
 
-Le temps de l’ordinateur portable d’acquisition des données (Windows 10) est UTC-5 ou UTC-4 (heure d'été). L’heure du système est réglée par NTP au début de chaque session d’observation. Ainsi, lors des acquisitions, Firecapture pourra inscrire dans son log le temps local et le temps UTC. Le temps UTC n’a pas de changement d’heure pour l’heure d’été et de toute façon, doit être utilisé pour le calculs des éphémérides.
+La figure 2 donne la liste des scripts et montre également l'emplacement des scripts d'exploitation. Il est recommandé d'exécuter les scripts dans le répertoire **data**, car certains scripts exploitent automatiquement le contenu des sous-répertoires **med** et **modeles** situés dans **data**, alors que d'autres scripts permettent la sélection interactive du répertoire de données.
 
-## Format du temps
+![Figure 2 : ](astrodm-doc/images/scripts-exploitation.jpg)
 
-Toutes les chaînes de caractères qui contiennent une date sont au format isot UTC de astropy.Time. Par exemple : ‘2021-10-08T22:45:56.478UTC’.
+Figure 2 : Emplacement des scripts d'exploitation. Les répertoires **med** et **modeles** sont automatiquement exploités par certains scripts.
 
-Dans les logs produits par Firecapture, les dates au format UTC à récupérer sont :
 
-Date=  (le système étant à l'heure locale, il faudra vérifier si la date est correcte après minuit.
-Mid(UT)= cette valeur est utilisée pour le temps des observations.
+### Définition du temps
 
-Les autres date et heure présentes dans le fichier ne sont pas utilisées.
+Le temps de l’ordinateur portable d’acquisition des données (Windows 10) est UTC-5 ou UTC-4 (heure d'été). L’heure du système est réglée par NTP au début de chaque session d’observation. Ainsi, durant les observations, les logiciels utilisés pour les acquisitions auront accès à un  temps local le plus exact possible. Cependant, comme il est coutume en astronomie, toutes les observations sont rapportées en temps UTC (temps universel coordonné).
 
-## Exploitation du package - différents flux de travail
+### Format du temps utilisé par astrodm
 
-## 1.0 Travail de planification – astrométrie et documentation
+Toutes les dates UTC sont au format (texte) isot de la classe **astropy.Time**. Par exemple, le 8 octobre 2021 à 22h 45m 56.478s UTC sera codé comme suit : ‘2021-10-08T22:45:56.478UTC’.
 
-Pré-requis
+### Observation des étoiles doubles - sommaire des flux de travail
 
-- Script Python
-- Préférablement Spyder, console, charger «cree_systeme_*.py»
+Ma méthodologie de travail se décline en six flux de travail :
 
-PROCÉDURE
+ 1. Planification et recherche
+ 2. Préparation des sessions d'observations (astropy)
+ 3. Acquisition des données
+ 4. Pré-réduction des données d'observations
+ 5. Post-réduction des données d'observations
+ 6. Publication des résultats
 
-1.1 Choisir l’un des modes suivants et suivre les instructions :
+![Figure 3](astrodm-doc/images/astrodm-flux.jpg)
+Figure 3 - Cheminement des six flux de travail d'observation d'étoiles doubles.
 
-    1.1.1     ‘Lire fichier information'
+### Petit lexique
 
-        1.1.1.1. lit un fichier *_info_système.csv et permet de le modifier.
+Quelques notes concernant le vocabulaire utilisé dans ce repo.
 
-1.2.   'Saisir ID système' pour créer un système à neuf. Vérifie si dossier existe déjà et demande de confirmer exécution.
+* WDS : le Washington Doubles Star Catalog.
+* système : un système d'étoiles doubles (ou multiples) en général, selon la désignation de découvreur du WDS (Discoverer & Number); par ex. STTA 254 ou STF 60.
+* paire : désignation de la paire, par ex. AB, A,BC selon l'appartenance dans le catalogue WDS.
+
+## 1.0 Travail de planification et recherche
+
+### Description
+
+Ce flux de travail commence d'abord par la création, à l'aide d'un script, de la structure de répertoires et des fichiers de bases qui appartiennent au système (figure 4).  Les recherches au sujet du système se poursuivent dans les bases de données en-ligne, les livres et les site web pour documenter le système étudié. Les notes issues de ce travail sont consignées dans un cahier Jupyter Lab (figure 5) qui se trouve dans le répertoire **planif** du système.
+
+Ce travail permettra par la suite d'identifier les paires qui méritent d'être observées au sein du système étudié.
+
+La figure 4 montre le répertoire du système STTA254 : un sous-répertoire est créé pour chaque paire sélectionnée pour ce système et finalement un autre sous-répertoire nommé avec le numéro du programme d'observation est créé afin d'assigner ce programme d'observation à cette combinaison système-paire. C'est ce programme d'observation qui facilitera le suivi de toutes les activités d'acquisition de données d'observations et de pré/post-réductions des données.
+
+![Figure 4](astrodm-doc/images/systeme-stta254-structure-repertoires.jpg)
+
+Figure 4 - Structure des répertoires du système WDS STTA254. Le programme d'observation P2021-023 est assigné à la paire AB.
+
+![Figure 5](astrodm-doc/images/systeme-contenu-planif.jpg)
+
+Figure 5 - Contenu du sous-répertoire **planif** du système WDS STTA254. Le cahier Jupyter Lab « systeme-notes.ipynb » contient les notes de recherche du système.
+
+## 1.1 - Création de la structure de base des répertoires d'un système
+
+* Script : cree_systeme.py
+* Mode : IDE (SPYDER), menus et autres intéractions.
+* Sortie : au terminal IPython pour les interractions.
+* Retourne : Sous-répertoires créés dans le répertoire **med**.
+* Fonctionnalités supplémentaire :
+* * Seuls les systèmes valides (qui existent dans le WDS) peuvent être créés.
+* * Seulement lors de création initiale du dossier, le script copie le modèle du cahier Jupyter «système_notes.ipynb»’ dans dossier planif du système. Ce fichier sert de modèle pour les cahiers d’observation qui se trouveront dans le dossier de chaque paire / programme.
+ 
+
+![Figure 6](astrodm-doc/images/cree-systeme-menu.jpg)
+
+Figure 6 - Menu du script cree-systeme.py
+
+### PROCÉDURE
+
+1.1.1 Option 1 - Sélection, lecture et modification d'un fichier information de système : lit un fichier *_info_système.csv et permet de le modifier.
+
+1.2.2 Option 2 Saisie de l'ID WDS du système : pour créer un système à neuf. Vérifie si dossier existe déjà et demande de confirmer exécution.
 
 ATTENTION si exécution confirmée, les informations originales seront écrasées.
 
-1.3. "Traitement d'un lot (Excel)"
+1.2.3 Option 3 -  Traitement d'un lot dans une feuille de calcul : choisir avec 1 dans colonne « choisir » (colonne E).
 
-    1.3.1. choisir avec 1 dans colonne choisir
+    * inscrire 1 dans la colonne « choisir »
+    * toutes les informations seront mises à jour dans _informations.csv si dossier existe
+    * exécuter autant de fois que désiré.
+    * le log de chaque exécution se trouve dans .\planif\LOTS.
 
-    1.3.2. toutes les informations seront mises à jour dans _informations.csv si dossier existe
+![Figure 7](astrodm-doc/images/structure-fichier-lot.png)
 
-    1.3.3. exécuter autant de fois que désiré.
+Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les colonnes A et E sont obligatoires. Inscrire 1 dans la colonne « choisir » pour assurer le traitement.
 
-    1.3.4. le log de chaque exécution se trouve dans .\planif\LOTS.
+## 1.2 - Création des listes de suivi
+    1.2.1 Liste des fichiers d'information des systèmes pour l'ensemble du répertoire **med** :
 
-![Figure 3: Structure d'un fichier de traitement en lot. Seules les colonnes A et E sont obligatoires. Choisir pour traitement ==1.](astrodm-doc/images/structure-fichier-lot.png)
+* Script : Liste_info_systemes.py
+* Mode : IDE (SPYDER), sélection interactive de l'ordre de tri.
+* Sortie : au terminal IPython ou capture dans un fichier texte.
+* Retourne : la variable _info-systèmes_df_ qui contient la liste sous forme d'un dataframe Pandas.
+* Fonctionnalités supplémentaires : les méthode suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
+* Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « info-sys-par( ».
 
-Figure 3: Exemple de la structure d'un fichier de traitement en lot. Seules les colonnes A et E sont obligatoires. Choisir pour traitement ==1.
+    1.2.2 Liste des programmes d'observation et de leurs états
 
-1.4 Création du cahier Jupyter pour le système :
-
-    1.4.1. Seulement lors de création initiale du dossier, le script copie le modèle du cahier Jupyter «système_notes.ipynb»’ dans dossier planif du système. Ce fichier sert de modèle pour les cahiers d’observation qui se trouveront dans le dossier de chaque paire / programme.
-
-    1.4.2. Copier ce fichier dans le dossier de programme et renommer à souhait.
-
-    1.4.3 Ouvrir le cahier et éditer le contenu.
+* Script : liste_programmes.py
+* Mode : IDE (SPYDER), sélection interactive de l'ordre de tri.
+* Sortie : au terminal IPython ou capture dans un fichier texte.
+* Retourne : la variable _liste_des_programmes_df_ qui contient la liste sous forme d'un dataframe Pandas.
+* Fonctionnalités supplémentaires : les méthode suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
+* Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « prog-obs-par( ».
 
 ## 2.0 Travail de planification des observations - éphémérides
 
-À développer.
+À développer. TODO.
 
 ## 3.0 Travail d'acquisition des données d'observation
 
