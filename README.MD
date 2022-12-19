@@ -17,11 +17,11 @@ Figure 1 : Emplacement du package astrodm.
 
 ### Les scripts d'exploitation
 
-La figure 2 donne la liste des scripts et montre également l'emplacement des scripts d'exploitation. Il est recommandé d'exécuter les scripts dans le répertoire **data**, car certains scripts exploitent automatiquement le contenu des sous-répertoires **med** et **modeles** situés dans **data**, alors que d'autres scripts permettent la sélection interactive du répertoire de données.
+La figure 2 donne la liste des scripts et montre également l'emplacement des scripts d'exploitation. Il est recommandé d'exécuter les scripts dans le même répertoire qui contient les sous-répertoires **med** et **modeles**.  Dans mon cas, le répertoire **data** respecte cette configuration. Certains scripts exploitent automatiquement le contenu des sous-répertoires **med** et **modeles** situés dans **data**, alors que d'autres scripts permettent la sélection interactive du répertoire de données.
 
 ![Figure 2 : ](astrodm-doc/images/scripts-exploitation.jpg)
 
-Figure 2 : Emplacement des scripts d'exploitation. Les répertoires **med** et **modeles** sont automatiquement exploités par certains scripts.
+Figure 2 : Emplacement des scripts d'exploitation dans le répertoire data. Les répertoires **med** et **modeles** sont automatiquement exploités par certains scripts.
 
 
 ### Définition du temps
@@ -37,7 +37,7 @@ Toutes les dates UTC sont au format (texte) isot de la classe **astropy.Time**. 
 Ma méthodologie de travail se décline en six flux de travail :
 
  1. Planification et recherche
- 2. Préparation des sessions d'observations (astropy)
+ 2. Préparation des sessions d'observations (astroplan)
  3. Acquisition des données
  4. Pré-réduction des données d'observations
  5. Post-réduction des données d'observations
@@ -51,12 +51,12 @@ Figure 3 - Cheminement des six flux de travail d'observation d'étoiles doubles.
 Quelques notes concernant le vocabulaire utilisé dans ce repo.
 
 * WDS : le Washington Doubles Star Catalog.
-* système : un système d'étoiles doubles (ou multiples) en général, selon la désignation de découvreur du WDS (Discoverer & Number); par ex. STTA 254 ou STF 60.
+* Système : un système d'étoiles doubles (ou multiples) en général, selon la désignation de découvreur du WDS (Discoverer & Number); par ex. STTA 254 ou STF 60.
 * paire : désignation de la paire, par ex. AB, A,BC selon l'appartenance dans le catalogue WDS.
 
 ## 1.0 Travail de planification et recherche
 
-### Description
+### Description du travail de planification et de recherche
 
 Ce flux de travail commence d'abord par la création, à l'aide d'un script, de la structure de répertoires et des fichiers de bases qui appartiennent au système (figure 4).  Les recherches au sujet du système se poursuivent dans les bases de données en-ligne, les livres et les site web pour documenter le système étudié. Les notes issues de ce travail sont consignées dans un cahier Jupyter Lab (figure 5) qui se trouve dans le répertoire **planif** du système.
 
@@ -89,41 +89,76 @@ Figure 6 - Menu du script cree-systeme.py
 
 ### PROCÉDURE
 
-1.1.1 Option 1 - Sélection, lecture et modification d'un fichier information de système : lit un fichier *_info_système.csv et permet de le modifier.
+### 1.1.1 Option 1 - Sélection, lecture et modification d'un fichier information de système : lit un fichier *_info_système.csv et permet de le modifier.
 
-1.2.2 Option 2 Saisie de l'ID WDS du système : pour créer un système à neuf. Vérifie si dossier existe déjà et demande de confirmer exécution.
+### 1.2.2 Option 2 Saisie de l'ID WDS du système : pour créer un système à neuf. Vérifie si dossier existe déjà et demande de confirmer exécution.
 
 ATTENTION si exécution confirmée, les informations originales seront écrasées.
 
-1.2.3 Option 3 -  Traitement d'un lot dans une feuille de calcul : choisir avec 1 dans colonne « choisir » (colonne E).
+### 1.2.3 Option 3 - Traitement d'un lot dans une feuille de calcul.
 
-    * inscrire 1 dans la colonne « choisir »
-    * toutes les informations seront mises à jour dans _informations.csv si dossier existe
-    * exécuter autant de fois que désiré.
-    * le log de chaque exécution se trouve dans .\planif\LOTS.
+Voir figure 7.
+
+    * SÉLECTION interactive du fichier lot (*.ods) dans .\data\med-planification\LOTS.
+    * Colonne A et E obligatoires; INSCRIRE 1 dans la colonne « choisir » (E).
+    * Si le fichier info-systeme du système existe déjà, tout le contenu sera mis à jour.
+    * Le fichier lot peut être utilisé autant de fois que désiré.
+    * Le log de chaque exécution se trouve dans .\data\med-planification\LOTS.
 
 ![Figure 7](astrodm-doc/images/structure-fichier-lot.png)
 
 Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les colonnes A et E sont obligatoires. Inscrire 1 dans la colonne « choisir » pour assurer le traitement.
 
 ## 1.2 - Création des listes de suivi
-    1.2.1 Liste des fichiers d'information des systèmes pour l'ensemble du répertoire **med** :
 
-* Script : Liste_info_systemes.py
-* Mode : IDE (SPYDER), sélection interactive de l'ordre de tri.
+### 1.2.1 Liste des fichiers d'information des systèmes pour l'ensemble du répertoire **med** :
+
+* Script : _Liste_info_systemes.py_
+* Mode : IDE (SPYDER), par sélection de l'ordre de tri dans un menu.
 * Sortie : au terminal IPython ou capture dans un fichier texte.
 * Retourne : la variable _info-systèmes_df_ qui contient la liste sous forme d'un dataframe Pandas.
-* Fonctionnalités supplémentaires : les méthode suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
+* Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
 * Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « info-sys-par( ».
 
-    1.2.2 Liste des programmes d'observation et de leurs états
+### 1.2.2 Liste des programmes d'observation et de leurs états
 
-* Script : liste_programmes.py
-* Mode : IDE (SPYDER), sélection interactive de l'ordre de tri.
+* Script : _liste_programmes.py_
+* Mode : IDE (SPYDER), par sélection de l'ordre de tri dans un menu.
 * Sortie : au terminal IPython ou capture dans un fichier texte.
 * Retourne : la variable _liste_des_programmes_df_ qui contient la liste sous forme d'un dataframe Pandas.
-* Fonctionnalités supplémentaires : les méthode suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
+* Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
 * Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « prog-obs-par( ».
+
+### 1.2.3 Liste des réductions et des résultats pour publication
+
+* Script : _liste_reductions.py_
+* Mode : IDE (SPYDER), par sélection interactive du répertoire du programme d'observation.
+* Sortie : au terminal IPython ou capture dans un fichier texte.
+* Retourne : la variable _reductions_ qui contient la liste sous forme d'un dataframe Pandas.
+* Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
+* Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « reductions-par( ».
+
+### 1.2.4 Recherches des données des systèmes dans le catalogue WDS
+
+#### 1.2.4.1 - Recherche d'un seul système (incluant notes WDS associées si applicable)
+
+* Script : _recherche_wds.py_
+* Mode : IDE (SPYDER), par saisie au clavier du nom WDS (découvreur et ID numérique).
+* Sortie : au terminal IPython seulement.
+* Retourne : aucune variable retournée.
+* Fonctionnalités supplémentaires : l'existance du systèmes est automatiquement validée.
+
+#### 1.2.4.2 - Recherche de plusieurs systèmes (sans les notes WDS)
+
+* Script : _recherche_wds_multiples.py_
+* Mode : IDE (SPYDER), par sélection interactive du fichier texte contenant les nom des systèmes (figure 8).
+* Sortie : au terminal IPython ou dans un fichier texte (TODO).
+* Retourne : la variable _collige_, un objet astroquery.utils.commons.TableList.
+* Fonctionnalités supplémentaires : l'existance de chaque système est automatiquement validée et les doublons ne sont pas pris en compte. Certaines méthodes de l'objet _collige_ peuvent être utilisées pour rafiner la recherche (TODO).
+
+![Figure 8](astrodm-doc/images/liste-sources.jpg)
+
+Figure 8 - Un exemple de fichier liste de systèmes multiples.
 
 ## 2.0 Travail de planification des observations - éphémérides
 
@@ -131,7 +166,7 @@ Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les 
 
 ## 3.0 Travail d'acquisition des données d'observation
 
-Pré-requis
+### Description du travail d'acquisition des données
 
 - La structure de fichiers des figures 4 et 5 doivent être respectées à la lettre.
 
