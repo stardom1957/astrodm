@@ -2,7 +2,7 @@
 
 ## INTRODUCTION
 
-Le package astrodm; [**a**stronomie **d**oubles **m**esures] contient un seul module : **doublesoutils**, écrit en langage Python. Ce module comprend différentes classes d'objets qui exposent des méthodes et des attributs qui visent à assister l'observateur dans la planification et le suivi des observations ainsi que la réduction des mesures de l'angle de position ($\theta$) et la séparation ($\sigma$) des étoiles doubles.
+Le package astrodm; [**a**stronomie **d**oubles **m**esures] contient un seul module : **doublesoutils**, écrit en langage Python. Ce module comprend différentes classes d'objets qui exposent des méthodes et des attributs qui visent à assister l'observateur dans la planification et le suivi des observations ainsi que la réduction des mesures de l'angle de position ( $\theta$ ) et la séparation ( $\sigma$ ) des étoiles doubles.
 
 astrodm propose également des scripts d'exploitation qui permettent de produire différentes listes afin d'assister à la planification et au suivi, au jour le jour des observations.
 
@@ -22,15 +22,6 @@ La figure 2 donne la liste des scripts et montre également l'emplacement des sc
 ![Figure 2 : ](astrodm-doc/images/scripts-exploitation.jpg)
 
 Figure 2 : Emplacement des scripts d'exploitation dans le répertoire data. Les répertoires **med** et **modeles** sont automatiquement exploités par certains scripts.
-
-
-### Définition du temps
-
-Le temps de l’ordinateur portable d’acquisition des données (Windows 10) est UTC-5 ou UTC-4 (heure d'été). L’heure du système est réglée par NTP au début de chaque session d’observation. Ainsi, durant les observations, les logiciels utilisés pour les acquisitions auront accès à un  temps local le plus exact possible. Cependant, comme il est coutume en astronomie, toutes les observations sont rapportées en temps UTC (temps universel coordonné).
-
-### Format du temps utilisé par astrodm
-
-Toutes les dates UTC sont au format (texte) isot de la classe **astropy.Time**. Par exemple, le 8 octobre 2021 à 22h 45m 56.478s UTC sera codé comme suit : ‘2021-10-08T22:45:56.478UTC’.
 
 ### Observation des étoiles doubles - sommaire des flux de travail
 
