@@ -159,35 +159,67 @@ Figure 8 - Un exemple de fichier liste de systèmes multiples.
 
 ### Description du travail d'acquisition des données
 
-- La structure de fichiers des figures 4 et 5 doivent être respectées à la lettre.
+Le travail d'acquisition des données comprend la capture des images et la saisie des fichiers d'environnement (environnement.txt) pour les calibrations d'échelle (ech), les mesures de séparation (sep) et (d'angle) de position (pos). Lors des acquisitions sep et pos, l'acquisition de fichiers de calibration d'images darks et biases (cal) est facultative.
 
-PROCÉDURE
+La **figure 9** illustre en détail la structure de fichiers pour l'acquition des données pour les observations de la paire STTA254AB dans le cadre du programme P2021-023, session 1, bloc 1.
 
-3.1 Structure de fichiers des acquisitions d’observation pos (angle de position) et sep (séparation) :: voir figure 4.
+La **figure 10** illustre en détail la structure de fichiers pour l'acquition des données pour les observations de l'acquisition d'échelle 2021-10-08b01.
 
-3.2. Structure de fichiers des acquisitions ech (échelle) :: voir figure 5.
+![Figure 9](astrodm-doc/images/struct-donnees-observation.jpg)
 
-3.3. Acquisition des données de calibration d’échelle (ech)
+Figure 9 : Exemple de structure des données pour l’acquisition de sep et pos.
 
-    3.3.1. Dossier sous la forme .\cal_e\AAAA-MM-JJb01 : chaque acquisition b02, b03, ..., etc.
+![Figure 10](astrodm-doc/images/struct-donnees-echelle.jpg)
 
-    3.3.2. fichier environnement .txt, modèle dans .\Data\modèles\AAAA-MM-JJb01
+Figure 10 : Exemple de structure des fichiers d'acquisition d'échelle (ech).
 
-3.4. Acquisition des données de séparation (sep)
+PROCÉDURES
 
-3.5. Acquisition des données (d’angle) de position (pos)
+### 3.1. Acquisition des données de calibration d’échelle (ech)
 
-![Figure 4 : Exemple de structure des données pour l’acquisition de sep et pos](astrodm-doc/images/struct-donnees-observation.jpg)
+    3.1.1. pour la structure de données, voir la figure 10.
 
-Figure 4 : Exemple de structure des données pour l’acquisition de sep et pos
+    3.1.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\AAAA-MM-JJb01. Pour un exemple, voir la figure 11.
 
-![Figure 5 : Exemple de structure des fichiers d'acquisition ech (d'échelle)](astrodm-doc/images/struct-donnees-echelle.jpg)
+    3.1.3. Dans le fichier environnement.txt,  les valeurs de temp_to, masque, filtre et map doivent IMPÉRATIVEMENT être renseignées. 
 
-Figure 5 : Exemple de structure des fichiers d'acquisition ech (d'échelle)
+    3.1.4. Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoire de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton.
+
+![Figure 11](astrodm-doc/images/environnement_txt_cal_exemple.jpg)
+
+Figure 11 : Un exemple de fichier log environnement.txt pour une acquisition de calibration d'échelle.
+
+### 3.2. Acquisition des données de séparation (sep)
+
+    3.2.1. Pour la structure de données, voir la figure 9.
+
+    3.2.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\sep\environnement.txt. Pour un exemple, voir la figure 12.
+
+    3.2.3. Dans le fichier environnement.txt, les valeurs de temp_to, index_cal_E et map doivent IMPÉRATIVEMENT être renseignées.
+
+    3.2.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
+
+![Figure 12](astrodm-doc/images/environnement_txt_sep_exemple.jpg)
+
+Figure 12 : Un exemple de fichier log environnement.txt pour une acquisition de séparation.
+
+### 3.3. Acquisition des données (d’angle) de position (pos)
+
+    3.3.1. Pour la structure de données, voir la figure 9.
+
+    3.3.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\pos\environnement.txt. Pour un exemple, voir la figure 13.
+
+    3.3.3. Dans le fichier environnement.txt, les valeurs de temp_to et map doivent IMPÉRATIVEMENT être renseignées.
+
+    3.3.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
+
+![Figure 13](astrodm-doc/images/environnement_txt_pos_exemple.jpg)
+
+Figure 13 : Un exemple de fichier log environnement.txt pour une acquisition (d'angle) de position.
 
 ## 4.0 Travail de pré-réduction
 
-Pré-requis
+### Description du travail de pré-réduction
 
 - Structure de données selon figure 5 pour acquisition d'observation ou 6 pour une acquisition d'échelle.
 
