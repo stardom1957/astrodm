@@ -80,13 +80,13 @@ Figure 6 - Menu du script cree-systeme.py
 
 ### PROCÉDURE
 
-### 1.1.1 Option 1 - Sélection, lecture et modification d'un fichier information de système : lit un fichier *_info_système.csv et permet de le modifier.
+#### 1.1.1 Option 1 - Sélection, lecture et modification d'un fichier information de système : lit un fichier *_info_système.csv et permet de le modifier.
 
-### 1.2.2 Option 2 Saisie de l'ID WDS du système : pour créer un système à neuf. Vérifie si dossier existe déjà et demande de confirmer exécution.
+#### 1.1.2 Option 2 Saisie de l'ID WDS du système : pour créer un système à neuf. Vérifie si dossier existe déjà et demande de confirmer exécution.
 
 ATTENTION si exécution confirmée, les informations originales seront écrasées.
 
-### 1.2.3 Option 3 - Traitement d'un lot dans une feuille de calcul.
+#### 1.1.3 Option 3 - Traitement d'un lot dans une feuille de calcul.
 
 Voir figure 7.
 
@@ -102,7 +102,7 @@ Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les 
 
 ## 1.2 - Création des listes de suivi
 
-### 1.2.1 Liste des fichiers d'information des systèmes pour l'ensemble du répertoire **med** :
+#### 1.2.1 Liste des fichiers d'information des systèmes pour l'ensemble du répertoire **med** :
 
 * Script : _Liste_info_systemes.py_
 * Mode : IDE (SPYDER), par sélection de l'ordre de tri dans un menu.
@@ -111,7 +111,7 @@ Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les 
 * Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
 * Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « info-sys-par( ».
 
-### 1.2.2 Liste des programmes d'observation et de leurs états
+#### 1.2.2 Liste des programmes d'observation et de leurs états
 
 * Script : _liste_programmes.py_
 * Mode : IDE (SPYDER), par sélection de l'ordre de tri dans un menu.
@@ -120,7 +120,7 @@ Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les 
 * Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
 * Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « prog-obs-par( ».
 
-### 1.2.3 Liste des réductions et des résultats pour publication
+#### 1.2.3 Liste des réductions et des résultats pour publication
 
 * Script : _liste_reductions.py_
 * Mode : IDE (SPYDER), par sélection interactive du répertoire du programme d'observation.
@@ -129,7 +129,7 @@ Figure 7: Exemple de la structure d'un fichier de traitement en lot. Seules les 
 * Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
 * Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « reductions-par( ».
 
-### 1.2.4 Recherches des données des systèmes dans le catalogue WDS
+#### 1.2.4 Recherches des données des systèmes dans le catalogue WDS
 
 #### 1.2.4.1 - Recherche d'un seul système (incluant notes WDS associées si applicable)
 
@@ -177,13 +177,13 @@ PROCÉDURES
 
 ### 3.1. Acquisition des données de calibration d’échelle (ech)
 
-    3.1.1. pour la structure de données, voir la figure 10.
+#### 3.1.1. pour la structure de données, voir la figure 10.
 
-    3.1.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\AAAA-MM-JJb01. Pour un exemple, voir la figure 11.
+#### 3.1.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\AAAA-MM-JJb01. Pour un exemple, voir la figure 11.
 
-    3.1.3. Dans le fichier environnement.txt,  les valeurs de temp_to, masque, filtre et map doivent IMPÉRATIVEMENT être renseignées. 
+#### 3.1.3. Dans le fichier environnement.txt,  les valeurs de temp_to, masque, filtre et map doivent IMPÉRATIVEMENT être renseignées. 
 
-    3.1.4. Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoire de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton.
+#### 3.1.4. Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoire de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton.
 
 ![Figure 11](astrodm-doc/images/environnement_txt_cal_exemple.jpg)
 
@@ -191,13 +191,13 @@ Figure 11 : Un exemple de fichier log environnement.txt pour une acquisition de 
 
 ### 3.2. Acquisition des données de séparation (sep)
 
-    3.2.1. Pour la structure de données, voir la figure 9.
+#### 3.2.1. Pour la structure de données, voir la figure 9.
 
-    3.2.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\sep\environnement.txt. Pour un exemple, voir la figure 12.
+#### 3.2.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\sep\environnement.txt. Pour un exemple, voir la figure 12.
 
-    3.2.3. Dans le fichier environnement.txt, les valeurs de temp_to, index_cal_E et map doivent IMPÉRATIVEMENT être renseignées.
+#### 3.2.3. Dans le fichier environnement.txt, les valeurs de temp_to, index_cal_E et map doivent IMPÉRATIVEMENT être renseignées.
 
-    3.2.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
+#### 3.2.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
 
 ![Figure 12](astrodm-doc/images/environnement_txt_sep_exemple.jpg)
 
@@ -205,13 +205,13 @@ Figure 12 : Un exemple de fichier log environnement.txt pour une acquisition de 
 
 ### 3.3. Acquisition des données (d’angle) de position (pos)
 
-    3.3.1. Pour la structure de données, voir la figure 9.
+#### 3.3.1. Pour la structure de données, voir la figure 9.
 
-    3.3.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\pos\environnement.txt. Pour un exemple, voir la figure 13.
+#### 3.3.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\pos\environnement.txt. Pour un exemple, voir la figure 13.
 
-    3.3.3. Dans le fichier environnement.txt, les valeurs de temp_to et map doivent IMPÉRATIVEMENT être renseignées.
+#### 3.3.3. Dans le fichier environnement.txt, les valeurs de temp_to et map doivent IMPÉRATIVEMENT être renseignées.
 
-    3.3.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
+#### 3.3.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
 
 ![Figure 13](astrodm-doc/images/environnement_txt_pos_exemple.jpg)
 
