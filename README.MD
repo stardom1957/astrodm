@@ -177,13 +177,13 @@ PROCÉDURES
 
 ### 3.1. Acquisition des données de calibration d’échelle (ech)
 
-#### 3.1.1. pour la structure de données, voir la figure 10.
+* 3.1.1. pour la structure de données, voir la figure 10.
 
-#### 3.1.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\AAAA-MM-JJb01. Pour un exemple, voir la figure 11.
+* 3.1.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\AAAA-MM-JJb01. Pour un exemple, voir la figure 11.
 
-#### 3.1.3. Dans le fichier environnement.txt,  les valeurs de temp_to, masque, filtre et map doivent IMPÉRATIVEMENT être renseignées. 
+* 3.1.3. Dans le fichier environnement.txt,  les valeurs de temp_to, masque, filtre et map doivent IMPÉRATIVEMENT être renseignées. 
 
-#### 3.1.4. Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoire de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton.
+* 3.1.4. Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoire de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton.
 
 ![Figure 11](astrodm-doc/images/environnement_txt_cal_exemple.jpg)
 
@@ -191,13 +191,13 @@ Figure 11 : Un exemple de fichier log environnement.txt pour une acquisition de 
 
 ### 3.2. Acquisition des données de séparation (sep)
 
-#### 3.2.1. Pour la structure de données, voir la figure 9.
+* 3.2.1. Pour la structure de données, voir la figure 9.
 
-#### 3.2.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\sep\environnement.txt. Pour un exemple, voir la figure 12.
+* 3.2.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\sep\environnement.txt. Pour un exemple, voir la figure 12.
 
-#### 3.2.3. Dans le fichier environnement.txt, les valeurs de temp_to, index_cal_E et map doivent IMPÉRATIVEMENT être renseignées.
+* 3.2.3. Dans le fichier environnement.txt, les valeurs de temp_to, index_cal_E et map doivent IMPÉRATIVEMENT être renseignées.
 
-#### 3.2.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
+* 3.2.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
 
 ![Figure 12](astrodm-doc/images/environnement_txt_sep_exemple.jpg)
 
@@ -205,13 +205,13 @@ Figure 12 : Un exemple de fichier log environnement.txt pour une acquisition de 
 
 ### 3.3. Acquisition des données (d’angle) de position (pos)
 
-#### 3.3.1. Pour la structure de données, voir la figure 9.
+* 3.3.1. Pour la structure de données, voir la figure 9.
 
-#### 3.3.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\pos\environnement.txt. Pour un exemple, voir la figure 13.
+* 3.3.2. Le fichier log environnement.txt est REQUIS. Le modèle se trouve dans D:\DOCUMENTS\Astronomie\Data\modeles\systeme\Paire\PAAAA-nnn\Sx\b01\pos\environnement.txt. Pour un exemple, voir la figure 13.
 
-#### 3.3.3. Dans le fichier environnement.txt, les valeurs de temp_to et map doivent IMPÉRATIVEMENT être renseignées.
+* 3.3.3. Dans le fichier environnement.txt, les valeurs de temp_to et map doivent IMPÉRATIVEMENT être renseignées.
 
-#### 3.3.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
+* 3.3.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
 
 ![Figure 13](astrodm-doc/images/environnement_txt_pos_exemple.jpg)
 
