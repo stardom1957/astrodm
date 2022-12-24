@@ -15,7 +15,7 @@ Ce package ne nécessite aucune installation (voir figure 1) car il est destiné
 
 == Emplacement du package
 
-image::images/emplacement-package.jpg[Figure 1]
+image::./astrodm-doc/images/emplacement-package.jpg[Figure 1]
 *Figure 1* : Emplacement du package astrodm.
 
 
@@ -23,7 +23,7 @@ image::images/emplacement-package.jpg[Figure 1]
 
 La figure 2 donne la liste des scripts et montre également l'emplacement des scripts d'exploitation. Il est recommandé d'exécuter les scripts dans le même répertoire qui contient les sous-répertoires **med** et **modeles**.  Dans mon cas, le répertoire **data** respecte cette configuration. Certains scripts exploitent automatiquement le contenu des sous-répertoires **med** et **modeles** situés dans **data**, alors que d'autres scripts permettent la sélection interactive du répertoire de données.
 
-image::images/scripts-exploitation.jpg[Figure 2]
+image::./astrodm-doc/images/scripts-exploitation.jpg[Figure 2]
 *Figure 2* : Emplacement des scripts d'exploitation dans le répertoire data. Les répertoires **med** et **modeles** sont automatiquement exploités par certains scripts.
 
 === Observation des étoiles doubles - sommaire des flux de travail
@@ -37,7 +37,7 @@ Ma méthodologie de travail se décline en six flux de travail :
  5. Post-réduction des données d'observations
  6. Publication des résultats
 
-image::images/astrodm-flux.jpg[Figure 3]
+image::./astrodm-doc/images/astrodm-flux.jpg[Figure 3]
 *Figure 3* : Cheminement des six flux de travail d'observation d'étoiles doubles.
 
 === Petit lexique
@@ -58,10 +58,10 @@ Ce travail permettra par la suite d'identifier les paires qui méritent d'être 
 
 La figure 4 montre le répertoire du système STTA254 : un sous-répertoire est créé pour chaque paire sélectionnée pour ce système et finalement un autre sous-répertoire nommé avec le numéro du programme d'observation est créé afin d'assigner ce programme d'observation à cette combinaison système-paire. C'est ce programme d'observation qui facilitera le suivi de toutes les activités d'acquisition de données d'observations et de pré/post-réductions des données.
 
-image::images/systeme-stta254-structure-repertoires.jpg[Figure 4]
+image::./astrodm-doc/images/systeme-stta254-structure-repertoires.jpg[Figure 4]
 *Figure 4* : Structure des répertoires du système WDS STTA254. Le programme d'observation P2021-023 est assigné à la paire AB.
 
-image::images/systeme-contenu-planif.jpg[figure 5]
+image::./astrodm-doc/images/systeme-contenu-planif.jpg[figure 5]
 *Figure 5* : Contenu du sous-répertoire **planif** du système WDS STTA254. Le cahier Jupyter Lab « systeme-notes.ipynb » contient les notes de recherche du système.
 
 == 1.1 - Création de la structure de base des répertoires d'un système
@@ -74,7 +74,7 @@ image::images/systeme-contenu-planif.jpg[figure 5]
 * * Seuls les systèmes valides (qui existent dans le WDS) peuvent être créés.
 * * Seulement lors de création initiale du dossier, le script copie le modèle du cahier Jupyter «système_notes.ipynb»’ dans dossier planif du système. Ce fichier sert de modèle pour les cahiers d’observation qui se trouveront dans le dossier de chaque paire / programme.
 
-image::images/cree-systeme-menu.jpg[Figure 6]
+image::./astrodm-doc/images/cree-systeme-menu.jpg[Figure 6]
 *Figure 6* : Menu du script cree-systeme.py
 
 === PROCÉDURE
@@ -95,7 +95,7 @@ Voir figure 7.
   * Le fichier lot peut être utilisé autant de fois que désiré.
   * Le log de chaque exécution se trouve dans .\data\med-planification\LOTS.
 
-image::images/structure-fichier-lot.png[Figure 7]
+image::./astrodm-doc/images/structure-fichier-lot.png[Figure 7]
 *Figure 7* : Exemple de la structure d'un fichier de traitement en lot. Seules les colonnes A et E sont obligatoires. Inscrire 1 dans la colonne « choisir » pour assurer le traitement.
 
 == 1.2 - Création des listes de suivi
@@ -145,7 +145,7 @@ image::images/structure-fichier-lot.png[Figure 7]
 * Retourne : la variable _collige_, un objet astroquery.utils.commons.TableList.
 * Fonctionnalités supplémentaires : l'existance de chaque système est automatiquement validée et les doublons ne sont pas pris en compte. Certaines méthodes de l'objet _collige_ peuvent être utilisées pour rafiner la recherche (TODO).
 
-image::images/liste-sources.jpg[Figure 8]
+image::./astrodm-doc/images/liste-sources.jpg[Figure 8]
 *Figure 8* : Un exemple de fichier liste de systèmes multiples.
 
 == 2.0 Travail de planification des observations - éphémérides
@@ -162,10 +162,10 @@ La *figure 9* illustre en détail la structure de fichiers pour l'acquition des 
 
 La *figure 10* illustre en détail la structure de fichiers pour l'acquition des données pour les observations de l'acquisition d'échelle 2021-10-08b01.
 
-image::images/struct-donnees-observation.jpg[Figure 9]
+image::./astrodm-doc/images/struct-donnees-observation.jpg[Figure 9]
 *Figure 9* : Exemple de structure des données pour l’acquisition de sep et pos.
 
-image::images/struct-donnees-echelle.jpg[Figure 10]
+image::./astrodm-doc/images/struct-donnees-echelle.jpg[Figure 10]
 *Figure 10* : Exemple de structure des fichiers d'acquisition d'échelle (ech).
 
 PROCÉDURES
@@ -180,7 +180,7 @@ PROCÉDURES
 
 * 3.1.4. Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoire de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton.
 
-image::images/environnement_txt_cal_exemple.jpg[Figure 11]
+image::./astrodm-doc/images/environnement_txt_cal_exemple.jpg[Figure 11]
 *Figure 11* : Un exemple de fichier log environnement.txt pour une acquisition de calibration d'échelle.
 
 === 3.2. Acquisition des données de séparation (sep)
@@ -193,7 +193,7 @@ image::images/environnement_txt_cal_exemple.jpg[Figure 11]
 
 * 3.2.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
 
-image::images/environnement_txt_sep_exemple.jpg[Fifure 12]
+image::./astrodm-doc/images/environnement_txt_sep_exemple.jpg[Fifure 12]
 *Figure 12* : Un exemple de fichier log environnement.txt pour une acquisition de séparation.
 
 === 3.3. Acquisition des données (d’angle) de position (pos)
@@ -206,7 +206,7 @@ image::images/environnement_txt_sep_exemple.jpg[Fifure 12]
 
 * 3.3.4.  Durant l'acquisition des images avec FireCapture, le fichier log au format txt est automatiquement créé dans le répertoires de saisie des images. Ce fichier porte le nom donné au moment de la création du profil d'acquisiton..
 
-image::images/environnement_txt_pos_exemple.jpg[Figure 13]
+image::./astrodm-doc/images/environnement_txt_pos_exemple.jpg[Figure 13]
 *Figure 13* : Un exemple de fichier log environnement.txt pour une acquisition (d'angle) de position.
 
 == 4.0 Travail de pré-réduction
