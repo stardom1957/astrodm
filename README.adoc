@@ -1,19 +1,16 @@
 = Package astrodm - documentation
 :author: par Dominique Martel
 :description: Documentation pour l'exploitation du package (Python) astrodm.
-
+:toc: auto
+:toc-title: Table des matières
 :keywords: astronomie, étoiles doubles, astropy, astroquery, observation
 
-:toc:
-:toc-title: Table des matières
 == Introduction
-
 Le package astrodm; [**a**stronomie **d**oubles **m**esures] contient un seul module : **doublesoutils**, écrit en langage Python. Ce module comprend différentes classes d'objets qui exposent des méthodes et des attributs qui visent à assister l'observateur dans la planification et le suivi des observations ainsi que la réduction des mesures de l'angle de position ( $\theta$ ) et la séparation ( $\sigma$ ) des étoiles doubles.
 
 astrodm propose également des scripts d'exploitation qui permettent de produire différentes listes afin d'assister à la planification et au suivi, au jour le jour des observations.
 
 == Mode d'exploitation du package
-
 Ce package ne nécessite aucune installation (voir figure 1) car il est destiné à être exécuté dans un IDE, par exemple Anaconda. Chaque script d'exploitation indiqué plus bas, lorsqu'exécuté dans le terminal d'un tel IDE, comprend un point d'entrée qui prépare l'environnement d'exécution pour l'importation du package astrodm. Lorsqu'un script se termine, l'espace de nom des variables est complètement préservé. De cette façon, certaines variables qui contiennent des objets demeurent disponibles avec leur méthodes et leurs attributs. Par exemple, le contenu d'une liste pourra être modifié et triée différemment.
 
 == Emplacement du package
