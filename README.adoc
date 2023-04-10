@@ -11,13 +11,12 @@ Le package astrodm; [**a**stronomie **d**oubles **m**esures] contient un seul mo
 astrodm propose également des scripts d'exploitation qui permettent de produire différentes listes afin d'assister à la planification et au suivi, au jour le jour des observations.
 
 == Mode d'exploitation du package
-Ce package ne nécessite aucune installation (voir figure 1) car il est destiné à être exécuté dans un IDE, par exemple Anaconda. Chaque script d'exploitation indiqué plus bas, lorsqu'exécuté dans le terminal d'un tel IDE, comprend un point d'entrée qui prépare l'environnement d'exécution pour l'importation du package astrodm. Lorsqu'un script se termine, l'espace de nom des variables est complètement préservé. De cette façon, certaines variables qui contiennent des objets demeurent disponibles avec leur méthodes et leurs attributs. Par exemple, le contenu d'une liste pourra être modifié et triée différemment.
+Ce package ne nécessite aucune installation (voir figure 1) car il est destiné à être exécuté dans un IDE, par exemple SPYDER de Anaconda. Chaque script d'exploitation indiqué plus bas, lorsqu'exécuté dans le terminal d'un tel IDE, comprend un point d'entrée qui prépare l'environnement d'exécution pour l'importation du package astrodm. Lorsqu'un script se termine, l'espace de nom des variables est complètement préservé. De cette façon, certaines variables qui contiennent des objets demeurent disponibles avec leur méthodes et leurs attributs. Par exemple, le contenu d'une liste pourra être modifié et triée différemment.
 
 == Emplacement du package
 
 image::./astrodm-doc/images/emplacement-package.jpg[Figure 1]
 *Figure 1* : Emplacement du package astrodm.
-
 
 === Les scripts d'exploitation
 
@@ -117,6 +116,7 @@ image::./astrodm-doc/images/structure-fichier-lot.png[Figure 7]
 * Mode : IDE (SPYDER), par sélection de l'ordre de tri dans un menu.
 * Sortie : au terminal IPython ou capture dans un fichier texte.
 * Retourne : la variable _liste_des_programmes_df_ qui contient la liste sous forme d'un dataframe Pandas.
+* Gestion des changements : pour une paire, si un fichier « .obj » est présent, cela signifie qu'il y a eu au moins une réduction. Le script calcule le « checksum » des données afin de le comparer à celui qui se trouve dans le fichier « .obj ». Si les valeurs ne correspondent pas, il y a des nouvelles valeurs présentent dans le répertoire et une **post-réduction est automatiquement lancée**.
 * Fonctionnalités supplémentaires : les méthodes suivantes du dataframe Pandas permettent de changer la sélection et l'ordre de tri. TODO.
 * Pour exemples voir <https://github.com/stardom1957/med-planification/tree/main/LISTES>, fichiers qui commencent par « prog-obs-par( ».
 

@@ -367,8 +367,9 @@ class ReductionComplete(Reduction):
         df = pd.DataFrame(data=None, index=None, columns=list(master_calibrations_e_df.keys()))
         # puis récupérer le/les index de calibration dans df
         for idx_cal_e in self.lstIndexCalE:
-            df = df.append(master_calibrations_e_df.\
-                loc[master_calibrations_e_df.index_cal_e==idx_cal_e])
+            # debug df = df.append(master_calibrations_e_df.loc[master_calibrations_e_df.index_cal_e==idx_cal_e])
+            tempo = master_calibrations_e_df.loc[master_calibrations_e_df.index_cal_e==idx_cal_e]
+            df = pd.concat([df, tempo])
 
         
         #######################################
@@ -456,8 +457,9 @@ class Bloc:
         # puis récupérer les informations de chaque index de calibration
         # présent dans self.reduc.lstIndexCalE dans un Pandas df
         for idx_cal_e in self.reduc.lstIndexCalE:
-            calibration_echelle_df = calibration_echelle_df.append(master_calibrations_e_df.\
-                loc[master_calibrations_e_df.index_cal_e==idx_cal_e])
+            #debug calibration_echelle_df = calibration_echelle_df.append(master_calibrations_e_df.loc[master_calibrations_e_df.index_cal_e==idx_cal_e])
+            tempo = master_calibrations_e_df.loc[master_calibrations_e_df.index_cal_e==idx_cal_e]
+            calibration_echelle_df = pd.concat([calibration_echelle_df, tempo])
                 
         # si calibration_echelle_df est vide, alors c'est probablement parce que la valeur de
         # l'index ne se situe pas dans master_calibrations_e_df
@@ -1709,7 +1711,7 @@ class DoubleSessionsComplete:
         pd.set_option('display.max_colwidth', 50)
         pd.set_option('display.max_column', 30)
         pd.set_option('display.width', 100)
-        pd.set_option("precision", 4)
+        pd.set_option("display.precision", 4)
         i = self.reductions_des_observations_df.index.size
 
 
@@ -3577,7 +3579,8 @@ def liste_info_systemes(sortie='terminal'):
     info_systemes_df = pd.read_csv(dirs[0])
     dirs.pop(0)
     for dir in dirs:
-        info_systemes_df = info_systemes_df.append(pd.read_csv(dir),ignore_index=True)
+        # debug info_systemes_df = info_systemes_df.append(pd.read_csv(dir),ignore_index=True)
+        info_systemes_df = pd.concat([info_systemes_df, pd.read_csv(dir)], ignore_index=True)
     return info_systemes_df
 
 def est_une_paire(chaine):
@@ -3772,7 +3775,7 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True, sortie='T')
         pd.set_option('display.max_column', 18)
         pd.set_option('display.width', 300)
         pd.set_option('display.max_row', 10000)
-        pd.set_option("precision", 3)
+        pd.set_option("display.precision", 3)
     
         print(reductions_df)
         #print('-' * 176)

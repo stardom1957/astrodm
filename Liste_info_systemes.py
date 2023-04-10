@@ -21,7 +21,7 @@ pd.set_option('display.max_colwidth', 100)
 pd.set_option('display.max_column', 15)
 pd.set_option('display.width', 300)
 pd.set_option('display.max_row', 10000)
-pd.set_option("precision", 6)
+pd.set_option("display.precision", 6)
 
 if __name__ == '__main__':
     # demander sortie au terminal ou fichier
@@ -52,7 +52,8 @@ if __name__ == '__main__':
     dirs.pop(0)
     
     for dir in dirs:
-        info_systemes_df = info_systemes_df.append(pd.read_csv(dir),ignore_index=True)
+        # debug info_systemes_df = info_systemes_df.append(pd.read_csv(dir),ignore_index=True)
+        info_systemes_df = pd.concat([info_systemes_df, pd.read_csv(dir)], ignore_index=True)
 
     if rep == 'F':
         # sortie vers fichier ./med/med-planification/....txt
