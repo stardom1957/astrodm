@@ -43,7 +43,7 @@ if __name__ == '__main__':
     pd.set_option('display.max_colwidth', 50)
     pd.set_option('display.max_column', 30)
     pd.set_option('display.width', 200)
-    pd.set_option("precision", 4)
+    pd.set_option("display.precision", 4)
 
     # for tkinter
     root = Tk()

@@ -5,14 +5,8 @@ Created on Fri Dec 11 16:31:40 2020
    le système passé en paramètre. Certaines informations au sujet du stystème
    sont fournies par l'usager alors que d'autres sont tirées du WDS par le
    biais de astroquery.
-   
-   NOTE : à partir de novembre 2021, on ne crée que des dossiers avec la
-   structure du  Lucky Imaging (voir ...\STA254\AB\..., comme ex.). Pour la 
-   dernière version du module opérationnel pour la structure Microguide,
-   voir crée_structure_data_système_v09.py.
 
 @author: dominique
-version 01
 """
 
 #%% IMPORTS
@@ -38,7 +32,7 @@ pd.set_option('display.max_colwidth', 100)
 pd.set_option('display.max_column', 15)
 pd.set_option('display.width', 200)
 pd.set_option('display.max_row', 10000)
-pd.set_option("precision", 1)
+pd.set_option("display.precision", 1)
 
 # %% FONCTIONS
 def estNan(val):
@@ -62,9 +56,9 @@ def traiter_obj_sys(obj_s, cahier=True):
     
     # imprimer le df pour validation
     print('\n' + '*' * 15 + ' DataFrame information_df '+ '*' * 15 + ' :\n')
-    print('-' * 80)
+    print('-' * 104)
     print(obj_s.informations_df)
-    print('-' * 80)
+    print('-' * 104)
     
     # saisir intention de modifier information_de
     rep = input("Modifier information_df (o|n) ? ").upper()
@@ -75,12 +69,12 @@ def traiter_obj_sys(obj_s, cahier=True):
             # id_system_alt1, id_system_alt2 et remarques peuvent être modifiés
             # soit index 4, 5 et 7 (zero based)
             #
-            lst_modif = (4,5,7)
+            lst_modif = (4,5,7,8)
             # présenter les données
             i = 1
             # lister les index
             print("Index")
-            print("{0} {1:>16} {2}".format(0, 'quitter', ''))
+            print("{0} {1:>16} {2}".format(0, 'terminé', ''))
             for k in range(0, len(obj_sys.informations_df.keys())):
                 if k in lst_modif:
                     print("{0} : {1:>16} = {2}".format(k, obj_s.informations_df.keys()[k], obj_s.informations_df.iloc[0,k]))
@@ -246,7 +240,7 @@ if __name__ == '__main__':
     print("{0} {1:>30} {2}".format(2, 'Saisir ID système (découvreur)', ''))
     print("{0} {1:>30} {2}".format(3, "Traitement d'un lot (Excel)", ''))
 
-    rep = input("Votre choix (2 par défaut): ") or 2
+    rep = input("Votre choix (2 par défaut): ") or '2'
     if rep.isdigit():
         irep = int(rep)
         if irep == 0:
@@ -279,7 +273,7 @@ if __name__ == '__main__':
         # créer objet Systeme avec l'information de base
         obj_sys = do.Systeme(chemin_systeme=racine_repertoire_systeme,\
                     nom_systeme_WDS=nom_sys_WDS,\
-                       id_sys_alt1='', id_sys_alt2='',\
+                       id_sys_alt1='', id_sys_alt2='', WDSdr='non',\
                            remarques='')
 
         # vérifier si le dossier du système existe déjà afin d'éviter de
@@ -361,6 +355,15 @@ if __name__ == '__main__':
                 else:
                     alt2 = lot_choisis.loc[idx].id_system_alt2
 
+                # .WDSdr = non | OUI
+                if estNan(lot_choisis.loc[idx].WDSdr):
+                    WDSdr_val = 'non'
+                else:
+                    if lot_choisis.loc[idx].WDSdr == 'oui' or lot_choisis.loc[idx].WDSdr == 'OUI':
+                       WDSdr_val = 'OUI'
+                    else:
+                       WDSdr_val = 'non'
+
                 if estNan(lot_choisis.loc[idx].remarques):
                     rem = ''
                 else:
@@ -371,7 +374,7 @@ if __name__ == '__main__':
                             nom_systeme_WDS=lot_choisis.loc[idx].id_system,\
                                id_sys_alt1=alt1,\
                                id_sys_alt2=alt2,\
-                                   remarques=rem)
+                                   WDSdr=WDSdr_val, remarques=rem)
                     
                 # inscrire le nom du système dans le journal
                 lst_journal.append("Système {0} traité!\n".format(lot_choisis.loc[idx].id_system))

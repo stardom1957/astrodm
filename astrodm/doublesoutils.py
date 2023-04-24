@@ -650,6 +650,7 @@ class Systeme:
                  nom_systeme_WDS='',
                  id_sys_alt1='',
                  id_sys_alt2='',
+                 WDSdr='non',
                  remarques=''
                  ):
         
@@ -662,19 +663,18 @@ class Systeme:
         astropy et astroplan.
         
         Paramètres Keyword :
-         (Tous '' par défaut)
          chemin_systeme    -- String nom complet du fichier info_système
          nom_systeme_WDS   -- String id WDS du système (non normalisé) :
            par ex. stfa254 ou stf60
-         Dict dict_systeme -- Dict des attributs du système :
-           id_src_alt1 -- String nom alternatif 1
-           id_src_alt2 -- String nom alternatif 2
-         remarques   -- String remarques, notes
+         id_sys_alt1 -- String nom alternatif 1, par défaut ''
+         id_sys_alt2 -- String nom alternatif 2, par défaut ''
+         WDSdr       -- String 'oui' | 'non', par-défaut 'non' (WDS data request obtenu)
+         remarques   -- String remarques, notes, par défaut ''
         """
         
         if chemin_systeme != '' and nom_systeme_WDS == '' and\
                  id_sys_alt1 == '' and id_sys_alt2 == '' and\
-                 remarques == '':
+                 WDSdr == 'non' and remarques == '':
 
             #
             # création par lecture d'un fichier csv
@@ -716,6 +716,8 @@ class Systeme:
             
             # normaliser source sur WDS_SRC_LEN_NOTES car
             self.nom= norm_WDS_src_notes(nom_systeme_WDS)
+            
+            # DEBUG ajout de WDSdr (data request) ici
 
             informations_dict = {
               'id_system': self.nom,
@@ -725,6 +727,7 @@ class Systeme:
               'id_system_alt1': ['"' + id_sys_alt1 + '"'],
               'id_system_alt2': ['"' + id_sys_alt2 + '"'],
               'const': ['à venir'],
+              'WDSdr': [WDSdr],
               # ATTENTION GARGER " SI NÉCESSAIRE P. E. pour une ','
               'remarques': ['"' + remarques + '"']
             }
@@ -739,7 +742,7 @@ class Systeme:
 
             
             #
-            # compléter les attributs du système
+            # compléter les attributs du système 'à venir'
             #
             
             # recherche de l'enregistrement de self.nom (nom de découvreur)
