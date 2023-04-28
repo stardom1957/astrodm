@@ -92,6 +92,7 @@ Voir figure 7.
 
   * D'abord sélection interactive du fichier lot (*.ods) dans .\data\med-planification\LOTS.
   * Les colonnes A et E sont obligatoires; INSCRIRE 1 dans la colonne « choisir » (E).
+  * La colonne WDSdr indique si les données complètes du WDS (obtenues par « data request » auprès du USNO) sont disponibles pour ce système. Il faut indiquer (OUI | oui) ou non. Un champ vide == non.
   * Si le fichier info-systeme du système existe déjà, tout le contenu sera mis à jour.
   * Le fichier lot peut être utilisé autant de fois que désiré.
   * Le log de chaque exécution se trouve dans .\data\med-planification\LOTS.

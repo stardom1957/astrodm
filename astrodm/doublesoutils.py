@@ -1938,7 +1938,7 @@ class DoubleSessionsComplete:
             
 # %% FONCTIONS
 def version():
-    print(__name__ + ' version ' + str(no_version) + ', avril 2022.')
+    print(__name__ + ' version ' + str(no_version) + ', avril 2023.')
 
 def drive(distance, d=0, m=0, s=0):
     """
@@ -4267,7 +4267,7 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
 
     
 # %% INITIALISATIONS
-no_version = 53
+no_version = 54
 # à partir de cette version, ce module inclut le code du module doubleslistes
 
 '''
