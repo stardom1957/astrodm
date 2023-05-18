@@ -2900,6 +2900,8 @@ def extraire_mesure_brutes_logReduc(ses, bloc, typeMesure):
             for li in range(nligne_depart_data, nbrLignes_totales):
                 # recherche des nombres présent dans ligne courante
                 strTousLesNombres = pn.findall(lignesLues[li])
+                if strTousLesNombres == []:
+                    break
         
                 # placer match 0, 1, 3 et 4 correspondants à xA, yA, xB, yB dans tampon de ligne
                 reduc_brut_lst += {strTousLesNombres[0] + ', ' + strTousLesNombres[1] + ', ' + strTousLesNombres[3] + ', '\
