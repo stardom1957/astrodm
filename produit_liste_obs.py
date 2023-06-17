@@ -8,14 +8,16 @@ Created on Tue June 13 10:58 2023
 import pandas as pd
 from tkinter import Tk
 from tkinter.filedialog import askopenfile
-import sys
 from astropy.coordinates import SkyCoord
 from astropy import units as u
+import sys
 
-# insérer le chemin suivant dans sys.path pour trouver le package astrodm
+# insérer le chemin suivant dans sys.path et importer le package astrodm
+'''
 if 'D:\DOCUMENTS\Astronomie\dev' not in sys.path:
     sys.path.insert(0, 'D:\DOCUMENTS\Astronomie\dev')
 from astrodm import doublesoutils as do
+'''
 
 # %% FONCTIONS
 
@@ -33,6 +35,7 @@ def selectionner_jeu():
     return ncfj.name
 
 def non_physique(Notes):
+    ''' Si une des lettres suivantes se trouvent dans Notes, alors La paire est jugée non physique.'''
     if 'X' in Notes or\
        'S' in Notes or\
        'U' in Notes or\
@@ -51,7 +54,7 @@ if __name__ == '__main__':
     pd.set_option('display.max_column', 30)
     pd.set_option('display.width', 200)
     pd.set_option("display.precision", 4)
-
+    pd.set_option('display.max_rows', None)
     # for tkinter
     root = Tk()
     root.wm_attributes('-topmost', 1)
@@ -60,10 +63,13 @@ if __name__ == '__main__':
     # charger le jeu de données tap Vizier (csv)
     fich_jeu_data_initial = selectionner_jeu()
     df = pd.read_csv(fich_jeu_data_initial)
+    assert len(df) !=0, "Jeu de données vide ! Au revoir !"
     print("Lecture du jeu de données ...\n")
 
-    # TODO paramétriser const
+    #########################
+    # constellation ciblée
     const_cible = 'Lyr'
+    #########################
     
     # ajouter la colonne const et la renseigner avec une valeur par défaut
     df['const'] = '---'
@@ -73,7 +79,7 @@ if __name__ == '__main__':
     #
     liste_constellations = set()
     for s in range(df.index.start, df.index.stop):
-    # prendre AD et DEC de l'enregistrement courant
+        # prendre AD et DEC de l'enregistrement courant
         raj2000 = df.iloc[s]['RAJ2000']
         dej2000 = df.iloc[s]['DEJ2000']
         
@@ -92,6 +98,7 @@ if __name__ == '__main__':
     # enlever de df toutes les entrée qui ne sont pas const_cible, réinitialser l'index et placer dans ndf
     # pour qu'il recommence à 0
     ndf = df.drop(df[df.const != const_cible].index).reset_index(drop=True)
+    assert len(ndf) != 0, "Après élaguage, il semble n'y avoir aucune paire restante dans {0} !".format(const_cible)
     nbrfinal = len(ndf)
     
     # en appliquant la fonction non_physique à ndf, la série suivante contiendra tous les index qui sont non physique
@@ -109,34 +116,17 @@ if __name__ == '__main__':
     print("Constellation ciblée : {0}".format(const_cible))
     print("-"*len("Constellation ciblée : {0}"))
     print("  Nombre de paires dans la liste source : {0:6d}".format(nbr_initial))
-    print("          Nombre de paires NON DANS {0} : {1:6d}         {2} enlevées".format(const_cible, nbr_initial-nbrfinal, liste_constellations))
+    print("          Nombre de paires NON DANS {0} : {1:6d}         {2} enlevées (de liste_constellations)".format(const_cible, nbr_initial-nbrfinal, liste_constellations))
     print("    Nombre de paires RESTANTES dans {0} : {1:6d}\n".format(const_cible, nbrfinal))
 
     print("         Nombre de paires non physiques : {0:6d}         (dans non_physiques_df)".format(len(non_physiques_df)))
     print("Nombre de paires probablement physiques : {0:6d}             (dans probables_df)\n".format(len(probables_df)))
 
-    print("Le dataframe « probables_df » peut maintenant être filtré !")
+    print("Le dataframe « probables_df » peut maintenant être affiné ! Voici un exemple de requête :\n")
+    print('...: q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180.0 and abs(mag2-mag1) < 3.0")').reset_index(drop=True)
 
     # NOTES
     """
-    ndf.drop(ndf[ndf.Obs2 >= 2020].index, inplace=True)
-    ndf.query("Obs2 == 2015")
-    ndf.query("Obs2 <= 2010 and sep2 >= 1.0")
-    ndf.query("Obs2 <= 2010 and sep2 >= 1.0 and abs(mag2-mag1) < 2")
-    ndf.query("Obs2 <= 2010 and sep2 >= 5.0 and abs(mag2-mag1) < 3")
-    q1 = ndf.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180 and abs(mag2-mag1) < 3")
+    q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180.0 and abs(mag2-mag1) < 3.0")
     df.query("'Her' in const")
-    
-    def contient_x(valeur):
-        return 'X' in valeur
-    
-    # ceci contient une série avec True vis-à-vis les index qui contiennnt 'X'
-    lesX_serie = df['Notes'].apply(contient_x)
-    # sous df de ndf avec les lignes avec un X dans Notes
-    lesX_df = ndf.loc[lesX_serie]
-    
-    df.loc[ww]
-    # pour enlever les X
-    test = df.drop(df.loc[ww].index)
-    
     """
