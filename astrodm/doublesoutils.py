@@ -6,6 +6,10 @@ Comprend diverses fonctionnalités pour planifier, réduire les observations
 à partir des données d'acquisition d'étoiles doubles et de pré-réduction
 produites par le logiciel REDUC (de Florent Losse) et produit également
 diverses listes. 
+
+This research has made use of the VizieR catalogue access tool, CDS,
+Strasbourg, France.  The original description of the VizieR service was
+published in A&AS 143, 23
 """
 
 # %% imports
