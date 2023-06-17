@@ -123,7 +123,7 @@ if __name__ == '__main__':
     print("Nombre de paires probablement physiques : {0:6d}             (dans probables_df)\n".format(len(probables_df)))
 
     print("Le dataframe « probables_df » peut maintenant être affiné ! Voici un exemple de requête :\n")
-    print('...: q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180.0 and abs(mag2-mag1) < 3.0")').reset_index(drop=True)
+    print('...: q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180.0 and abs(mag2-mag1) < 3.0").reset_index(drop=True)')
 
     # NOTES
     """
