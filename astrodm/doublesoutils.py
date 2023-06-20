@@ -3371,7 +3371,6 @@ def norm_WDS_src_notes(source):
     String désignation normalisée sur WDS_SRC_LEN_NOTES.
 
     """
-
     src = source.upper()
     #print("src= '" + src + "'")
 
@@ -3403,6 +3402,34 @@ def norm_WDS_src_notes(source):
     #print('nbr_espaces= ', nbr_espaces)
 
     return(str_id_disc + ' ' * nbr_espaces + str_no_sys)
+
+def rech_wds_id(src, paire):
+    """Recherche les informations de src et paire au catalogue WDS ('B/wds/wds').
+
+    Parameters
+    ----------
+    src : TYPE str
+        Doit commencer par un chiffre, l'id WDS (par ex. '19591+3831') du système recherché.'
+    paire : str
+        La paire, sous la forme 'ab', 'a,bc', etc ou '*' si toutes les paires
+        sont recherchées.
+
+    Returns
+    -------
+    TYPE astroquery.utils.commons.TableList
+         Le résultat de la recherche sous la forme d'une table.
+
+    """
+    
+    viz.CACHE = False
+    viz.ROW_LIMIT = 120000 # au cas où ?
+
+    if src[0].isdigit() and len(src) == 10:
+        return viz(catalog='B/wds/wds', columns=WDS_colonnes).query_constraints(WDS=src, Comp=paire)
+               # viz.query_constraints(catalog='B/wds/wds', WDS=src, Comp=paire)
+    else:
+        return 'Erreur pas un id WDS'
+
 
 def rech_wds(src, paire):
     """Recherche les informations de src et paire au catalogue WDS ('B/wds/wds').
@@ -3437,7 +3464,9 @@ def rech_wds(src, paire):
     
     ### soumettre la requête
     #strSource = 'H 3*'
-    resultat = viz.query_constraints(catalog='B/wds/wds', Disc=strSource, Comp=paire)
+    # resultat = viz.query_constraints(catalog='B/wds/wds', Disc=strSource, Comp=paire)
+    resultat = viz(catalog='B/wds/wds', columns=WDS_colonnes).query_constraints(Disc=strSource, Comp=paire)
+    #(catalog="VII/258/vv10",columns=['*', '_RAJ2000', '_DEJ2000'])
     if resultat != []:
         # enlever les sources en trop
         idx = []
@@ -3513,9 +3542,9 @@ def info_src_wds(src, paire, notes=True):
     
         print('Données tirées du Washington Double Stars Catalog (WDS)')
         print('Tris sur "Disc" et "Comp"')
-        print('-' * 120)
-        qres.pprint(show_unit=True, max_width=120, max_lines=150)
-        print('-' * 120)
+        print('-' * 142)
+        qres.pprint(show_unit=True, max_width=140, max_lines=150)
+        print('-' * 142)
         
         
         if notes:
@@ -4320,6 +4349,10 @@ WDS_SRC_ESPACE_LEN = 1
 # c.-à-d. len(découvreur + espaces + no ) == WDS_SRC_LEN_NOTES
 WDS_SRC_LEN_NOTES = 7
 
+# colonnes demandées pour recherche dans WDS
+WDS_colonnes = ['WDS', 'Disc', 'Comp', 'Obs1', 'Obs2', 'Nobs', 'pa1', 'pa2', 'sep1', 'sep2', 'mag1', 'mag2', 'DM', 'Notes', 'n_RAJ2000',\
+               'RAJ2000', 'DEJ2000', 'pmRA1', 'pmDE1']
+
 # les fichiers maîtres calibration d'échelle, masques et filtres
 # se trouvent toujours dans /med/cal_e/ relativement au répertoire d'exécution du script
 # qui exploite  ce module
@@ -4335,6 +4368,7 @@ pd.set_option('display.max_column', 15)
 pd.set_option('display.width', 150)
 pd.set_option('display.max_row', 10000)
 pd.set_option("display.precision", 6)
+pd.set_option('display.max_rows', None)
 
 # time scale and format for astropy Time objects
 t_scale = 'utc'

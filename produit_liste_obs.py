@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     ######################### À RENSEIGNER MANUELLEMENT
     # constellation ciblée
-    const_cible = 'Lyr'
+    const_cible = 'Cyg'
     #########################
     
     # ajouter la colonne const et la renseigner avec une valeur par défaut
