@@ -46,6 +46,21 @@ def non_physique(Notes):
         return False
     
 
+def notes_vide(Notes):
+    ''' Retourne les index de tous les enr. avec Notes vide'''
+    if Notes == '    ':
+        return True
+    else:
+        return False
+
+
+def notes_non_vide(Notes):
+    ''' Retourne les index de tous les enr. avec Notes non vide'''
+    if Notes != '    ':
+        return True
+    else:
+        return False
+
 # %% PRINCIPAL
 if __name__ == '__main__':
     ### pandas options d'affichage des tables
@@ -75,10 +90,11 @@ if __name__ == '__main__':
     # constellation ciblée
     const_cible = 'Cyg'
     #########################
+    print("Constellation ciblée : {0}.".format(const_cible))
     
     # ajouter la colonne const et la renseigner avec une valeur par défaut
     df['const'] = '---'
-    
+    print('Renseignement de la colonne const ...')
     # Parcourir le df et renseigner la colonne const avec le nom abrégé de la constellation d'appartenance.
     # liste_constellations est un set qui contiendra la liste de toutes les constellations trouvées dans df
     #
@@ -110,19 +126,35 @@ if __name__ == '__main__':
     assert len(ndf) != 0, "Après élaguage, il semble n'y avoir aucune paire restante dans {0} !".format(const_cible)
     nbrfinal = len(ndf)
     
-    # en appliquant la fonction non_physique à ndf, la série suivante contiendra tous les index qui sont non physique
-    # (True vis-à-vis l'index correspondant)
+    # en appliquant diverses fonctions à ndf, les séries suivantes contiendront les index des enregistrements qui répondent
+    # à certains critères
     #
+    # système non physiques
     non_physique_serie = ndf['Notes'].apply(non_physique)
     
     # le df suivant contiendra toutes les paires non physiques tirées de ndf
     #
     non_physiques_df = ndf.loc[non_physique_serie]
     
-    # finalement, le df suivant contiendra seulement les paires qui peuvent être physiques
+    # le df suivant contiendra seulement les paires qui peuvent être physiques
     #
     probables_df = ndf.drop(ndf.loc[non_physique_serie].index)
 
+    # en appliquant diverses fonctions à ndf, les séries suivantes contiendront les index des enregistrements qui répondent
+    # à certains critères
+    #
+    probables_Notes_vides_serie = probables_df['Notes'].apply(notes_vide)
+    probables_Notes_non_vides_serie = probables_df['Notes'].apply(notes_non_vide)
+    
+
+    # le df suivant contiendra seulement les paires d'ont les Notes sont vides
+    # il faut donc retirer de les enr. avec les notes non vides de probables_df
+    probables_Notes_vides_df = probables_df.drop(probables_df.loc[probables_Notes_non_vides_serie].index)
+
+    # le df suivant contiendra seulement les paires d'ont les Notes sont non vides
+    # il faut donc retirer de les enr. avec les notes vides de probables_df
+    #
+    probables_Notes_non_vides_df = probables_df.drop(probables_df.loc[probables_Notes_vides_serie].index)
 
     # %% imprimer le rapport
     #
@@ -133,13 +165,18 @@ if __name__ == '__main__':
     print("    Nombre de paires RESTANTES dans {0} : {1:6d}\n".format(const_cible, nbrfinal))
 
     print("         Nombre de paires non physiques : {0:6d}         (voir non_physiques_df)".format(len(non_physiques_df)))
-    print("Nombre de paires probablement physiques : {0:6d}             (voir probables_df)\n".format(len(probables_df)))
+    print("Nombre de paires probablement physiques : {0:6d}         (voir probables_df)\n".format(len(probables_df)))
+    
+    print("      Nombre de paires avec Notes vides : {0:6d}         (voir probables_Notes_vides_df)".format(len(probables_Notes_vides_df)))
+    print("  Nombre de paires avec Notes NON vides : {0:6d}         (voir probables_Notes_non_vides_df)\n".format(len(probables_Notes_non_vides_df)))
+    
 
-    print("Le dataframe « probables_df » peut maintenant être affiné ! Voici un exemple de requête :\n")
-    print('...: q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180.0 and abs(mag2-mag1) < 3.0").reset_index(drop=True)')
+    print("Tous ces dataframe peuvent maintenant être affinés ! Voici un exemple de requête avec probables_df :")
+    print('...: q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 3.0 and sep2 < 120.0 and abs(mag2-mag1) < 2.0").reset_index(drop=True)')
 
     # NOTES
     """
-    q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 180.0 and abs(mag2-mag1) < 3.0")
+    q1 = probables_df.query("Obs2 <= 2010 and sep2 >= 5.0 and sep2 < 120.0 and abs(mag2-mag1) < 2.0")
     df.query("'Her' in const")
+    q3.loc[:]['Nobs'].mean() # nombre moyen d'observation pour les paires de q3'
     """
