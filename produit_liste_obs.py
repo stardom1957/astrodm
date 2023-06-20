@@ -111,7 +111,7 @@ if __name__ == '__main__':
         liste_constellations.add(nom_abr_const)
   
     # enlever const_cible du set
-    # nous avon maintenant une liste des constellations enlevées de df
+    # nous avons maintenant une liste des constellations enlevées de df
     #
     liste_constellations.discard(const_cible)
     
@@ -148,11 +148,11 @@ if __name__ == '__main__':
     
 
     # le df suivant contiendra seulement les paires d'ont les Notes sont vides
-    # il faut donc retirer de les enr. avec les notes non vides de probables_df
+    # il faut donc retirer les enr. ayant des notes non vides de probables_df
     probables_Notes_vides_df = probables_df.drop(probables_df.loc[probables_Notes_non_vides_serie].index)
 
     # le df suivant contiendra seulement les paires d'ont les Notes sont non vides
-    # il faut donc retirer de les enr. avec les notes vides de probables_df
+    # il faut donc retirer les enr. ayant dess notes vides de probables_df
     #
     probables_Notes_non_vides_df = probables_df.drop(probables_df.loc[probables_Notes_vides_serie].index)
 
