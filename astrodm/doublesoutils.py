@@ -2132,7 +2132,7 @@ def post_reduction(type_session='complete', ch_prog=''):
     if type_session == 'complete':
         # Dans ce cas, ch_prog doit être dossier du type P2021-023 et avoir
         # au moins un S avec au moins un bloc d'observation. On doit bâtir un
-        # objet doublesoutuils.DoubleSessions.
+        # objet DoubleSessionComplete.
         #
 
         ###################################################
@@ -3854,7 +3854,7 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True, sortie='T')
         return reductions_df
     
 
-def produire_liste_progammes(ch):
+def produire_liste_programmes(ch):
     """
     Parcoure le chemin ch et retourne un pandas dataframe des programmes
     d'observations.
@@ -4015,7 +4015,7 @@ def produire_liste_progammes(ch):
                                     
                                     #
                                     # vérifier s'il existe au moins un S et au moins
-                                    # in bloc dans ce S
+                                    # un bloc dans ce S
                                     #
                                     pasDeBlocs = True
                                     lstDesRepS = glob.glob(chemin_prog + '/S*/')
@@ -4245,7 +4245,7 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
     print("Liste des programmes d'observations dans : " + chemin + '\n')
 
     # produire la liste et transformer résultat en df
-    programmes_df = produire_liste_progammes(chemin)
+    programmes_df = produire_liste_programmes(chemin)
     nbrEnregistrements = len(programmes_df)
     int_nbr_prog_uniques = len(liste_programmes_uniques)
    
