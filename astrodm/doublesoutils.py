@@ -3542,9 +3542,10 @@ def info_src_wds(src, paire, notes=True):
     
         print('Données tirées du Washington Double Stars Catalog (WDS)')
         print('Tris sur "Disc" et "Comp"')
-        print('-' * 142)
-        qres.pprint(show_unit=True, max_width=140, max_lines=150)
-        print('-' * 142)
+        max_larg = 160
+        print('-' * max_larg)
+        qres.pprint(show_unit=True, max_width=max_larg, max_lines=200)
+        print('-' * max_larg)
         
         
         if notes:
@@ -4365,7 +4366,7 @@ pd.set_option('display.expand_frame_repr', True)
 pd.set_option('display.colheader_justify', 'right')
 pd.set_option('display.max_colwidth', 50)
 pd.set_option('display.max_column', 15)
-pd.set_option('display.width', 150)
+pd.set_option('display.width', 200)
 pd.set_option('display.max_row', 10000)
 pd.set_option("display.precision", 6)
 pd.set_option('display.max_rows', None)
