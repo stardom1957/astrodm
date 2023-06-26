@@ -207,7 +207,7 @@ def selectionner_et_lire_info_systeme():
     rrs = os.path.dirname(ncfi.name)
     return rrs
     
-def selectionner_lot():
+def selectionner_fichier_lot():
     ### Sélectionner fichier lot
     root = Tk()
     root.wm_attributes('-topmost', 1)
@@ -296,46 +296,64 @@ if __name__ == '__main__':
         racine_repertoire_systeme = os.getcwd() + r'/med/'
 
         # ncfl : nom complet fichier lot
-        ncfl = selectionner_lot()
+        ncfl = selectionner_fichier_lot()
         print("\n*** Traitement du lot «{0}». ***".format(os.path.basename(ncfl)))
 
+        # journalisation des résultats, erreurs, etc
+        # création du systag pour rendre nom fichier unique
+        systag = do.produire_systag()
+
+        # nom complet du fichier de journalisation composé à partir de ncfl et
+        # du systag
+        ncfl_journal = os.path.dirname(ncfl) + '/Traitement_lot_' + os.path.basename(ncfl).split('.')[0] + '_' + systag + '.log'
         # lire ncfl dans un pandas df
         lot_df = pd.read_excel(ncfl, engine="odf")
-        print("    Comprenant {0} systèmes.\n".format(len(lot_df)))
+
+        #    
+        # création du journal sous forme de list
+        #
+        lst_journal = list()
+        lst_journal.append("Journal du traitement de «" + os.path.basename(ncfl) + '»\n')
+        tempo = "    Comprenant {0} systèmes.\n\n".format(len(lot_df))
+        print(tempo)
+        lst_journal.append(tempo)
+
         
         lot_choisis = lot_df.query("choisir == 1")
         lot_non_choisis = lot_df.query("choisir == 0")
         
-        print("{0} systèmes choisis :".format(len(lot_choisis)))
+        tempo = "{0} systèmes choisis :".format(len(lot_choisis))
+        print(tempo)
+        lst_journal.append(tempo + '\n')
+        
+        tempo = ''
         for idx in lot_choisis.index:
-            print(lot_choisis.loc[idx,'id_system'], end=', ')
+            tempo = tempo + lot_choisis.loc[idx,'id_system'] + ', '
+            
+        lst_journal.append(tempo.rstrip(', '))
+        print(tempo.rstrip(', '))
             
         print("\n\n{0} systèmes non choisis :".format(len(lot_non_choisis)))
+        lst_journal.append("\n\n{0} systèmes non choisis :\n".format(len(lot_non_choisis)))
+        
+        tempo = ''
         for idx in lot_non_choisis.index:
-            print(idx, lot_non_choisis.loc[idx,'id_system'], end=', ')
-            
-        # journalisation des résultats, erreurs, etc
-        # création du systag pour rendre nom fichier unique
-        systag = do.produire_systag()
-        # nom complet du fichier de journalisation composé à partir de ncfl et
-        # du systag
-        ncfl_journal = os.path.dirname(ncfl) + '/' +\
-            os.path.basename(ncfl).split('.')[0] + '_' + systag + '.txt'
+            tempo = tempo + lot_non_choisis.loc[idx,'id_system'] + ', '
 
-        # journal
-        lst_journal = list()
-        lst_journal.append("Journal du traitement de " +\
-                         os.path.basename(ncfl) + '\n')
-        lst_journal.append("Systag : " + systag + '\n')
+        
+        lst_journal.append(tempo.rstrip(', ') + '\n')
+        print(tempo.rstrip(', ') + '\n')
         
         #
         # traitement des systèmes choisis
         #
         print('\n')
+        lst_journal.append("\n")
 
         for idx in lot_choisis.index:
-            print("Traitement de {0:<4} : {1:>7}".format(idx,\
-                                          lot_choisis.loc[idx,'id_system']))
+            tempo = "Traitement de {0:<7} ".format(lot_choisis.loc[idx,'id_system'])
+            print(tempo)
+            lst_journal.append(tempo + '\n')
 
             # valide système
             # tupple systeme_check = (True, résultat de recherche WDS)
@@ -377,20 +395,24 @@ if __name__ == '__main__':
                                    WDSdr=WDSdr_val, remarques=rem)
                     
                 # inscrire le nom du système dans le journal
-                lst_journal.append("Système {0} traité!\n".format(lot_choisis.loc[idx].id_system))
+                print("  système {0} traité!\n".format(lot_choisis.loc[idx].id_system))
+                lst_journal.append("  système {0} traité!\n".format(lot_choisis.loc[idx].id_system))
                 
                 if not enregistrer_sur_disque(obj_sys, traitement_en_lot=True):
                     # ajouter message d'erreur dans journal
                     #lst_journal.append("Système {0} : _info_système.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
+                    print("Système {0} : info-systeme.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
                     lst_journal.append("Système {0} : info-systeme.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
 
             else:
                 # placer message d'erreur dans journal
-                lst_journal.append("Système {0} : ne semble pas valide!\n".\
-                                   format(lot_choisis.loc[idx].id_system))
+                tempo = "Système {0} : ne semble pas valide!\n".\
+                                   format(lot_choisis.loc[idx].id_system)
+                lst_journal.append(tempo)
+                print(tempo)
 
         # écrire le journal sur disque
-        with open(ncfl_journal, 'w') as f:
+        with open(ncfl_journal, 'w', encoding='UTF-8') as f:
             f.writelines(lst_journal)
             
         print("Le journal est dans «{0}»".format(ncfl_journal))
