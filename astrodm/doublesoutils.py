@@ -3952,6 +3952,7 @@ def produire_liste_programmes(ch):
                    str_dth_echeance_utc,
                    etat
                 ]
+                
                 # ajouter à la liste des programmes et incrémenter le compteur
                 # approprié
                 lst_prog_df.loc[lst_prog_df.index.size] = data
@@ -4071,7 +4072,7 @@ def produire_liste_programmes(ch):
                                         else:
                                             # il n'y a pas d'objet s,
                                             # il n'y a donc pas eu de réduction exécutée
-                                            # mais nous savons qu'il peut exister des 
+                                            # mais nous devons vérifier s'il peut exister des 
                                             # données d'acquisition valides...
                                             # on exécute donc une post-réduction ;)
                                             s = post_reduction(type_session='complete', ch_prog=chemin_prog)

@@ -35,11 +35,57 @@ pd.set_option('display.max_row', 10000)
 pd.set_option("display.precision", 1)
 
 # %% FONCTIONS
+def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='Paaaa-nnn'):
+    """
+    Créer structure des répertoires d'une paire, selon lemodèle paire/programme.
+    
+    Paramètre positionnel
+     objet_systeme -- astrodm objet Systeme
+     
+    Paramètre keyword
+     paire : désignation de la paire. Par ex. AB
+     programme : par ex P2023-025
+     
+    Retourne : True | False selon enregistrement ok
+    """
+    if objet_systeme == None:
+        tempo = "creer_dossier_paire_et_prog) Erreur ! Objet système manquant ou non valide !"
+        print(tempo)
+        lst_journal.append(tempo + '\n')
+        return False
+    
+    # dossier du système
+    dir_systeme = os.path.dirname(objet_systeme.ncfinfo_systeme)
+    
+    try:
+        ### création du répertoire de la paire dans le dossier du système
+        os.makedirs(dir_systeme + "/" + paire.upper(), exist_ok=True)
+    except FileNotFoundError:
+        tempo = "creer_dossier_paire_et_prog) Erreur ! Création du dossier de la paire impossible !"
+        print(tempo)
+        lst_journal.append(tempo + '\n')
+        return False
+
+    try:
+        ### création du répertoire du programme  dans le dossier de la paire
+        os.makedirs(dir_systeme + "/" + paire + '/' + programme.upper(), exist_ok=True)
+    except FileNotFoundError:
+        tempo = "creer_dossier_paire_et_prog) Erreur ! Création du dossier du programme impossible !"
+        print(tempo)
+        lst_journal.append(tempo + '\n')
+        return False
+
+    return True
+
+
 def cree_dossier_systeme(sys_df):
     """ Crée les dossiers du système passé en paramètres
     
     Paramètres positionnels
      sys_df un Dataframe Pandas contenant les informations du système
+     
+    Retourne
+     un objet doublesoutils.systeme ou None
     """
     # valide système
     # tupple systeme_check = (True, résultat de recherche WDS)
@@ -84,7 +130,7 @@ def cree_dossier_systeme(sys_df):
         # renseigner le log
         lst_journal.append("  Création du dossier du système terminée !\n")
         
-        enregistre_sur_disque_ok = enregistrer_sur_disque(obj_sys, traitement_en_lot=True)
+        enregistre_sur_disque_ok = enregistrer_systeme_sur_disque(obj_sys, traitement_en_lot=True)
         
         if not enregistre_sur_disque_ok:
             # ajouter message d'erreur dans journal
@@ -93,6 +139,7 @@ def cree_dossier_systeme(sys_df):
             lst_journal.append("Système {0} : info-systeme.csv non modifié !\n".format(sys_df['id_system'].item()))
 
         print("  Création du dossier du système terminée !")
+        return obj_sys
 
     else:
         # placer message d'erreur dans journal
@@ -100,13 +147,14 @@ def cree_dossier_systeme(sys_df):
                            format(sys_df['id_system'].item())
         lst_journal.append(tempo)
         print(tempo)
+        return None
 
 
 
 def estNan(val):
     return val != val
 
-def traiter_obj_sys(obj_s, cahier=True):
+def traiter_obj_sys(obj_s, copier_cahier=True):
     """
     Traite un objet système créé interactivement par une recherche dans WDS,
     imprime les résultats avec note pour aider la validation
@@ -115,7 +163,7 @@ def traiter_obj_sys(obj_s, cahier=True):
      obj_s -- astrodm objet Systeme
      
     Paramètre keyword
-     cahier -- Boolean indique si enregistrement cahier Jupyter
+     copier_cahier -- Boolean indique si enregistrement cahier Jupyter
       True par défaut
     """
     
@@ -175,20 +223,20 @@ def traiter_obj_sys(obj_s, cahier=True):
     print('    ... écriture du DataFrame information_df dans le fichier «' +\
           os.path.basename(obj_s.ncfinfo_systeme) +'»')
     
-    if cahier:    
+    if copier_cahier:    
         print('  création du dossier : «' + os.path.dirname(obj_s.ncfinfo_systeme) + '/planif»')
         print('    ... création du cahier de notes «systeme-notes.ipynb»')
     
     rep = input("Enregistrer les données sur disque (o|n) ? ").upper()
     if 'O' in rep:
-        enregistrer_sur_disque(obj_s, cahier)
+        enregistrer_systeme_sur_disque(obj_s, copier_cahier)
     else:
         print("Pas d'enregistrement.")
 
 
-def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
+def enregistrer_systeme_sur_disque(objet_systeme, traitement_en_lot=False, copier_cahier=True):
     """
-    Créer structure des répertoires d'un système et enregistrer info-systeme.csv.
+    Créer structure des répertoires d'un système et enregistre info-systeme.csv.
     
     Également crée cahier Jupyter dans ./med-planification
 
@@ -198,12 +246,12 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
     Paramètre keyword
      traitement_en_lot -- Boolean indique si traitement en lot
       False par défaut
-     cahier -- Boolean si True copie du cahier Jupyter lab modèle dans
+     copier_cahier -- Boolean si True copie du cahier Jupyter lab modèle dans
      dossier
      
     Retourne : True | False selon enregistrement ok
     """
-    assert objet_systeme != None, '(enregistrer_sur_disque) Erreur ! Objet système manquant ou non valide !'
+    assert objet_systeme != None, '(enregistrer_systeme_sur_disque) Erreur ! Objet système manquant ou non valide !'
 
     ### création du répertoire du système et planif
     # il n'y a pas de mal à tenter de créer des répertoires même s'ils existes
@@ -222,7 +270,7 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
 
     if bool_fichier_info_existe and traitement_en_lot:
         #debug return False
-        cahier = False
+        copier_cahier = False
 
     #
     # Dans le cas où fichier info n'existe pas, le traitement est le même
@@ -234,7 +282,7 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
                                     index=False, encoding='utf-8')
         # copier fichier modèle cahier de notes et renommer avec nom du
         # système
-        if cahier:
+        if copier_cahier:
             source = ncf_cahier_modele
             #destination = dir_systeme + "/med-planification/" + objet_systeme.nom + '_notes.ipynb'
             destination = dir_systeme + "/planif/systeme-notes.ipynb"
@@ -311,7 +359,7 @@ if __name__ == '__main__':
     print("{0} {1:>30} {2}".format(2, 'Saisir ID système (découvreur)', ''))
     print("{0} {1:>30} {2}".format(3, "Traitement d'un lot (Excel)", ''))
 
-    rep = input("Votre choix (2 par défaut): ") or '2'
+    rep = input("Votre choix (3 par défaut): ") or '3'
     if rep.isdigit():
         irep = int(rep)
         if irep == 0:
@@ -437,13 +485,12 @@ if __name__ == '__main__':
         tempo = tempo + "}\n"
         lst_journal.append(tempo)            
             
+        #
         # sélectionner et traiter chaque système présent dans s_choisis_set
         #
-        pd.set_option('display.width', 240)
         lst_journal.append("\n")
-
-        for el in s_choisis_set:
-            systeme_courant_df = lot_choisis_df.query("id_system == '" + el + "'")
+        for nom_systeme in s_choisis_set:
+            systeme_courant_df = lot_choisis_df.query("id_system == '" + nom_systeme + "'")
             tempo = "Traitement de {0:<7} :".format(systeme_courant_df.iloc[0].id_system)
             print(tempo)
             #debug print(systeme_courant_df)
@@ -459,7 +506,7 @@ if __name__ == '__main__':
                 lst_journal.append(tempo)
             else:
                 # créer le dossier du système
-                cree_dossier_systeme(systeme_courant_df.loc[idx_systeme])
+                objet_systeme_courant = cree_dossier_systeme(systeme_courant_df.loc[idx_systeme])
                 
                 # enlever l'enr de système dans systeme_courant_df
                 #
@@ -468,14 +515,22 @@ if __name__ == '__main__':
                 # créer le dossier de chaque paire et le sous-dossier de programme d'observation dans ce dossier
                 #
                 
-                # debug rendu icitte
-                # voir enregistrer_sur_disque
+                # voir enregistrer_systeme_sur_disque
                 print("  Dossiers des paires et programmes :")
                 for idx in paires_df.index:
-                    tempo = "  {0:>5} / {1}".format(paires_df.loc[idx].paire, paires_df.loc[idx].programme)
+                    pr = paires_df.loc[idx].paire
+                    prog = paires_df.loc[idx].programme
+                    OKres = creer_dossier_paire_et_prog(objet_systeme_courant, paire=pr, programme=prog)
+                    tempo = "  {0:>5} / {1} ".format(pr, prog)
+                    if OKres:
+                        tempo = tempo + 'CRÉÉ'
+                    else:
+                        tempo = tempo + 'ERREUR'
                     print(tempo)
+                    lst_journal.append(tempo + '\n')
                 print()
 
+                """
                 lst_journal.append("  Dossiers des paires et programmes :\n")
                 # placer le contenu de paires_df.paire dans le log
                 #
@@ -483,6 +538,7 @@ if __name__ == '__main__':
                     tempo = "  {0:>5} / {1}".format(paires_df.loc[idx].paire, paires_df.loc[idx].programme)
                     lst_journal.append(tempo + '\n')
                 lst_journal.append('\n')
+                """
                 
         
         # compéter et écrire le journal sur disque
