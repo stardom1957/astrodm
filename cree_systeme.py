@@ -30,11 +30,79 @@ pd.set_option('display.expand_frame_repr', True)
 pd.set_option('display.colheader_justify', 'right')
 pd.set_option('display.max_colwidth', 100)
 pd.set_option('display.max_column', 15)
-pd.set_option('display.width', 200)
+pd.set_option('display.width', 240)
 pd.set_option('display.max_row', 10000)
 pd.set_option("display.precision", 1)
 
 # %% FONCTIONS
+def cree_dossier_systeme(sys_df):
+    """ Crée les dossiers du système passé en paramètres
+    
+    Paramètres positionnels
+     sys_df un Dataframe Pandas contenant les informations du système
+    """
+    # valide système
+    # tupple systeme_check = (True, résultat de recherche WDS)
+    #   ou (False, None)
+    #
+    systeme_check = do.valide_nom_systeme(sys_df['id_system'].item())
+    if systeme_check[0]:
+        # placer les valeurs dans des variables temporaires
+        # si nécessaire, remplacer les NaN par ''
+        #
+        nom_systeme = sys_df['id_system'].item()
+        
+        if estNan(sys_df['id_system_alt1'].item()):
+            alt1 = ''
+        else:
+            alt1 = sys_df['id_system_alt1'].item()
+            
+        if estNan(sys_df['id_system_alt2'].item()):
+            alt2 = ''
+        else:
+            alt2 = sys_df['id_system_alt2'].item()
+
+        # .WDSdr = non | OUI
+        if estNan(sys_df['WDSdr'].item()):
+            WDSdr_val = 'non'
+        else:
+            if sys_df['WDSdr'].item() == 'oui' or sys_df['WDSdr'].item() == 'OUI':
+               WDSdr_val = 'OUI'
+            else:
+               WDSdr_val = 'non'
+
+        if estNan(sys_df['remarques'].item()):
+            rem = ''
+        else:
+            rem = sys_df['remarques'].item()
+        
+        # créer objet Systeme
+        obj_sys = do.Systeme(chemin_systeme=racine_repertoire_systeme,\
+                    nom_systeme_WDS=nom_systeme, id_sys_alt1=alt1, id_sys_alt2=alt2,\
+                           WDSdr=WDSdr_val, remarques=rem)
+            
+        # renseigner le log
+        lst_journal.append("  Création du dossier du système terminée !\n")
+        
+        enregistre_sur_disque_ok = enregistrer_sur_disque(obj_sys, traitement_en_lot=True)
+        
+        if not enregistre_sur_disque_ok:
+            # ajouter message d'erreur dans journal
+            #lst_journal.append("Système {0} : _info_système.csv existe déjà!\n".format(lot_choisis_df.loc[idx].id_system))
+            print("Système {0} : info-systeme.csv non modifié !\n".format(sys_df['id_system'].item()))
+            lst_journal.append("Système {0} : info-systeme.csv non modifié !\n".format(sys_df['id_system'].item()))
+
+        print("  Création du dossier du système terminée !")
+
+    else:
+        # placer message d'erreur dans journal
+        tempo = "Système {0} : ne semble pas valide!\n".\
+                           format(sys_df['id_system'].item())
+        lst_journal.append(tempo)
+        print(tempo)
+
+
+
 def estNan(val):
     return val != val
 
@@ -132,8 +200,10 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
       False par défaut
      cahier -- Boolean si True copie du cahier Jupyter lab modèle dans
      dossier
+     
+    Retourne : True | False selon enregistrement ok
     """
-    assert objet_systeme != None, 'Rien à enregister sur disque!'
+    assert objet_systeme != None, '(enregistrer_sur_disque) Erreur ! Objet système manquant ou non valide !'
 
     ### création du répertoire du système et planif
     # il n'y a pas de mal à tenter de créer des répertoires même s'ils existes
@@ -184,7 +254,8 @@ def enregistrer_sur_disque(objet_systeme, traitement_en_lot=False, cahier=True):
         if 'O' in  rep:
             objet_systeme.informations_df.to_csv(objet_systeme.ncfinfo_systeme,\
                                          index=False, encoding='utf-8')
-            print('Fichier information système enregistré.')
+            if not traitement_en_lot:
+                print('Fichier information système enregistré.')
             return True
         else:
             print("Enregistrement annulé par l'usager.")
@@ -308,111 +379,117 @@ if __name__ == '__main__':
         ncfl_journal = os.path.dirname(ncfl) + '/Traitement_lot_' + os.path.basename(ncfl).split('.')[0] + '_' + systag + '.log'
         # lire ncfl dans un pandas df
         lot_df = pd.read_excel(ncfl, engine="odf")
-
+        
+        #
+        # enlever les lignes vides (nan ...) qui correspondent au lignes blanches dans excel
+        #
+        lignes_vides_serie = lot_df['id_system'].apply(estNan)
+        lot_complet_df = lot_df.drop(lot_df.loc[lignes_vides_serie].index).reset_index(drop=True)
+        
         #    
-        # création du journal sous forme de list
+        # création du journal sous forme de liste
         #
         lst_journal = list()
-        lst_journal.append("Journal du traitement de «" + os.path.basename(ncfl) + '»\n')
-        tempo = "    Comprenant {0} systèmes.\n\n".format(len(lot_df))
-        print(tempo)
-        lst_journal.append(tempo)
-
-        
-        lot_choisis = lot_df.query("choisir == 1")
-        lot_non_choisis = lot_df.query("choisir == 0")
-        
-        tempo = "{0} systèmes choisis :".format(len(lot_choisis))
+        lst_journal.append("*** Journal du traitement de «" + os.path.basename(ncfl) + '» ***\n')
+        tempo = "qui comprend {0} enregistrements de données.\n".format(len(lot_complet_df))
         print(tempo)
         lst_journal.append(tempo + '\n')
-        
-        tempo = ''
-        for idx in lot_choisis.index:
-            tempo = tempo + lot_choisis.loc[idx,'id_system'] + ', '
-            
-        lst_journal.append(tempo.rstrip(', '))
-        print(tempo.rstrip(', '))
-            
-        print("\n\n{0} systèmes non choisis :".format(len(lot_non_choisis)))
-        lst_journal.append("\n\n{0} systèmes non choisis :\n".format(len(lot_non_choisis)))
-        
-        tempo = ''
-        for idx in lot_non_choisis.index:
-            tempo = tempo + lot_non_choisis.loc[idx,'id_system'] + ', '
 
+        # filter les enregistrements avec la colonne choisir (0|1)
+        lot_choisis_df = lot_complet_df.query("choisir == 1")
+        lot_non_choisis_df = lot_complet_df.query("choisir == 0")
         
-        lst_journal.append(tempo.rstrip(', ') + '\n')
-        print(tempo.rstrip(', ') + '\n')
+        # créer un set des id_system's choisis
+        s_choisis_set = set()
+        for idx in lot_choisis_df.index:
+            s_choisis_set.add(lot_choisis_df.loc[idx, 'id_system'])
+
+        tempo = "{0} systèmes choisis :".format(len(s_choisis_set))
+        print(tempo)
+        print(s_choisis_set)
+        lst_journal.append(tempo + '\n')
         
+        # placer le contenu de s_choisis_set dans le log
         #
-        # traitement des systèmes choisis
+        tempo = "{"
+        for i in range(len(list(s_choisis_set))):
+            tempo = tempo + "'" + list(s_choisis_set)[i] + "', "
+        tempo = tempo.rstrip(", ")
+        tempo = tempo + "}\n"
+        lst_journal.append(tempo)            
+
+        # créer un set des id_system's non choisis
+        s_non_choisis_set = set()
+        for idx in lot_non_choisis_df.index:
+            s_non_choisis_set.add(lot_non_choisis_df.loc[idx, 'id_system'])
+
+        tempo = "\n{0} systèmes non choisis :".format(len(s_non_choisis_set))
+        print(tempo)
+        print(s_non_choisis_set)
+        print()
+        lst_journal.append(tempo + '\n')
+        
+        # placer le contenu de s_non_choisis_set dans le log
+        tempo = "{"
+        for i in range(len(list(s_non_choisis_set))):
+            tempo = tempo + "'" + list(s_non_choisis_set)[i] + "', "
+        tempo = tempo.rstrip(", ")
+        tempo = tempo + "}\n"
+        lst_journal.append(tempo)            
+            
+        # sélectionner et traiter chaque système présent dans s_choisis_set
         #
-        print('\n')
+        pd.set_option('display.width', 240)
         lst_journal.append("\n")
 
-        for idx in lot_choisis.index:
-            tempo = "Traitement de {0:<7} ".format(lot_choisis.loc[idx,'id_system'])
+        for el in s_choisis_set:
+            systeme_courant_df = lot_choisis_df.query("id_system == '" + el + "'")
+            tempo = "Traitement de {0:<7} :".format(systeme_courant_df.iloc[0].id_system)
             print(tempo)
+            #debug print(systeme_courant_df)
+            
             lst_journal.append(tempo + '\n')
+            #debug lst_journal.append(systeme_courant_df)
 
-            # valide système
-            # tupple systeme_check = (True, résultat de recherche WDS)
-            #   ou (False, None)
-            systeme_check = do.valide_nom_systeme(lot_choisis.loc[idx].id_system)
-            if systeme_check[0]:
-                # placer les valeurs dans des variables temporaires
-                nom = lot_choisis.loc[idx,'id_system']
-                # d'abord remplacer les NaN par '' dans enregistrement
-                if estNan(lot_choisis.loc[idx].id_system_alt1):
-                    alt1 = ''
-                else:
-                    alt1 = lot_choisis.loc[idx].id_system_alt1
-                    
-                if estNan(lot_choisis.loc[idx].id_system_alt2):
-                    alt2 = ''
-                else:
-                    alt2 = lot_choisis.loc[idx].id_system_alt2
-
-                # .WDSdr = non | OUI
-                if estNan(lot_choisis.loc[idx].WDSdr):
-                    WDSdr_val = 'non'
-                else:
-                    if lot_choisis.loc[idx].WDSdr == 'oui' or lot_choisis.loc[idx].WDSdr == 'OUI':
-                       WDSdr_val = 'OUI'
-                    else:
-                       WDSdr_val = 'non'
-
-                if estNan(lot_choisis.loc[idx].remarques):
-                    rem = ''
-                else:
-                    rem = lot_choisis.loc[idx].remarques
-                
-                # créer objet Systeme
-                obj_sys = do.Systeme(chemin_systeme=racine_repertoire_systeme,\
-                            nom_systeme_WDS=lot_choisis.loc[idx].id_system,\
-                               id_sys_alt1=alt1,\
-                               id_sys_alt2=alt2,\
-                                   WDSdr=WDSdr_val, remarques=rem)
-                    
-                # inscrire le nom du système dans le journal
-                print("  système {0} traité!\n".format(lot_choisis.loc[idx].id_system))
-                lst_journal.append("  système {0} traité!\n".format(lot_choisis.loc[idx].id_system))
-                
-                if not enregistrer_sur_disque(obj_sys, traitement_en_lot=True):
-                    # ajouter message d'erreur dans journal
-                    #lst_journal.append("Système {0} : _info_système.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
-                    print("Système {0} : info-systeme.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
-                    lst_journal.append("Système {0} : info-systeme.csv existe déjà!\n".format(lot_choisis.loc[idx].id_system))
-
-            else:
-                # placer message d'erreur dans journal
-                tempo = "Système {0} : ne semble pas valide!\n".\
-                                   format(lot_choisis.loc[idx].id_system)
+            # déterminer index de l'enregistrement système
+            idx_systeme = systeme_courant_df.query("paire == 'système'").index
+            if len(idx_systeme) == 0:
+                tempo = "  {0:<7} : pas d'enregistrement système dans le fichier du lot.".format(systeme_courant_df.iloc[0].id_system)
+                print(tempo + "\n")
                 lst_journal.append(tempo)
-                print(tempo)
+            else:
+                # créer le dossier du système
+                cree_dossier_systeme(systeme_courant_df.loc[idx_systeme])
+                
+                # enlever l'enr de système dans systeme_courant_df
+                #
+                paires_df = systeme_courant_df.drop(index=idx_systeme)
 
-        # écrire le journal sur disque
+                # créer le dossier de chaque paire et le sous-dossier de programme d'observation dans ce dossier
+                #
+                
+                # debug rendu icitte
+                # voir enregistrer_sur_disque
+                print("  Dossiers des paires et programmes :")
+                for idx in paires_df.index:
+                    tempo = "  {0:>5} / {1}".format(paires_df.loc[idx].paire, paires_df.loc[idx].programme)
+                    print(tempo)
+                print()
+
+                lst_journal.append("  Dossiers des paires et programmes :\n")
+                # placer le contenu de paires_df.paire dans le log
+                #
+                for idx in paires_df.index:
+                    tempo = "  {0:>5} / {1}".format(paires_df.loc[idx].paire, paires_df.loc[idx].programme)
+                    lst_journal.append(tempo + '\n')
+                lst_journal.append('\n')
+                
+        
+        # compéter et écrire le journal sur disque
+        #
+        lst_journal.append("*** Traitement terminé ! ***")
         with open(ncfl_journal, 'w', encoding='UTF-8') as f:
             f.writelines(lst_journal)
             
+        print("\n*** Traitement terminé ! ***")
         print("Le journal est dans «{0}»".format(ncfl_journal))
