@@ -635,19 +635,16 @@ class Systeme:
         Contient les informations de base d'un système.
     """
     def normalise_attributs_chaines(self):
-            # s'assurer  que certains attributs texte soient entourés de "
-            tempo = self.informations_df.loc[0,'id_system_alt1']
-            if r'"' not in tempo:
-                self.informations_df.loc[0,'id_system_alt1'] = r'"' + tempo + r'"'
-        
-            tempo = self.informations_df.loc[0,'id_system_alt2']
-            if r'"' not in tempo:
-                self.informations_df.loc[0,'id_system_alt2'] = r'"' + tempo + r'"'
-        
-            tempo = self.informations_df.loc[0,'remarques']
-            if r'"' not in tempo:
-                self.informations_df.loc[0,'remarques'] = r'"' + tempo + r'"'
-
+        # s'assurer  que certains attributs texte soient entourés de "
+        tempo = self.informations_df.loc[0,'id_system_alt1']
+        if r'"' not in tempo:
+            self.informations_df.loc[0,'id_system_alt1'] = r'"' + tempo + r'"'
+        tempo = self.informations_df.loc[0,'id_system_alt2']
+        if r'"' not in tempo:
+            self.informations_df.loc[0,'id_system_alt2'] = r'"' + tempo + r'"'
+        tempo = self.informations_df.loc[0,'remarques']
+        if r'"' not in tempo:
+            self.informations_df.loc[0,'remarques'] = r'"' + tempo + r'"'
     
     def __init__(self,\
                  chemin_systeme='',
@@ -792,7 +789,7 @@ class DoubleSessionsComplete:
         self.nbrRlogs = 0
         
         # lstObjSession contiendra la liste des objets Session
-        self.lstObjSession = list()
+        self.lstObjSession = []
         
         # checksum (md5) de l'ensemble des fichiers logs utilisés pour
         # la post-réduction
@@ -833,7 +830,7 @@ class DoubleSessionsComplete:
             # créer le df vide avec seulement les noms des colonnes définies
             # plus haut
             #
-            self.reductions_des_observations_df = pd.DataFrame(list(), columns=lstCol)
+            self.reductions_des_observations_df = pd.DataFrame([], columns=lstCol)
 
             ###########################
             # moyennes_par_session_df #
@@ -1032,7 +1029,7 @@ class DoubleSessionsComplete:
         
                 # ajouter un seul bloc à cet objet Session
                 lstSessions[0].ajouteBloc(0, 'ech') # nbrBlocs = noBloc = 1
-                
+
                 # incrire ncfla et ncfle dans le bloc
                 lstSessions[0].lstBlocs[0].ech.ncfle = ncfle
                 lstSessions[0].lstBlocs[0].ech.ncfla = ncfla
