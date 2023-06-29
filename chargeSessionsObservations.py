@@ -12,8 +12,8 @@ from tkinter.filedialog import askopenfile
 import sys
 
 # insérer le chemin suivant dans sys.path pour trouver le package astrodm
-if 'D:\DOCUMENTS\Astronomie\dev' not in sys.path:
-    sys.path.insert(0, 'D:\DOCUMENTS\Astronomie\dev')
+if r'D:\DOCUMENTS\Astronomie\dev' not in sys.path:
+    sys.path.insert(0, r'D:\DOCUMENTS\Astronomie\dev')
 from astrodm import doublesoutils as do
 
 # %% FONCTIONS

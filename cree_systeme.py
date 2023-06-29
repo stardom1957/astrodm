@@ -35,7 +35,7 @@ pd.set_option('display.max_row', 10000)
 pd.set_option("display.precision", 1)
 
 # %% FONCTIONS
-def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='Paaaa-nnn'):
+def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='P0000-000'):
     """
     Créer structure des répertoires d'une paire, selon lemodèle paire/programme.
     
@@ -48,33 +48,32 @@ def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='Paaaa-nnn
      
     Retourne : True | False selon enregistrement ok
     """
+    tempo = "  (creer_dossier_paire_et_prog) Erreur ! Objet système manquant ou non valide !"
     if objet_systeme is None:
-        tempo = "creer_dossier_paire_et_prog) Erreur ! Objet système manquant ou non valide !"
         print(tempo)
         lst_journal.append(tempo + '\n')
         return False
 
     # dossier du système
     dir_systeme = os.path.dirname(objet_systeme.ncfinfo_systeme)
-
-    try:
-        ### création du répertoire de la paire dans le dossier du système
-        os.makedirs(dir_systeme + "/" + paire.upper(), exist_ok=True)
-    except FileNotFoundError:
-        tempo = "creer_dossier_paire_et_prog) Erreur ! Création du dossier de la paire impossible !"
-        print(tempo)
-        lst_journal.append(tempo + '\n')
-        return False
-
-    try:
-        ### création du répertoire du programme  dans le dossier de la paire
-        os.makedirs(dir_systeme + "/" + paire + '/' + programme.upper(), exist_ok=True)
-    except FileNotFoundError:
-        tempo = "creer_dossier_paire_et_prog) Erreur ! Création du dossier du programme impossible !"
-        print(tempo)
-        lst_journal.append(tempo + '\n')
-        return False
-
+    if not mode_validation:
+        try:
+            ### création du répertoire de la paire dans le dossier du système
+            os.makedirs(dir_systeme + "/" + paire.upper(), exist_ok=True)
+        except FileNotFoundError:
+            tempo = "  (creer_dossier_paire_et_prog) Erreur ! Création du dossier de la paire impossible !"
+            print(tempo)
+            lst_journal.append(tempo + '\n')
+            return False
+    
+        try:
+            ### création du répertoire du programme  dans le dossier de la paire
+            os.makedirs(dir_systeme + "/" + paire + '/' + programme.upper(), exist_ok=True)
+        except FileNotFoundError:
+            tempo = "  (creer_dossier_paire_et_prog) Erreur ! Création du dossier du programme impossible !"
+            print(tempo)
+            lst_journal.append(tempo + '\n')
+            return False
     return True
 
 
@@ -98,18 +97,18 @@ def cree_dossier_systeme(sys_df):
         #
         nom_sys = sys_df['id_system'].item()
 
-        if estNan(sys_df['id_system_alt1'].item()):
+        if do.estNan(sys_df['id_system_alt1'].item()):
             alt1 = ''
         else:
             alt1 = sys_df['id_system_alt1'].item()
 
-        if estNan(sys_df['id_system_alt2'].item()):
+        if do.estNan(sys_df['id_system_alt2'].item()):
             alt2 = ''
         else:
             alt2 = sys_df['id_system_alt2'].item()
 
         # .WDSdr = non | OUI
-        if estNan(sys_df['WDSdr'].item()):
+        if do.estNan(sys_df['WDSdr'].item()):
             WDSdr_val = 'non'
         else:
             if sys_df['WDSdr'].item() == 'oui' or sys_df['WDSdr'].item() == 'OUI':
@@ -117,35 +116,35 @@ def cree_dossier_systeme(sys_df):
             else:
                 WDSdr_val = 'non'
 
-        if estNan(sys_df['remarques'].item()):
+        if do.estNan(sys_df['remarques'].item()):
             rem = ''
         else:
             rem = sys_df['remarques'].item()
 
         # créer objet Systeme
+        #
         obj_sys = do.Systeme(chemin_systeme=racine_repertoire_systeme,\
                     nom_systeme_WDS=nom_sys, id_sys_alt1=alt1, id_sys_alt2=alt2,\
                            WDSdr=WDSdr_val, remarques=rem)
 
-        enregistrer_systeme_sur_disque(obj_sys)
+        if not mode_validation:
+            enregistrer_systeme_sur_disque(obj_sys)
         lst_journal.append("  Création du dossier du système terminée !\n")
 
         # renseigner le log
+        #
         print("  Création du dossier du système terminée !")
         return obj_sys
 
+    # le système est non valide
     # placer message d'erreur dans journal
+    #
     tempo = "Système {0} : ne semble pas valide!\n".\
                        format(sys_df['id_system'].item())
     lst_journal.append(tempo)
     print(tempo)
     return None
 
-
-
-def estNan(val):
-    """ Cette comparaison permet de trouver si une variable contient NaN. """
-    return val != val
 
 
 def enregistrer_systeme_sur_disque(objet_systeme):
@@ -164,7 +163,8 @@ def enregistrer_systeme_sur_disque(objet_systeme):
     assert objet_systeme is not None, '(enregistrer_systeme_sur_disque) Erreur ! Objet système manquant ou non valide !'
 
     ### création du répertoire du système et planif
-    # il n'y a pas de mal à tenter de créer des répertoires même s'ils existes
+    # il n'y a pas de mal à tenter de créer des répertoires même s'ils existent
+    #
     dir_systeme = os.path.dirname(objet_systeme.ncfinfo_systeme)
     os.makedirs(dir_systeme, exist_ok=True)
     os.makedirs(dir_systeme + "/planif/", exist_ok=True)
@@ -190,6 +190,7 @@ def enregistrer_systeme_sur_disque(objet_systeme):
                                 index=False, encoding='utf-8')
 
     # copier fichier modèle Jupyter Lab
+    #
     if copier_cahier:
         source = ncf_cahier_modele
         destination = dir_systeme + "/planif/systeme-notes.ipynb"
@@ -204,7 +205,6 @@ def selectionner_fichier_lot():
     ncf = askopenfile(mode ='r', filetypes =[('Fichiers lot', '*.ods')],\
      title = 'Sélectionnez le fichier du lot')
     return ncf.name
-
 
 # %% Réglages de l'environnement d'exécution
 ### pandas options d'affichage des tables
@@ -222,46 +222,78 @@ ncf_cahier_modele = dossier_des_modeles + r'/systeme-notes.ipynb'
 # %% PRINCIPAL
 if __name__ == '__main__':
     #
-    # traitement en lot
+    # demander pour le mode de validation seulement
+    # c'est-à-dire aucun dossier créé, lseulement le log
     #
+    rep = input("Mode VALIDATION (o|n) o par défaut :") or 'o'
+    mode_validation = True
+    if rep.upper() == 'N':
+        mode_validation = False
     racine_repertoire_systeme = os.getcwd() + r'/med/'
 
     # ncfl : nom complet fichier lot
+    #
     ncfl = selectionner_fichier_lot()
     print("\n*** Traitement du lot «{0}». ***".format(os.path.basename(ncfl)))
 
     # journalisation des résultats, erreurs, etc
     # création du systag pour rendre nom fichier unique
+    #
     systag = do.produire_systag()
 
     # nom complet du fichier de journalisation composé à partir de ncfl et
     # du systag
+    #
     ncfl_journal = os.path.dirname(ncfl) + '/Traitement_lot_' +\
         os.path.basename(ncfl).split('.')[0] + '_' + systag + '.log'
-    # lire ncfl dans un pandas df
+
+    # lire fichier lot dans un df
+    #
     lot_df = pd.read_excel(ncfl, engine="odf")
 
     #
     # enlever les lignes vides (nan ...) qui correspondent au lignes blanches dans excel
     #
-    lignes_vides_serie = lot_df['id_system'].apply(estNan)
+    lignes_vides_serie = lot_df['id_system'].apply(do.estNan)
     lot_complet_df = lot_df.drop(lot_df.loc[lignes_vides_serie].index).reset_index(drop=True)
 
+    # créer le journal sous forme de liste
     #
-    # création du journal sous forme de liste
-    #
-    #debug lst_journal = list()
     lst_journal = []
     lst_journal.append("*** Journal du traitement de «" + os.path.basename(ncfl) + '» ***\n')
     tempo = "qui comprend {0} enregistrements de données.\n".format(len(lot_complet_df))
     print(tempo)
     lst_journal.append(tempo + '\n')
 
-    # filter les enregistrements avec la colonne choisir (0|1)
+    # filtrer les enregistrements avec la colonne choisir (0|1)
+    #
     lot_choisis_df = lot_complet_df.query("choisir == 1")
     lot_non_choisis_df = lot_complet_df.query("choisir == 0")
 
-    # créer un set des id_system's choisis
+    # créer un set des id_system's non choisis
+    #
+    s_non_choisis_set = set()
+    for idx in lot_non_choisis_df.index:
+        s_non_choisis_set.add(lot_non_choisis_df.loc[idx, 'id_system'])
+
+    tempo = "\n{0} systèmes non choisis :".format(len(s_non_choisis_set))
+    print(tempo)
+    if len(s_non_choisis_set) != 0:
+        print(s_non_choisis_set)
+    print()
+    lst_journal.append(tempo + '\n')
+
+    # placer le contenu de s_non_choisis_set dans le log
+    #
+    tempo = "{"
+    for i in range(len(list(s_non_choisis_set))):
+        tempo = tempo + "'" + list(s_non_choisis_set)[i] + "', "
+    tempo = tempo.rstrip(", ")
+    tempo = tempo + "}\n"
+    lst_journal.append(tempo)
+
+    # créer un set des id_system choisis
+    #
     s_choisis_set = set()
     for idx in lot_choisis_df.index:
         s_choisis_set.add(lot_choisis_df.loc[idx, 'id_system'])
@@ -280,27 +312,13 @@ if __name__ == '__main__':
     tempo = tempo + "}\n"
     lst_journal.append(tempo)
 
-    # créer un set des id_system's non choisis
-    s_non_choisis_set = set()
-    for idx in lot_non_choisis_df.index:
-        s_non_choisis_set.add(lot_non_choisis_df.loc[idx, 'id_system'])
-
-    tempo = "\n{0} systèmes non choisis :".format(len(s_non_choisis_set))
-    print(tempo)
-    if len(s_non_choisis_set) != 0: 
-        print(s_non_choisis_set)
-    print()
-    lst_journal.append(tempo + '\n')
-
-    # placer le contenu de s_non_choisis_set dans le log
-    tempo = "{"
-    for i in range(len(list(s_non_choisis_set))):
-        tempo = tempo + "'" + list(s_non_choisis_set)[i] + "', "
-    tempo = tempo.rstrip(", ")
-    tempo = tempo + "}\n"
-    lst_journal.append(tempo)
-
+    # indiquer le mode de validation
     #
+    if mode_validation:
+        tempo = 12 * "*" + " MODE VALIDATION - AUCUN DOSSIERS CRÉÉ " + 12 * '*'
+        print('\n' + tempo + '\n')
+        lst_journal.append('\n' + tempo + '\n')
+
     # sélectionner et traiter chaque système présent dans s_choisis_set
     #
     lst_journal.append("\n")
@@ -308,12 +326,11 @@ if __name__ == '__main__':
         systeme_courant_df = lot_choisis_df.query("id_system == '" + nom_systeme + "'")
         tempo = "Traitement de {0:<7} :".format(systeme_courant_df.iloc[0].id_system)
         print(tempo)
-        #debug print(systeme_courant_df)
 
         lst_journal.append(tempo + '\n')
-        #debug lst_journal.append(systeme_courant_df)
 
         # déterminer index de l'enregistrement système
+        #
         idx_systeme = systeme_courant_df.query("paire == 'système'").index
         if len(idx_systeme) == 0:
             tempo = "  {0:<7} : pas d'enregistrement système dans le fichier du lot."\
@@ -322,6 +339,7 @@ if __name__ == '__main__':
             lst_journal.append(tempo)
         else:
             # créer le dossier du système
+            #
             objet_systeme_courant = cree_dossier_systeme(systeme_courant_df.loc[idx_systeme])
 
             # enlever l'enr de système dans systeme_courant_df
@@ -330,24 +348,28 @@ if __name__ == '__main__':
 
             # créer le dossier de chaque paire et le sous-dossier de programme d'observation dans ce dossier
             #
-
-            # voir enregistrer_systeme_sur_disque
             print("  Dossiers des paires et programmes :")
             for idx in paires_df.index:
                 pr = paires_df.loc[idx].paire
                 prog = paires_df.loc[idx].programme
-                OKres = creer_dossier_paire_et_prog(objet_systeme_courant, paire=pr, programme=prog)
-                tempo = "  {0:>5} / {1} ".format(pr, prog)
-                if OKres:
-                    tempo = tempo + 'CRÉÉ'
+                if not do.estNan(pr) and not do.estNan(prog) and do.est_un_programme(prog.upper()):
+                    OKres = creer_dossier_paire_et_prog(objet_systeme_courant, paire=pr, programme=prog)
+                    tempo = "  {0:>5} / {1} ".format(pr, prog)
+                    if OKres:
+                        tempo = tempo + 'CRÉÉ'
+                    else:
+                        tempo = tempo + 'ERREUR'
+                    print(tempo)
+                    lst_journal.append(tempo + '\n')
                 else:
-                    tempo = tempo + 'ERREUR'
-                print(tempo)
-                lst_journal.append(tempo + '\n')
+                    tempo = "  {0:>5} / '{1:>9}' <--- paire / programme non valides !".format(pr, prog)
+                    print(tempo)
+                    lst_journal.append(tempo + '\n')
             print()
+            lst_journal.append('\n')
 
 
-    # compéter et écrire le journal sur disque
+    # compéter le log et l'écrire sur disque
     #
     lst_journal.append("*** Traitement terminé ! ***")
     with open(ncfl_journal, 'w', encoding='UTF-8') as f:
@@ -355,4 +377,10 @@ if __name__ == '__main__':
 
     print("\n*** Traitement terminé ! ***")
     print("Le journal est dans «{0}»".format(ncfl_journal))
-    
+
+    # indiquer de nouveau le mode de validation
+    #
+    if mode_validation:
+        tempo = 12 * "*" + " MODE VALIDATION - AUCUN DOSSIERS CRÉÉ " + 12 * '*'
+        print('\n' + tempo + '\n')
+        lst_journal.append('\n' + tempo + '\n')

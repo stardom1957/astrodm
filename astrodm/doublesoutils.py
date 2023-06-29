@@ -1941,6 +1941,10 @@ class DoubleSessionsComplete:
 def version():
     print(__name__ + ' version ' + str(no_version) + ', avril 2023.')
 
+def estNan(val):
+    """ Cette comparaison permet de trouver si une variable contient NaN. """
+    return val != val
+
 def drive(distance, d=0, m=0, s=0):
     """
     Retourne le temps de parcourt (en s) par dérive sidérale pour parcourir la
@@ -3655,20 +3659,16 @@ def est_un_programme(chemin):
     Paramètre positionnel
      chemin -- chemin du répertoire à vérifier.
     """
-
-    #pattern = r'([A-Z]{2}\-[0-9]{2}\-[0-9]{2}b[0-9]{2})'
-    #res = filter(re.compile(str_re_pattern).match, l[1])
-    #obj_match = obj_pat.match(l[1])
-
-    valide = False
+    if estNan(chemin):
+        return False
+    
     str_re_pattern = r'P[0-9]{4}-[0-9]{3}'
     obj_pat = re.compile(str_re_pattern)
     res = obj_pat.search(chemin)
     if res != None:
-        if len(res.group(0)) == 9:
-            valide = True
-    return valide
-
+        if len(chemin) == 9:
+            return True
+    return False
 
 def produit_liste_reductions(chemin_des_systemes):
     """
@@ -3889,7 +3889,7 @@ def produire_liste_programmes(ch):
         paire = 'aucune'
         id_WDS = None
         const = None
-        lst_sessions = list()
+        lst_sessions = []
         lst_sessions.append(np.nan)
         Dates_UTC = 'S. o.'
         delai = np.nan
