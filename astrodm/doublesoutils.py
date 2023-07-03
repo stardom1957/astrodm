@@ -2059,7 +2059,7 @@ def produire_liste_delais(liste_tup_dates):
     """
     # trier la liste des tuples sur la date (index 1)
     liste_tup_dates.sort(key=lambda tup: tup[1], reverse=False)
-    lst_intervalles = list()
+    lst_intervalles = []
     fin = len(liste_tup_dates) - 1
     for r in range(0, fin):
         debut = r
@@ -3676,23 +3676,29 @@ def est_une_paire(chaine):
 
 def est_un_programme(chemin):
     """
-      Retourne True | False si le chemin passé en paramètre est un programme
-      d'observation valide selon le format Paaaa-nnn; où aaaa = année
-      et nnn = 000 à 999 (par ex. P2022-004).
+      Retourne True ssi le nom du dernier répertoire du chemin passé en paramètre est
+      formaté correctement comme un programme d'observation, par ex. 'P2022-004'.
+      
+      Par exemple, dans le chemin suivant 
+      
+     'D:\\DOCUMENTS\\Astronomie\\Data/med\\A   152\\AB\\P2022-020\\' ;
+     
+     les segments qui se trouvent à la suite de '/med', c.-à-d. : '\\A   152\\' et '\\AB\\'
+     ont déjà été trouvés valides comme système et paire respectivement. Donc, le pattern
+     'Paaaa-nnn' recherché doit obligatoirement se retrouver à la fin du chemin.
+     
+     Ici l'on cherche '\\P2022-004\\'
       
     Paramètre positionnel
      chemin -- chemin du répertoire à vérifier.
     """
-    if estNan(chemin):
-        return False
-    
-    str_re_pattern = r'P[0-9]{4}-[0-9]{3}'
-    obj_pat = re.compile(str_re_pattern)
-    res = obj_pat.search(chemin)
-    if res.group(0) != None:
-        if len(res.group(0)) == 9:
-            return True
+    if not estNan(chemin):
+        str_re_pattern = r'(/P[0-9]{4}-[0-9]{3}/)$'
+        obj_pat = re.compile(str_re_pattern)
+        res = obj_pat.search(chemin.replace('\\', '/'))
+        return res is not None
     return False
+
 
 def produit_liste_reductions(chemin_des_systemes):
     """
