@@ -4392,19 +4392,19 @@ MAX_DELTA_TEMPERATURE = 5.0
 MAX_DELAI_ENTRE_OBSERVATIONS = 7.0
 
 codes_etat_obs_dict = {
-    '123': ['1:état, 2:explication, 3:méthode.'],
-    'C..': ["En cours d'observation. Voir explication."],
-    'P..': ['Programme en PLANIFICATION.'],
-    'T..': ['Programme TERMINÉ, voir explication.'],
+    '123': ['1: ÉTAT, 2: EXPLICATION, 3: MÉTHODE de mesure.'],
+    'C..': ["En cours d'observation. Voir EXPLICATION."],
+    'P..': ['Programme en planification.'],
+    'T..': ['Programme terminé, voir EXPLICATION.'],
     '?..': ["Aucun programme d'observation assigné."],
-    '.A.': ['ACCEPTABLE, mais programme terminé avec N=1 et délai > {0} j.'.format(MAX_DELAI_ENTRE_OBSERVATIONS)],
-    '.E.': ["ÉCHÉANCE de {0} j imminante!".format(MAX_DELAI_ENTRE_OBSERVATIONS)],
-    '.O.': ['OPTIMAL. Programme complété avec N>1.'],
-    '.S.': ["Nouvelle SESSION à planifier."],
-    '.R.': ["Il peut y avoir des données prêtes pour la PRÉ-RÉDUCTION."],
-    '.X.': ['Données INUTILISABLES! Voir journal de post-réduction.'],
-    '..L': ['Méthode de mesure par Lucky Imaging.'],
-    '..I': ['Méthode de mesure par interférométrie des tavelures.']
+    '.A.': ['Résultat acceptable, mais programme terminé avec N=1 et délai > {0} j.'.format(MAX_DELAI_ENTRE_OBSERVATIONS)],
+    '.E.': ["Arrive à échéance dans moins de {0} j.".format(MAX_DELAI_ENTRE_OBSERVATIONS)],
+    '.O.': ['Résultat optimal : programme complété avec N>1.'],
+    '.S.': ["Nouvelle session d'observation à planifier."],
+    '.R.': ["Il peut y avoir des données prêtes pour la pré-déduction."],
+    '.X.': ['Données inutilisables! Voir journal de post-réduction.'],
+    '..L': ['Lucky Imaging.'],
+    '..I': ['Interférométrie des tavelures.']
 }
 
 # pour rech WDS (source seulement) formater src avec un espace entre découvreur et no
