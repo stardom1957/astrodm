@@ -1941,6 +1941,30 @@ class DoubleSessionsComplete:
 def version():
     print(__name__ + ' version ' + str(no_version) + ', avril 2023.')
 
+def filtre_etat_NA(etat):
+    ''' filtre les état sans prog et / ou paire assigné '''
+    return '?' in etat
+
+def filtre_etat_X(etat):
+    ''' filtre les états en erreur '''
+    return 'X' in etat
+
+def filtre_etat_C(etat):
+    ''' filtre les états en cours '''
+    return 'C' in etat
+
+def filtre_etat_R(etat):
+    ''' filtre les états qui demandent une réduction '''
+    return 'R' in etat
+
+def filtre_etat_P(etat):
+    ''' filtre les états en planification '''
+    return 'P' in etat
+
+def filtre_etat_T(etat):
+    ''' filtre les états terminé '''
+    return 'T' in etat
+
 def estNan(val):
     """ Cette comparaison permet de trouver si une variable contient NaN. """
     return val != val
@@ -3665,8 +3689,8 @@ def est_un_programme(chemin):
     str_re_pattern = r'P[0-9]{4}-[0-9]{3}'
     obj_pat = re.compile(str_re_pattern)
     res = obj_pat.search(chemin)
-    if res != None:
-        if len(chemin) == 9:
+    if res.group(0) != None:
+        if len(res.group(0)) == 9:
             return True
     return False
 
@@ -3953,7 +3977,7 @@ def produire_liste_programmes(ch):
                 # ajouter à la liste des programmes et incrémenter le compteur
                 # approprié
                 lst_prog_df.loc[lst_prog_df.index.size] = data
-                nbr_etat_NA += 1
+                #debug nbr_etat_NA += 1
             
             else:
                 #
@@ -3983,14 +4007,14 @@ def produire_liste_programmes(ch):
                         lstProgs = glob.glob(chemin_paire + '/P*/')
                         
                         if len(lstProgs) == 0:
-                            # s'il n'y à pas de programme, il faut quand même créer
+                            # s'il n'y a pas de programme, il faut quand même créer
                             # l'enregistrement, l'ajouter au df et
                             # incrémenter le compteur approprié
 
                             data = [obs_prog, id_system, paire, id_WDS, const, lst_sessions, Dates_UTC, delai, str_dth_echeance_utc, etat]
                             # ajouter à la liste des programmes
                             lst_prog_df.loc[lst_prog_df.index.size] = data
-                            nbr_etat_NA += 1
+                            #debug nbr_etat_NA += 1
                         else:
                             # on traite chacun des programmes dans lstProgs
                             for chemin_prog in lstProgs:
@@ -4032,7 +4056,7 @@ def produire_liste_programmes(ch):
                                         data = [obs_prog, id_system, paire, id_WDS, const, lst_sessions, Dates_UTC, delai, str_dth_echeance_utc, etat]
                                         # ajouter à la liste des programmes
                                         lst_prog_df.loc[lst_prog_df.index.size] = data
-                                        nbr_etat_P += 1
+                                        #debug nbr_etat_P += 1
                                     else:
                                         # il existe au moins un bloc dans S,
                                         # alors vérifier la présence d'un
@@ -4110,7 +4134,7 @@ def produire_liste_programmes(ch):
                                             #debug if 'T' in etat:
                                                 
                                             # il n'y a que des sessions terminée dans resultats_pour_publication_df
-                                            nbr_etat_T += 1
+                                            #debug nbr_etat_T += 1
 
                                         ########################################################################
                                         # TRAITEMENT DES AUTRES SESSIONS
@@ -4142,7 +4166,7 @@ def produire_liste_programmes(ch):
                                                         # calculer le délai
                                                         
                                                         dtUTC_acquisition_sep = s.lstObjSession[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq
-                                                        lst_dates = list()
+                                                        lst_dates = []
                                                         lst_dates.append(dtUTC_acquisition_sep.value.split('T')[0])
                         
                                                         # dans ce cas, il faut calculer la date
@@ -4159,23 +4183,23 @@ def produire_liste_programmes(ch):
                                                         if s.lstObjSession[index_session].au_moins_un_bloc_valide:
                                                             if maintenant > dth_echeance_utc:
                                                                 etat = 'TRL'
-                                                                nbr_etat_T += 1
-                                                                nbr_etat_R += 1
+                                                                #debug nbr_etat_T += 1
+                                                                #debug nbr_etat_R += 1
                                                             else:
                                                                 etat = 'CRL'
-                                                                nbr_etat_C += 1
-                                                                nbr_etat_R += 1
+                                                                #debug nbr_etat_C += 1
+                                                                #debug nbr_etat_R += 1
                                                         else:
                                                             etat = 'TXL'
-                                                            nbr_etat_X += 1
-                                                            nbr_etat_T += 1
+                                                            #debug nbr_etat_X += 1
+                                                            #debug nbr_etat_T += 1
 
                                                         #debug delai = round(diff_dt(maintenant.isoformat(), dth_echeance_utc.value),1)
                                                         delai = round(abs((maintenant - dth_echeance_utc).value), 1)
                                                     else:
                                                         # il reste seulement le cas etat = 'P L'
                                                         etat = 'P L'
-                                                        nbr_etat_P += 1
+                                                        #debug nbr_etat_P += 1
                                                         delai = np.nan
                                                 
                                                 # construire l'enregistrement
@@ -4252,6 +4276,44 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
                               inplace=True)
     #programmes_df.fillna(' ', inplace=True)
     
+    # Calculer le nombre par état
+    #
+    ## nbr_etat_T (terminé)
+    etat_T_serie = programmes_df['État'].apply(filtre_etat_T)
+    etat_T_df = programmes_df.drop(programmes_df.loc[etat_T_serie].index)
+    nbr_etat_T = nbrEnregistrements - len(etat_T_df)
+    
+    
+    ## nbr_etat_P (en planification)
+    #
+    etat_P_serie = programmes_df['État'].apply(filtre_etat_P)
+    etat_P_df = programmes_df.drop(programmes_df.loc[etat_P_serie].index)
+    nbr_etat_P = nbrEnregistrements - len(etat_P_df)
+    
+    ## nbr_etat_NA (sans prog / paire assigné)
+    #
+    etat_NA_serie = programmes_df['État'].apply(filtre_etat_NA)
+    etat_NA_df = programmes_df.drop(programmes_df.loc[etat_NA_serie].index)
+    nbr_etat_NA = nbrEnregistrements - len(etat_NA_df)
+
+    ## nbr_etat_C (en cours)
+    #
+    etat_C_serie = programmes_df['État'].apply(filtre_etat_C)
+    etat_C_df = programmes_df.drop(programmes_df.loc[etat_C_serie].index)
+    nbr_etat_C = nbrEnregistrements - len(etat_C_df)
+    
+    ## nbr_etat_R (données prêtes pour pré-réduction)
+    #
+    etat_R_serie = programmes_df['État'].apply(filtre_etat_R)
+    etat_R_df = programmes_df.drop(programmes_df.loc[etat_R_serie].index)
+    nbr_etat_R = nbrEnregistrements - len(etat_R_df)
+
+    ## nbr_etat_X (données inutilisables)
+    #
+    etat_X_serie = programmes_df['État'].apply(filtre_etat_X)
+    etat_X_df = programmes_df.drop(programmes_df.loc[etat_X_serie].index)
+    nbr_etat_X = nbrEnregistrements - len(etat_X_df)
+
     #### imprimer le rapport des programmes
     print('Trié par', liste_de_tri_prog[tri])
     #print('-' * 82)
@@ -4284,8 +4346,8 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
     # inutile d'imprimer ces exemples si stdout est redirigé vers un fichier
     if sortie != 'F':
         print('\nEXEMPLES DE REQUÊTES :')
+        print("liste_des_programmes_df.query(\"obs_prog == 'P2022-020'\")")
         print("liste_des_programmes_df.query(\"id_system == 'STF 982'\")")
-        print("liste_des_programmes_df.query(\"État == 'P  '\")")
         print("liste_des_programmes_df.query(\"const == 'And'\")")
         print("liste_des_programmes_df.query(\"const == 'And' or const == 'Gem'\")")
         print("avec la variable rech = ['STT545', 'STF60'] :")
