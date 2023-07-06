@@ -329,7 +329,7 @@ if __name__ == '__main__':
 
         lst_journal.append(tempo + '\n')
 
-        # déterminer index de l'enregistrement système
+        # déterminer l'index de l'enregistrement qui contient 'système' dans paire
         #
         idx_systeme = systeme_courant_df.query("paire == 'système'").index
         if len(idx_systeme) == 0:
@@ -337,6 +337,13 @@ if __name__ == '__main__':
                 .format(systeme_courant_df.iloc[0].id_system)
             print(tempo + "\n")
             lst_journal.append(tempo)
+        elif len(idx_systeme) > 1:
+            # alors il y a plus d'une copie de ce système
+            tempo = "  {0:<7} : il y a {1} copies de ce système!."\
+                .format(systeme_courant_df.iloc[0].id_system, len(idx_systeme))
+            print(tempo + "\n")
+            lst_journal.append(tempo)
+            pass
         else:
             # créer le dossier du système
             #

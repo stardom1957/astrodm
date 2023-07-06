@@ -36,6 +36,7 @@ def selectionner_et_lire_fichier_des_sources():
 
 # %% PRINCIPAL
 if __name__ == '__main__':
+    
     # charger fichier liste des sources (txt)
     #
     nf, rep = selectionner_et_lire_fichier_des_sources()
@@ -63,7 +64,8 @@ if __name__ == '__main__':
     # créer une liste à partir du set
     #
     entreeSources = list(sources)
-    del sources
+    sources
+    #entreeSources = ['L49', 'ber1']
 
     # effectuer la première recherche
     #
@@ -79,5 +81,5 @@ if __name__ == '__main__':
             print("{0} non trouvé dans WDS!".format(entreeSources[idx]))
 
     collige.sort(['Disc', 'Comp'])
-    collige.pprint(show_unit=True, max_width=120, max_lines=1500)
+    collige.pprint(show_unit=True, max_width=150, max_lines=1500)
     

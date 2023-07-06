@@ -39,18 +39,14 @@ def non_physique(Notes):
     return False
 
 
-def notes_vide(Notes):
+def notes_sans_N(Notes):
     ''' Retourne les index de tous les enr. avec Notes vide'''
-    if Notes == '    ':
-        return True
-    return False
+    return 'N' not in Notes
 
 
-def notes_non_vide(Notes):
+def notes_avec_N(Notes):
     ''' Retourne les index de tous les enr. avec Notes non vide'''
-    if Notes != '    ':
-        return True
-    return False
+    return 'N' in Notes
 
 # %% PRINCIPAL
 if __name__ == '__main__':
@@ -129,18 +125,18 @@ if __name__ == '__main__':
     # en appliquant diverses fonctions à ndf, les séries suivantes contiendront les index des enregistrements qui répondent
     # à certains critères
     #
-    probables_Notes_vides_serie = probables_df['Notes'].apply(notes_vide)
-    probables_Notes_non_vides_serie = probables_df['Notes'].apply(notes_non_vide)
+    probables_notes_sans_Ns_serie = probables_df['Notes'].apply(notes_sans_N)
+    probables_notes_avec_Ns_serie = probables_df['Notes'].apply(notes_avec_N)
 
 
     # le df suivant contiendra seulement les paires d'ont les Notes sont vides
     # il faut donc retirer les enr. ayant des notes non vides de probables_df
-    probables_Notes_vides_df = probables_df.drop(probables_df.loc[probables_Notes_non_vides_serie].index)
+    probables_notes_sans_Ns_df = probables_df.drop(probables_df.loc[probables_notes_avec_Ns_serie].index)
 
     # le df suivant contiendra seulement les paires d'ont les Notes sont non vides
     # il faut donc retirer les enr. ayant dess notes vides de probables_df
     #
-    probables_Notes_non_vides_df = probables_df.drop(probables_df.loc[probables_Notes_vides_serie].index)
+    probables_notes_avec_Ns_df = probables_df.drop(probables_df.loc[probables_notes_sans_Ns_serie].index)
 
     # %% imprimer le rapport
     #
@@ -153,8 +149,8 @@ if __name__ == '__main__':
     print("         Nombre de paires non physiques : {0:6d}         (voir non_physiques_df)".format(len(non_physiques_df)))
     print("Nombre de paires probablement physiques : {0:6d}         (voir probables_df)\n".format(len(probables_df)))
 
-    print("      Nombre de paires avec Notes vides : {0:6d}         (voir probables_Notes_vides_df)".format(len(probables_Notes_vides_df)))
-    print("  Nombre de paires avec Notes NON vides : {0:6d}         (voir probables_Notes_non_vides_df)\n".format(len(probables_Notes_non_vides_df)))
+    print("            Nombre de paires avec Notes : {0:6d}         (voir probables_notes_sans_Ns_df)".format(len(probables_notes_sans_Ns_df)))
+    print("            Nombre de paires sans Notes : {0:6d}         (voir probables_notes_avec_Ns_df)\n".format(len(probables_notes_avec_Ns_df)))
 
 
     print("Tous ces dataframe peuvent maintenant être affinés ! Voici un exemple de requête avec probables_df :")

@@ -41,6 +41,7 @@ if __name__ == '__main__':
 
     if int(tri) in range(len(do.liste_de_tri_prog)):
         # dernier paramètre == True, imprime tables des notes
-        liste_des_programmes_df = do.imprime_liste_programmes(chemin=os.getcwd() + '/med', tri=int(tri), impr_table_etat=impr_codes, sortie=sortir_ici)
+        ch = chemin=os.getcwd() + '/med'
+        liste_des_programmes_df = do.imprime_liste_programmes(ch, tri=int(tri), impr_table_etat=impr_codes, sortie=sortir_ici)
     else:
         print('Oups «{0}» is illégal! Bye!'.format(tri))
