@@ -3676,6 +3676,8 @@ def est_une_paire(chaine):
 
 def est_un_programme(chemin):
     """
+      Cas 1 Recherche dans un chemin == présence de séparateurs \\ :
+          
       Retourne True ssi le nom du dernier répertoire du chemin passé en paramètre est
       formaté correctement comme un programme d'observation, par ex. 'P2022-004'.
       
@@ -3688,16 +3690,35 @@ def est_un_programme(chemin):
      'Paaaa-nnn' recherché doit obligatoirement se retrouver à la fin du chemin.
      
      Ici l'on cherche '\\P2022-004\\'
+     
+     Cas 2 Recherche dans une chaine de nom de programme (absence de séparateurs \\)
       
     Paramètre positionnel
      chemin -- chemin du répertoire à vérifier.
     """
+    
+    # Cas 1 - recherche dans un chemin
+    if '\\' in chemin:
+        if not estNan(chemin):
+            str_re_pattern = r'(/P[0-9]{4}-[0-9]{3}/)$'
+            obj_pat = re.compile(str_re_pattern)
+            res = obj_pat.search(chemin.replace('\\', '/'))
+            return res is not None
+        return False
+    
+    # sinon Cas 2
+    # puisqu'il n'y a pas de car délimiteur, il faut vérifier si la longueur de
+    # chemin est 9
     if not estNan(chemin):
-        str_re_pattern = r'(/P[0-9]{4}-[0-9]{3}/)$'
+        str_re_pattern = r'(P[0-9]{4}-[0-9]{3})$'
         obj_pat = re.compile(str_re_pattern)
-        res = obj_pat.search(chemin.replace('\\', '/'))
-        return res is not None
+        res = obj_pat.search(chemin)
+        if res is not None:
+            if len(chemin) == 9:
+                return True
+        return False
     return False
+    
 
 
 def produit_liste_reductions(chemin_des_systemes):

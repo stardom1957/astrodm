@@ -129,11 +129,11 @@ def cree_dossier_systeme(sys_df):
 
         if not mode_validation:
             enregistrer_systeme_sur_disque(obj_sys)
-        lst_journal.append("  Création du dossier du système terminée !\n")
+        lst_journal.append("  '{0}' OK :\n".format(obj_sys.nom))
 
         # renseigner le log
         #
-        print("  Création du dossier du système terminée !")
+        print("  '{0}' OK :".format(obj_sys.nom))
         return obj_sys
 
     # le système est non valide
@@ -324,7 +324,7 @@ if __name__ == '__main__':
     lst_journal.append("\n")
     for nom_systeme in s_choisis_set:
         systeme_courant_df = lot_choisis_df.query("id_system == '" + nom_systeme + "'")
-        tempo = "Traitement de {0:<7} :".format(systeme_courant_df.iloc[0].id_system)
+        tempo = "{0:<7} :".format(systeme_courant_df.iloc[0].id_system)
         print(tempo)
 
         lst_journal.append(tempo + '\n')
@@ -348,13 +348,14 @@ if __name__ == '__main__':
 
             # créer le dossier de chaque paire et le sous-dossier de programme d'observation dans ce dossier
             #
-            print("  Dossiers des paires et programmes :")
+            #debug print("  Dossiers des paires et programmes :")
+            #debug lst_journal.append("  Dossiers des paires et programmes :" + '\n')
             for idx in paires_df.index:
                 pr = paires_df.loc[idx].paire
                 prog = paires_df.loc[idx].programme
                 if not do.estNan(pr) and not do.estNan(prog) and do.est_un_programme(prog.upper()):
                     OKres = creer_dossier_paire_et_prog(objet_systeme_courant, paire=pr, programme=prog)
-                    tempo = "  {0:>5} / {1} ".format(pr, prog)
+                    tempo = "    '{0}' / '{1}' ".format(pr, prog)
                     if OKres:
                         tempo = tempo + 'CRÉÉ'
                     else:
@@ -362,7 +363,7 @@ if __name__ == '__main__':
                     print(tempo)
                     lst_journal.append(tempo + '\n')
                 else:
-                    tempo = "  {0:>5} / '{1:>9}' <--- paire / programme non valides !".format(pr, prog)
+                    tempo = "    '{0}' / '{1}' <--- paire / programme non valides !".format(pr, prog)
                     print(tempo)
                     lst_journal.append(tempo + '\n')
             print()
@@ -371,11 +372,7 @@ if __name__ == '__main__':
 
     # compéter le log et l'écrire sur disque
     #
-    lst_journal.append("*** Traitement terminé ! ***")
-    with open(ncfl_journal, 'w', encoding='UTF-8') as f:
-        f.writelines(lst_journal)
 
-    print("\n*** Traitement terminé ! ***")
     print("Le journal est dans «{0}»".format(ncfl_journal))
 
     # indiquer de nouveau le mode de validation
@@ -384,3 +381,9 @@ if __name__ == '__main__':
         tempo = 12 * "*" + " MODE VALIDATION - AUCUN DOSSIERS CRÉÉ " + 12 * '*'
         print('\n' + tempo + '\n')
         lst_journal.append('\n' + tempo + '\n')
+
+    lst_journal.append("*** Traitement terminé ! ***")
+    with open(ncfl_journal, 'w', encoding='UTF-8') as f:
+        f.writelines(lst_journal)
+
+    print("\n*** Traitement terminé ! ***")
