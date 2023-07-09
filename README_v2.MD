@@ -27,7 +27,7 @@ La figure 2 donne la liste des scripts et montre également l'emplacement des sc
 
 Ma méthodologie de travail se décline en six flux de travail :
 
- 1. Planification et recherche
+ 1. Planification, recherche et production des listes d'observation
  2. Préparation des sessions d'observations (astroplan)
  3. Acquisition des données
  4. Pré-réduction des données d'observations

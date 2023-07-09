@@ -34,6 +34,9 @@ pd.set_option('display.width', 240)
 pd.set_option('display.max_row', 10000)
 pd.set_option("display.precision", 1)
 
+# pour le fichier log
+crlf = '\r'
+
 # %% FONCTIONS
 def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='P0000-000'):
     """
@@ -51,7 +54,7 @@ def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='P0000-000
     tempo = "  (creer_dossier_paire_et_prog) Erreur ! Objet système manquant ou non valide !"
     if objet_systeme is None:
         print(tempo)
-        lst_journal.append(tempo + '\n')
+        lst_journal.append(tempo + crlf)
         return False
 
     # dossier du système
@@ -63,7 +66,7 @@ def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='P0000-000
         except FileNotFoundError:
             tempo = "  (creer_dossier_paire_et_prog) Erreur ! Création du dossier de la paire impossible !"
             print(tempo)
-            lst_journal.append(tempo + '\n')
+            lst_journal.append(tempo + crlf)
             return False
     
         try:
@@ -72,7 +75,7 @@ def creer_dossier_paire_et_prog(objet_systeme, paire='PPL', programme='P0000-000
         except FileNotFoundError:
             tempo = "  (creer_dossier_paire_et_prog) Erreur ! Création du dossier du programme impossible !"
             print(tempo)
-            lst_journal.append(tempo + '\n')
+            lst_journal.append(tempo + crlf)
             return False
     return True
 
@@ -263,7 +266,7 @@ if __name__ == '__main__':
     lst_journal.append("*** Journal du traitement de «" + os.path.basename(ncfl) + '» ***\n')
     tempo = "qui comprend {0} enregistrements de données.\n".format(len(lot_complet_df))
     print(tempo)
-    lst_journal.append(tempo + '\n')
+    lst_journal.append(tempo + crlf)
 
     # filtrer les enregistrements avec la colonne choisir (0|1)
     #
@@ -281,7 +284,7 @@ if __name__ == '__main__':
     if len(s_non_choisis_set) != 0:
         print(s_non_choisis_set)
     print()
-    lst_journal.append(tempo + '\n')
+    lst_journal.append(tempo + crlf)
 
     # placer le contenu de s_non_choisis_set dans le log
     #
@@ -301,7 +304,7 @@ if __name__ == '__main__':
     tempo = "{0} systèmes choisis :".format(len(s_choisis_set))
     print(tempo)
     print(s_choisis_set)
-    lst_journal.append(tempo + '\n')
+    lst_journal.append(tempo + crlf)
 
     # placer le contenu de s_choisis_set dans le log
     #
@@ -309,15 +312,15 @@ if __name__ == '__main__':
     for i in range(len(list(s_choisis_set))):
         tempo = tempo + "'" + list(s_choisis_set)[i] + "', "
     tempo = tempo.rstrip(", ")
-    tempo = tempo + "}\n"
+    tempo = tempo + "}" + crlf
     lst_journal.append(tempo)
 
     # indiquer le mode de validation
     #
     if mode_validation:
         tempo = 12 * "*" + " MODE VALIDATION - AUCUN DOSSIERS CRÉÉ " + 12 * '*'
-        print('\n' + tempo + '\n')
-        lst_journal.append('\n' + tempo + '\n')
+        print(crlf + tempo + crlf)
+        lst_journal.append(crlf + tempo + crlf)
 
     # sélectionner et traiter chaque système présent dans s_choisis_set
     #
@@ -327,7 +330,7 @@ if __name__ == '__main__':
         tempo = "{0:<7} :".format(systeme_courant_df.iloc[0].id_system)
         print(tempo)
 
-        lst_journal.append(tempo + '\n')
+        lst_journal.append(tempo + crlf)
 
         # déterminer l'index de l'enregistrement qui contient 'système' dans paire
         #
@@ -343,7 +346,6 @@ if __name__ == '__main__':
                 .format(systeme_courant_df.iloc[0].id_system, len(idx_systeme))
             print(tempo + "\n")
             lst_journal.append(tempo)
-            pass
         else:
             # créer le dossier du système
             #
@@ -356,7 +358,7 @@ if __name__ == '__main__':
             # créer le dossier de chaque paire et le sous-dossier de programme d'observation dans ce dossier
             #
             #debug print("  Dossiers des paires et programmes :")
-            #debug lst_journal.append("  Dossiers des paires et programmes :" + '\n')
+            #debug lst_journal.append("  Dossiers des paires et programmes :" + crlf)
             for idx in paires_df.index:
                 pr = paires_df.loc[idx].paire
                 prog = paires_df.loc[idx].programme
@@ -368,13 +370,13 @@ if __name__ == '__main__':
                     else:
                         tempo = tempo + 'ERREUR'
                     print(tempo)
-                    lst_journal.append(tempo + '\n')
+                    lst_journal.append(tempo + crlf)
                 else:
                     tempo = "    '{0}' / '{1}' <--- paire / programme non valides !".format(pr, prog)
                     print(tempo)
-                    lst_journal.append(tempo + '\n')
+                    lst_journal.append(tempo + crlf)
             print()
-            lst_journal.append('\n')
+            lst_journal.append(crlf)
 
 
     # compéter le log et l'écrire sur disque
@@ -386,8 +388,8 @@ if __name__ == '__main__':
     #
     if mode_validation:
         tempo = 12 * "*" + " MODE VALIDATION - AUCUN DOSSIERS CRÉÉ " + 12 * '*'
-        print('\n' + tempo + '\n')
-        lst_journal.append('\n' + tempo + '\n')
+        print(crlf + tempo + crlf)
+        lst_journal.append(crlf + tempo + crlf)
 
     lst_journal.append("*** Traitement terminé ! ***")
     with open(ncfl_journal, 'w', encoding='UTF-8') as f:
