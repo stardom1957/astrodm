@@ -2635,13 +2635,14 @@ def extraire_Log_acq_env(ses, bloc, typeMesure):
                 if 'Mid(UT)=' in ligne:
                     bloc.ech.heure_utc_acq = (ligne.split('=')[1]).rstrip('\n')
     
-                # nombre d'images acquises
-                if 'Limit=' in ligne:
+                # nombre d'images acquises (Frames captured)
+                if 'Frames captured=' in ligne:
                     tempo = (ligne.split('=')[1]).rstrip('\n')
-                    if 'Frames' in tempo:
-                        bloc.ech.nbr_images_acq = tempo.split(' ')[0]
-                    elif 'Seconds' in tempo:
-                        bloc.ech.nbr_images_acq = 'interval de ' + tempo.split(' ')[0] + ' s'
+                    bloc.ech.nbr_images_acq = tempo
+                    # debug if 'Frames' in tempo:
+                    # debug     bloc.ech.nbr_images_acq = tempo.split(' ')[0]
+                    # debug elif 'Seconds' in tempo:
+                    # debug     bloc.ech.nbr_images_acq = 'interval de ' + tempo.split(' ')[0] + ' s'
         else:
             bloc.ech.valide = False
 
@@ -3113,7 +3114,7 @@ def imprime_rapport_E(ses):
     print('                dist_max : {0:>7.3f} px'.format(ses.lstBlocs[0].reduc.dist_max))
     print('                dist_moy : {0:>7.3f} px'.format(ses.lstBlocs[0].reduc.dist_moy))
     print('              écart type : {0:>7.3f} px'.format(ses.lstBlocs[0].reduc.dist_sigma))
-    print("nombre d'images retenues : {0:>2d} sur {1:s}\n".format(ses.lstBlocs[0].reduc.n_data,\
+    print(" Espace de travail Reduc : {0:>2d} sur {1:s} images\n".format(ses.lstBlocs[0].reduc.n_data,\
                                                                   ses.lstBlocs[0].ech.nbr_images_acq))
     
     print('E = {0:>4.4f} "/pix ± {1:>4.4f} "/pix'.format(ses.lstBlocs[0].reduc.E, ses.lstBlocs[0].reduc.E_sigma))

@@ -8,7 +8,7 @@ astrodm propose également des scripts d'exploitation qui permettent de produire
 
 ### Mode d'exploitation du package
 
-Ce package ne nécessite aucune installation (voir figure 1) car il est destiné à être exécuté dans un IDE, par exemple Anaconda. Chaque script d'exploitation indiqué plus bas, lorsqu'exécuté dans le terminal d'un tel IDE, comprend un point d'entrée qui prépare l'environnement d'exécution pour l'importation du package astrodm. Lorsqu'un script se termine, l'espace de nom des variables est complètement préservé. De cette façon, certaines variables qui contiennent des objets demeurent disponibles avec leur méthodes et leurs attributs. Par exemple, le contenu d'une liste pourra être modifié et triée différemment.
+Ce package ne nécessite aucune installation (voir figure 1) car il est destiné à être exécuté dans un IDE, par exemple Anaconda. Chaque script d'exploitation indiqué plus bas, lorsqu'exécuté dans le terminal d'un tel IDE, comprend un point d'entrée qui prépare l'environnement d'exécution pour l'importation du package astrodm. Lorsqu'un script se termine, l'espace de noms (variables) est complètement préservé. De cette façon, certaines variables qui contiennent des objets demeurent disponibles avec leur méthodes et leurs attributs. Par exemple, le contenu d'une liste pourra être modifié et trié différemment.
 
 ### Emplacement du package
 ![Figure 1 : Emplacement du package astrodm.](astrodm-doc/images/emplacement-package.jpg)
@@ -17,7 +17,7 @@ Ce package ne nécessite aucune installation (voir figure 1) car il est destiné
 
 ### Les scripts d'exploitation
 
-La figure 2 donne la liste des scripts et montre également l'emplacement des scripts d'exploitation. Il est recommandé d'exécuter les scripts dans le même répertoire qui contient les sous-répertoires **med** et **modeles**.  Dans mon cas, le répertoire **data** respecte cette configuration. Certains scripts exploitent automatiquement le contenu des sous-répertoires **med** et **modeles** situés dans **data**, alors que d'autres scripts permettent la sélection interactive du répertoire de données.
+La figure 2 donne la liste des scripts et montre également l'emplacement des scripts d'exploitation. Il est recommandé d'exécuter les scripts dans le même répertoire qui contient les sous-répertoires **med** et **modeles**.  Dans mon cas, le répertoire **data** respecte cette configuration. Certains scripts exploitent automatiquement le contenu des sous-répertoires **med** et **modeles** situés dans **data**, alors que d'autres scripts permettent la sélection interactive de fichiers sans d'autres répertoires.
 
 ![Figure 2 : ](astrodm-doc/images/scripts-exploitation.jpg)
 
