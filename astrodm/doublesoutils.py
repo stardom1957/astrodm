@@ -1280,7 +1280,10 @@ class DoubleSessionsComplete:
             # sep2 == année et valeurs dernière observation
             # ces résultats seront incluses dans les repports pour comparaison
             #
-            result_rech_WDS = rech_wds(self.systeme.nom, self.paire)
+            pr = self.paire
+            if self.paire == 'PPL':
+                pr = '*'
+            result_rech_WDS = rech_wds(self.systeme.nom, pr)
             self.wds_Obs2 = result_rech_WDS[0]['Obs2'].item()
             self.wds_pa2 = result_rech_WDS[0]['pa2'].item()
             self.wds_sep2 = result_rech_WDS[0]['sep2'].item()
@@ -2627,7 +2630,8 @@ def extraire_Log_acq_env(ses, bloc, typeMesure):
             f.close()
     
             for ligne in lignesLues:
-                # date UTC d'acquisition (en assumant que PC d'acquisition réglé sur UTC)
+                # date UTC d'acquisition
+                #if 'Date(UT)=' in ligne:
                 if 'Date=' in ligne:
                     bloc.ech.date_utc_acq = (ligne.split('=')[1]).rstrip('\n')
             
@@ -2665,13 +2669,17 @@ def extraire_Log_acq_env(ses, bloc, typeMesure):
                     if 'Mid(UT)=' in ligne:
                         bloc.pos.heure_utc_acq = (ligne.split('=')[1]).rstrip('\n')
             
-                    # nombre d'images acquises
-                    if 'Limit=' in ligne:
+                    # nombre d'images acquises (Frames captured)
+                    if 'Frames captured=' in ligne:
                         tempo = (ligne.split('=')[1]).rstrip('\n')
-                        if 'Frames' in tempo:
-                            bloc.pos.nbr_images_acq = tempo.split(' ')[0]
-                        elif 'Seconds' in tempo:
-                            bloc.pos.nbr_images_acq = 'interval de ' + tempo.split(' ')[0] + ' s'
+                        bloc.pos.nbr_images_acq = tempo
+                    # nombre d'images acquises
+                    #debug if 'Limit=' in ligne:
+                    #debug     tempo = (ligne.split('=')[1]).rstrip('\n')
+                    #debug     if 'Frames' in tempo:
+                    #debug         bloc.pos.nbr_images_acq = tempo.split(' ')[0]
+                    #debug     elif 'Seconds' in tempo:
+                    #debug         bloc.pos.nbr_images_acq = 'interval de ' + tempo.split(' ')[0] + ' s'
             else:
                 bloc.pos.valide = False
 
@@ -2691,13 +2699,18 @@ def extraire_Log_acq_env(ses, bloc, typeMesure):
                     if 'Mid(UT)=' in ligne:
                         bloc.sep.heure_utc_acq = (ligne.split('=')[1]).rstrip('\n')
             
-                    # nombre d'images acquises
-                    if 'Limit=' in ligne:
+                    # nombre d'images acquises (Frames captured)
+                    if 'Frames captured=' in ligne:
                         tempo = (ligne.split('=')[1]).rstrip('\n')
-                        if 'Frames' in tempo:
-                            bloc.sep.nbr_images_acq = tempo.split(' ')[0]
-                        elif 'Seconds' in tempo:
-                            bloc.sep.nbr_images_acq = 'interval de ' + tempo.split(' ')[0] + ' s'
+                        bloc.sep.nbr_images_acq = tempo
+
+                    # nombre d'images acquises
+                    #debugif 'Limit=' in ligne:
+                    #debug    tempo = (ligne.split('=')[1]).rstrip('\n')
+                    #debug    if 'Frames' in tempo:
+                    #debug        bloc.sep.nbr_images_acq = tempo.split(' ')[0]
+                    #debug    elif 'Seconds' in tempo:
+                    #debug        bloc.sep.nbr_images_acq = 'interval de ' + tempo.split(' ')[0] + ' s'
 
             else:
                 bloc.sep.valide = False
