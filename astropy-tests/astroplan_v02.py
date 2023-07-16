@@ -23,7 +23,7 @@ import numpy as np
 # insérer le chemin suivant dans sys.path pour trouver le package astrodm
 if 'D:\DOCUMENTS\Astronomie\dev' not in sys.path:
     sys.path.insert(0, 'D:\DOCUMENTS\Astronomie\dev')
-from astrodm import doublesOutils as do
+from astrodm import doublesoutils as do
 
 # %% DÉFINITIONS
 # pour la recherche WDS
@@ -107,7 +107,11 @@ if __name__ == '__main__':
     
     #
     ## lire le fichier astrodm/observatoires.csv
-    observatoires_df = do.lire_fichier_observatoires()
+    boolLireOK, observatoires_df = do.lire_fichier_observatoires()
+    if not boolLireOK:
+        print('fichier observatoires non trouvé')
+        sys.exit()
+        
     for idx in observatoires_df.index:
         if observatoires_df.loc[idx, 'nom_obs'] == 'Résidence':
             break

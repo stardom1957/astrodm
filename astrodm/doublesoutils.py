@@ -208,7 +208,7 @@ class Reduction:
         self.mapEchelle = 0
 
         # liste des index de calibration d'échelle
-        self.lstIndexCalE = list()
+        self.lstIndexCalE = []
 
         # Pandas dataframe de mesures brutes
         self.reduc_brute_df = ''
@@ -2002,7 +2002,7 @@ def ajoute_ckecksum(objet_hash, fich):
             objet_hash.update(byte_block)
 
 def calcule_ckecksum_fichiers(chemin_programme):
-    liste_fichiers = list()
+    liste_fichiers = []
     md5_hash_fichiers = hashlib.md5()
     lstDesRepS = glob.glob(chemin_programme + '/S*/')
     if len(lstDesRepS) != 0:
@@ -2146,7 +2146,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         # retourner None en cas d'erreur fatale
         return None
     
-    resultatOK = lire_fichier_observatoires()
+    resultatOK, observatoires_df = lire_fichier_observatoires()
     if not resultatOK:
         ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
         # retourner None en cas d'erreur fatale
@@ -2162,7 +2162,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         # au moins un S avec au moins un bloc d'observation. On doit bâtir un
         # objet DoubleSessionComplete.
         #
-
+        
         ###################################################
         # créer l'objet DoubleSessionsComplete
         ###################################################
@@ -2170,7 +2170,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         # Remonter au dossier du système à partir du dossier de ch_prog
         # par ex. «STTA254» dans D:\DOCUMENTS\Astronomie\...\STTA254\AB\P2021-023
         objet_sessions = DoubleSessionsComplete(typeSession=type_session, chProg=ch_prog)
-        
+ 
         # inscrire nom complet du fichier de log réduction
         objet_sessions.ncf_log_reduction = ncfichier_log_post_reduction
         
@@ -3228,13 +3228,15 @@ def UTCaHeureLocale(dhl):
 
 def lire_fichier_observatoires():
     boolResultatOK = True
+    # dataframe vide
+    observ_df = None
     try:
-        observatoires_df =  pd.read_csv('D:/DOCUMENTS/Astronomie/dev/astrodm/observatoires.csv')
+        observ_df =  pd.read_csv('D:/DOCUMENTS/Astronomie/dev/astrodm/observatoires.csv')
     except FileNotFoundError:
         tampon = 'doubleOutils.lire_fichier_observatoires :: fichier observatoires.csv non trouvé.'
         inscrire_dans_log(tampon)
         boolResultatOK = False
-    return boolResultatOK
+    return boolResultatOK, observ_df
 
 
 
@@ -3943,7 +3945,7 @@ def produire_liste_programmes(ch):
        'Sessions', 'Dates_UTC', 'délai (j)', 'écheance', 'État'
     ]
        
-    lst_prog_df = pd.DataFrame(list(), columns=lstCol)
+    lst_prog_df = pd.DataFrame([], columns=lstCol)
     
     # obtenir la liste des dir (systemes) dans ch
     dirSystemes = glob.glob(ch + '/*/')
@@ -4404,8 +4406,8 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
 
     
 # %% INITIALISATIONS
-no_version = 54
-# à partir de cette version, ce module inclut le code du module doubleslistes
+no_version = 55
+# 2023-07-12
 
 '''
 Crée un dictionnaire des codes de notes pour les
@@ -4480,8 +4482,8 @@ t_format = 'isot'
 NL = '\n'
 # nom du fichier des mesures brutes produit lors de la post-réduction
 fich_mesures_brutes = 'mesures_brutes.csv'
-observatoires_df = None
 resultatOK = True
+#deug observatoires_df = None
 
 # for tkinter
 root = Tk()
