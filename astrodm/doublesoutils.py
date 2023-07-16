@@ -4272,7 +4272,7 @@ def produire_liste_programmes(ch):
     return lst_prog_df
 
 
-def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T'):
+def suivi(chemin='', tri=0, impr_table_etat=True, sortie='T'):
     """
     Imprime un rapport détaillé des programmes d'observation et retourne un
     Pandas DataFrame contenant la liste triée des programmes d'observation
@@ -4389,12 +4389,13 @@ def imprime_liste_programmes(chemin='', tri=0, impr_table_etat=True, sortie='T')
     # inutile d'imprimer ces exemples si stdout est redirigé vers un fichier
     if sortie != 'F':
         print('\nEXEMPLES DE REQUÊTES :')
-        print("liste_des_programmes_df.query(\"obs_prog == 'P2022-020'\")")
-        print("liste_des_programmes_df.query(\"id_system == 'STF 982'\")")
-        print("liste_des_programmes_df.query(\"const == 'And'\")")
-        print("liste_des_programmes_df.query(\"const == 'And' or const == 'Gem'\")")
+        print("suivi_df.query(\"obs_prog == 'P2022-020'\")")
+        print("suivi_df.query(\"obs_prog == 'P2022-020' and id_system == 'STF 982'\")")
+        print("suivi_df.query(\"id_system == 'STF 982'\")")
+        print("suivi_df.query(\"const == 'And'\")")
+        print("suivi_df.query(\"const == 'And' or const == 'Gem'\")")
         print("avec la variable rech = ['STT545', 'STF60'] :")
-        print('  liste_des_programmes_df.query("id_system == @rech")')
+        print('  suivi.query("id_system == @rech")')
 
     if sortie == 'F':
         # rétablir stdout
