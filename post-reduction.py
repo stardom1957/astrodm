@@ -84,11 +84,14 @@ if __name__ == "__main__":
             print("  s.imprimerRapport('x'), avec x: 'c' | 'l' | 'm' ou")
             print("  s.hier() pour sortie au terminal ou;")
             print("  s.hier(sortie='fichier') pour sortie vers ./out.txt")
-        elif s.typeSession == 'ech' and s.reductionExecutee:
+            sys.exit()
+        if s.typeSession == 'complete' and not s.reductionExecutee:
+            print("Réduction non complétée : consultez le fichier «post-réduction.log» dans le dossier de programme!")
+            sys.exit()
+        if s.typeSession == 'ech' and s.reductionExecutee:
             print("Réduction complétée : consultez le fichier «post-réduction.log» dans le dossier d'échelle!")
-        else:
+            sys.exit()
+        if s.typeSession == 'ech' and not s.reductionExecutee:
             print("Réduction non complétée : consultez le fichier «post-réduction.log» dans le dossier d'échelle!")
-    else:
-        print("Erreurs : consultez le fichier «post-réduction.log» dans le dossier programme ou échelle!")
 
 

@@ -470,7 +470,7 @@ class Bloc:
         
         # fatal si index n'existe pas
         if len(calibration_echelle_df) == 0:
-            inscrire_dans_log("ERREUR!  N{0} b{1} : index de calibration non trouvé(s) dans master_calibrations_e_df!".\
+            inscrire_dans_log("ERREUR!  S{0} b{1} : index de calibration non trouvé(s) dans master_calibrations_e_df!".\
                   format(nsession, self.no_bloc))
             inscrire_dans_log("Ce bloc ne sera pas inclus dans la réduction.")
             # marquer le bloc comme non valide
@@ -498,7 +498,7 @@ class Bloc:
             self.reduc.mapEchelle = tempo.pop()
             del tempo
         else:
-            inscrire_dans_log("ERREUR!  N{0} b{1}, cal_E : map non égales!".format(nsession, self.no_bloc))
+            inscrire_dans_log("ERREUR!  S{0} b{1}, cal_E : map non égales!".format(nsession, self.no_bloc))
             # la map n'est pas la même
             inscrire_dans_log("Ce bloc ne sera pas inclus dans la réduction.")
             # marquer le bloc comme non valide
@@ -531,7 +531,7 @@ class Bloc:
         if intervalle > MAX_DELAI_DEPUIS_ACQUISITIONS_ECHELLE:
             inscrire_dans_log('*'*50)
             inscrire_dans_log("ERREUR!")
-            inscrire_dans_log("  N{0} b{1}, cal_E et sep : délai depuis dern. acq échelle > {2} m!".\
+            inscrire_dans_log("  S{0} b{1}, cal_E et sep : délai depuis dern. acq échelle > {2} m!".\
                   format(nsession, self.no_bloc, MAX_DELAI_DEPUIS_ACQUISITIONS_ECHELLE))
             inscrire_dans_log("  Ce bloc ne sera pas inclus dans la réduction.")
             inscrire_dans_log("  Pour plus de détails, exécutez res.hier()")
@@ -798,6 +798,9 @@ class DoubleSessionsComplete:
         if typeSession == 'complete':
             self.typeSession = typeSession
             
+            # indicateur d'annulation du programme
+            self.bool_programme_annule = False
+            
             # créer objet Systeme avec fichier info-systeme.csv qui se trouve
             # dans le chemin chProg
             self.systeme = Systeme(chemin_systeme=path.dirname(path.dirname(chProg.rstrip('\\'))))
@@ -929,12 +932,12 @@ class DoubleSessionsComplete:
         return tlsr
 
 
-    def cree_liste_objets_Session(self):
+    def cree_liste_Session(self):
         """
         parcoure cheminProgramme et retourne un Tupple contenant la liste
-        (List) des objets Session et un int du nombre de sessions.
+        (List) des Sessions et un int du nombre de sessions.
         
-        Retourne None, 0 si erreur ou aucun S*.
+        Retourne None, 0 si erreur ou aucun dossier S trouvé.
     
         Paramètres positionnels :
          typeSession -- String type d'observation ('ech' ou 'complete')
@@ -946,7 +949,7 @@ class DoubleSessionsComplete:
         """
         
         # liste des sessions d'observations
-        lstSessions = list()
+        lstSessions = []
         
         if self.typeSession == 'ech':
             #########################################
@@ -954,7 +957,7 @@ class DoubleSessionsComplete:
             #########################################
     
             '''
-            Ce type d'observation ne comprend pas de dossiers .cheminS. Il s'agit plutôt
+            Ce type d'observation ne comprend pas de dossiers S. Il s'agit plutôt
             d'un dossier du type 2021-10-08b01 qui représente un seul bloc
             d'observation d'échelle. Il faut donc créer un objet Observation
             avec noSession=1 et ensuite créer l'unique bloc de typeSession='ech'
@@ -964,7 +967,7 @@ class DoubleSessionsComplete:
     
             if len(lst_ncflr) != 1:
                 # erreur fatale, il n'y a pas eu réduction d'échelle, puisque ncflr absent
-                tampon = "doublesoutils.cree_liste_objets_Session :: log de reduc absent dans " + self.cheminProgramme + '/reduc'
+                tampon = "doublesoutils.cree_liste_Session :: log de reduc absent dans " + self.cheminProgramme + '/reduc'
                 inscrire_dans_log(tampon)
                 return
     
@@ -978,7 +981,7 @@ class DoubleSessionsComplete:
             if obj_match is None:
                 # erreur fatale, le nom du dossier ne respecte pas le format
                 # pour les index de calibration
-                tampon = "doublesoutils.cree_liste_objets_Session :: dans le chemin «" + self.cheminProgramme + '» :'
+                tampon = "doublesoutils.cree_liste_Session :: dans le chemin «" + self.cheminProgramme + '» :'
                 inscrire_dans_log(tampon)
                 tampon =  "... «{0}» n'est pas un nom d'index de calibration valide!".format(path.basename(self.cheminProgramme))
                 inscrire_dans_log(tampon)
@@ -1012,13 +1015,13 @@ class DoubleSessionsComplete:
     
             if ncfle is None:
                 # erreur fatale
-                tampon = "doublesoutils.cree_liste_objets_Session :: Erreur fichier log environnement manquant."
+                tampon = "doublesoutils.cree_liste_Session :: Erreur fichier log environnement manquant."
                 inscrire_dans_log(tampon)
                 #debug return None, 0
             
             if ncfla is None:
                 # erreur fatale
-                tampon = "doublesoutils.cree_liste_objets_Session :: Erreur fichier log acquisition manquant."
+                tampon = "doublesoutils.cree_liste_Session :: Erreur fichier log acquisition manquant."
                 inscrire_dans_log(tampon)
                 #debug return None, 0
     
@@ -1056,7 +1059,7 @@ class DoubleSessionsComplete:
             if len(lstDesRepS) == 0:
                 # il n'y a aucune session N
                 self.lstObjSession = None
-                tampon = "doublesoutils.cree_liste_objets_Session :: pas de session (S) dans " + self.cheminProgramme
+                tampon = "doublesoutils.cree_liste_Session :: pas de session (S) dans " + self.cheminProgramme
                 inscrire_dans_log(tampon)
             else:
                 # parcourir les dossiers de session
@@ -1083,7 +1086,7 @@ class DoubleSessionsComplete:
                     if len(listeRepBlocs) == 0:
                         # il n'y a aucun bloc
                         lstSessions[index_S].lstBlocs = None
-                        tampon = "doublesoutils.cree_liste_objets_Session :: pas de bloc dans " + self.cheminProgramme
+                        tampon = "doublesoutils.cree_liste_Session :: pas de bloc dans " + self.cheminProgramme
                         inscrire_dans_log(tampon)
                     else:
                         # nom du programme d'observations tiré du chemin du programme
@@ -1107,14 +1110,14 @@ class DoubleSessionsComplete:
                             #ncfla_sep, ncfle_sep = trouverLogsAetE(tempo, self.systeme.nom)
                             ncfla_sep, ncfle_sep = trouverLogsAetE(tempo)
                             if ncfle_sep is None:
-                                tampon = "doublesoutils.cree_liste_objets_Session :: Erreur fichier log environnement manquant."
+                                tampon = "doublesoutils.cree_liste_Session :: Erreur fichier log environnement manquant."
                                 inscrire_dans_log(tampon)
                                 tampon = "... {0}".format(tempo)
                                 inscrire_dans_log(tampon)
                                 #debug return None, 0
                             
                             if ncfla_sep is None:
-                                tampon = "doublesoutils.cree_liste_objets_Session :: Erreur fichier log acquisition manquant."
+                                tampon = "doublesoutils.cree_liste_Session :: Erreur fichier log acquisition manquant."
                                 inscrire_dans_log(tampon)
                                 tampon = "... {0}".format(tempo)
                                 inscrire_dans_log(tampon)
@@ -1125,7 +1128,7 @@ class DoubleSessionsComplete:
             
                             if ncflr_sep is None:
                                 # probablement pré-réduction non fait
-                                tampon = "doublesoutils.cree_liste_objets_Session :: fichier log REDUC manquant."
+                                tampon = "doublesoutils.cree_liste_Session :: fichier log REDUC manquant."
                                 inscrire_dans_log(tampon)
                                 tampon = "... {0}".format(repBlocCourant + '/sep/reduc')
                                 inscrire_dans_log(tampon)
@@ -1140,14 +1143,14 @@ class DoubleSessionsComplete:
                             #ncfla_pos, ncfle_pos = trouverLogsAetE(tempo, self.systeme.nom)
                             ncfla_pos, ncfle_pos = trouverLogsAetE(tempo)
                             if ncfle_pos is None:
-                                tampon = "doublesoutils.cree_liste_objets_Session :: Erreur fichier log environnement manquant."
+                                tampon = "doublesoutils.cree_liste_Session :: Erreur fichier log environnement manquant."
                                 inscrire_dans_log(tampon)
                                 tampon = "... {0}".format(tempo)
                                 inscrire_dans_log(tampon)
                                 #debug return None, 0
                             
                             if ncfla_pos is None:
-                                tampon = "doublesoutils.cree_liste_objets_Session :: Erreur fichier log acquisition manquant."
+                                tampon = "doublesoutils.cree_liste_Session :: Erreur fichier log acquisition manquant."
                                 inscrire_dans_log(tampon)
                                 tampon = "... {0}".format(tempo)
                                 inscrire_dans_log(tampon)
@@ -1157,7 +1160,7 @@ class DoubleSessionsComplete:
                             ncflr_pos = trouverLogReduc(repBlocCourant + '/pos/reduc')
             
                             if ncflr_pos is None:
-                                tampon = "doublesoutils.cree_liste_objets_Session :: fichier log REDUC manquant."
+                                tampon = "doublesoutils.cree_liste_Session :: fichier log REDUC manquant."
                                 inscrire_dans_log(tampon)
                                 tampon = "... {0}".format(repBlocCourant + '/pos/reduc')
                                 inscrire_dans_log(tampon)
@@ -2133,7 +2136,7 @@ def post_reduction(type_session='complete', ch_prog=''):
 
     # inscrire systag dans lst_log_post_reduction
     global lst_log_post_reduction
-    lst_log_post_reduction = list()
+    lst_log_post_reduction = []
     inscrire_dans_log(produire_systag())
 
     # lire le fichier observatoires dans un df
@@ -2158,6 +2161,7 @@ def post_reduction(type_session='complete', ch_prog=''):
     ######################
 
     if type_session == 'complete':
+        '''
         # Dans ce cas, ch_prog doit être dossier du type P2021-023 et avoir
         # au moins un S avec au moins un bloc d'observation. On doit bâtir un
         # objet DoubleSessionComplete.
@@ -2169,10 +2173,19 @@ def post_reduction(type_session='complete', ch_prog=''):
         # Dans l'objet sessions, l'objet Systeme sera créé à partir du chemin du système.
         # Remonter au dossier du système à partir du dossier de ch_prog
         # par ex. «STTA254» dans D:\DOCUMENTS\Astronomie\...\STTA254\AB\P2021-023
+        '''
         objet_sessions = DoubleSessionsComplete(typeSession=type_session, chProg=ch_prog)
  
         # inscrire nom complet du fichier de log réduction
         objet_sessions.ncf_log_reduction = ncfichier_log_post_reduction
+        
+        # déterminer si un fichier annulation.txt existe dans le dossier du programme ch_prog
+        #
+        lstFichiersTxt = glob.glob(ch_prog + '/*.txt')
+        for f in  lstFichiersTxt:
+            if 'annulation.txt' in f:
+                objet_sessions.bool_programme_annule = True
+        del lstFichiersTxt
         
         # trouver le nombre de Rlog_ qui se trouvent dans ch_prog
         objet_sessions.nbrRlogs = len(listeLogsReduc(ch_prog))
@@ -2181,7 +2194,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         objet_sessions.paire = path.basename(path.dirname(ch_prog.rstrip('\\')))
 
         # créer la liste des sessions
-        objet_sessions.cree_liste_objets_Session()
+        objet_sessions.cree_liste_Session()
 
         if len(objet_sessions.lstObjSession) == 0:
             # il n'y a pas de S
@@ -2229,8 +2242,8 @@ def post_reduction(type_session='complete', ch_prog=''):
             ses_actuelle += 1
 
             # validité de la session :
-            #  si au moins un bloc est valide, alors la session est
-            # également valide
+            # si au moins un bloc est valide, alors la session est
+            # probablement valide
             ses.au_moins_un_bloc_valide = False
             for bloc in ses.lstBlocs:
                 if bloc.valide:
@@ -2260,8 +2273,6 @@ def post_reduction(type_session='complete', ch_prog=''):
         for fichier in lst_fichiers_logs:
             if fichier is not None:
                 ajoute_ckecksum(md5_hash, fichier)
-    
-        #debug print(md5_hash.hexdigest())
         objet_sessions.checksum = md5_hash.hexdigest()
 
         # sauvegarder objet_sessions dans le dossier du PROGRAMME
@@ -2285,9 +2296,9 @@ def post_reduction(type_session='complete', ch_prog=''):
     if type_session == 'ech':
         # créer l'objet sessions
         sessions = DoubleSessionsComplete(typeSession=type_session, chProg=ch_prog)
-        sessions.cree_liste_objets_Session()
+        sessions.cree_liste_Session()
 
-        #debug lstObservations, n = cree_liste_objets_Session(type_session, ch_prog)
+        #debug lstObservations, n = cree_liste_Session(type_session, ch_prog)
 
         if len(sessions.lstObjSession) == 0:
             ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
@@ -3737,7 +3748,7 @@ def est_un_programme(chemin):
     
 
 
-def produit_liste_reductions(chemin_des_systemes):
+def liste_obj_reductions(chemin_des_systemes):
     """
     Balais chemin_des_systemes et retourne une liste (List) des noms complets des fichiers
     *.obj trouvés.
@@ -3779,18 +3790,17 @@ def imprime_liste_reductions(chemin='', tri=0, impr_table_etat=True, sortie='T')
         sys.stdout = f
 
 
-    lst_ncor = produit_liste_reductions(chemin)
+    lst_ncor = liste_obj_reductions(chemin)
     
     # enregistrements pour produire df
-    liste_reductions = list()
+    liste_reductions = []
     
     # init des compteurs
-    int_nbr_obj_ses_exam, nbr_etat_T, nbr_etat_C,\
-        nbr_etat_X, nbr_etat_E = 0, 0, 0, 0, 0
+    int_nbr_obj_ses_exam, nbr_etat_T, nbr_etat_C, nbr_etat_X, nbr_etat_E = 0, 0, 0, 0, 0
 
     liste_programmes_uniques = set()
 
-    # ncos : nom complet objet sessions
+    # ncos : nom complet objet sessions en cours
     for ncos in lst_ncor:
         #
         # lire l'objet ncos par pickle dans obj_sessions
@@ -3938,8 +3948,8 @@ def produire_liste_programmes(ch):
     int_nbr_systemes_exam = 0
     liste_programmes_uniques = set()
     
+    # construire le df vide des programmes avec les colonnes suivantes :
     #
-    # construire le df vide des programme avec les colonnes suivantes :
     lstCol = [
        'obs_prog', 'id_system', 'paire', 'id_WDS', 'const',
        'Sessions', 'Dates_UTC', 'délai (j)', 'écheance', 'État'
@@ -3948,6 +3958,7 @@ def produire_liste_programmes(ch):
     lst_prog_df = pd.DataFrame([], columns=lstCol)
     
     # obtenir la liste des dir (systemes) dans ch
+    #
     dirSystemes = glob.glob(ch + '/*/')
     for dir_systeme in dirSystemes:
         # initialisations
@@ -3965,6 +3976,7 @@ def produire_liste_programmes(ch):
         
         # traiter le répertoire système
         # (en passant par-dessus la liste d'exclusions)
+        #
         if path.basename(path.dirname(dir_systeme)) not in ('cal_e', 'med-planification', '.ipynb_checkpoints'):
             lst_dates = list()
             lst_dates.append('s. o.')
@@ -4101,10 +4113,12 @@ def produire_liste_programmes(ch):
                                         lst_prog_df.loc[lst_prog_df.index.size] = data
                                         #debug nbr_etat_P += 1
                                     else:
-                                        # il existe au moins un bloc dans S,
-                                        # alors vérifier la présence d'un
-                                        # objet *.obj pour voir s'il y a eu
-                                        # au moins une post-réduction
+                                        '''
+                                        il existe au moins un bloc dans S,
+                                        alors vérifier la présence d'un
+                                        objet *.obj pour voir s'il y a eu
+                                        au moins une post-réduction
+                                        '''
 
                                         # nom complet fichier objet ncfo
                                         ncfo = chemin_prog + '/' + id_system + '_' + paire + '_' + obs_prog  + '_sessions.obj'
@@ -4134,11 +4148,13 @@ def produire_liste_programmes(ch):
                                                 s = post_reduction(type_session='complete', ch_prog=chemin_prog)
                                                         
                                         else:
-                                            # il n'y a pas d'objet s,
-                                            # il n'y a donc pas eu de réduction exécutée
-                                            # mais nous devons vérifier s'il peut exister des 
-                                            # données d'acquisition valides...
-                                            # on exécute donc une post-réduction ;)
+                                            '''
+                                            il n'y a pas d'objet s,
+                                            il n'y a donc pas eu de réduction exécutée
+                                            mais nous devons vérifier s'il peut exister des 
+                                            données d'acquisition valides...
+                                            on exécute donc une post-réduction ;)
+                                            '''
                                             s = post_reduction(type_session='complete', ch_prog=chemin_prog)
                                                             
                                         # à partir d'ici on peut « raisonnablement » assumer que s est à jour
@@ -4168,16 +4184,6 @@ def produire_liste_programmes(ch):
                                             data = [obs_prog, id_system, paire, id_WDS, const, lst_sessions, Dates_UTC, delai, str_dth_echeance_utc, etat]
                                             # ajouter à la liste des programmes
                                             lst_prog_df.loc[lst_prog_df.index.size] = data
-                                            
-                                            # incrémenter le compteur approprié
-                                            #debug if 'P' in etat:
-                                            #debug   nbr_etat_P += 1
-                                            #debug elif 'C' in etat:
-                                            #debug    nbr_etat_C += 1
-                                            #debug if 'T' in etat:
-                                                
-                                            # il n'y a que des sessions terminée dans resultats_pour_publication_df
-                                            #debug nbr_etat_T += 1
 
                                         ########################################################################
                                         # TRAITEMENT DES AUTRES SESSIONS
@@ -4187,40 +4193,41 @@ def produire_liste_programmes(ch):
                                         
                                         for index_session in range(len(s.lstObjSession)):
                                             if not s.lstObjSession[index_session].reductionCompletee:
-                                                # il s'agit des cas qui ont des acquisitions non pré-réduites
-                                                # donc avec un R ou un X si aucun bloc valide
-                                                # ici on a besoin de date_utc_acq de l'un
-                                                # des blocs. En principe, cette valeur est 
-                                                # la même pour tous les blocs, mais comme il
-                                                # est possible que l'un des blocs ne soit pas valide
-                                                # il vaut mieux parcourir la liste des blocs de la
-                                                # session et récupérer la date d'exécution UTC d'un des
-                                                # blocs valide
+                                                '''
+                                                il s'agit des cas qui ont des acquisitions non pré-réduites
+                                                donc avec un R ou un X si aucun bloc valide
+                                                ici on a besoin de date_utc_acq de l'un
+                                                des blocs. En principe, cette valeur est 
+                                                la même pour tous les blocs, mais comme il
+                                                est possible que l'un des blocs ne soit pas valide
+                                                il vaut mieux parcourir la liste des blocs de la
+                                                session et récupérer la date d'exécution UTC d'un des
+                                                blocs valide
+                                                '''
                                                 #
                                                 lst_sessions = '[' + str(s.lstObjSession[index_session].noSession) + ']'
                                                 for index_bloc in range(len(s.lstObjSession[index_session].lstBlocs)):
                                                     if s.lstObjSession[index_session].lstBlocs[index_bloc].sep.valide:
                                                         Dates_UTC = s.lstObjSession[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq.value.split('T')[0]
-                                                        
-                                                        # calculer date d'échéance
+                                                        '''
+                                                        # calculer la date d'échéance
                                                         # si moins de MAX_DELAI_ENTRE_OBSERVATIONS jours alors etat = 'CRL' ou 'CEL'
                                                         # sinon etat = 'TRL'
                                                         #debug str_dth_echeance_utc = 'à calculer selon les blocs'
                                                         # calculer le délai
-                                                        
+                                                        '''
                                                         dtUTC_acquisition_sep = s.lstObjSession[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq
                                                         lst_dates = []
                                                         lst_dates.append(dtUTC_acquisition_sep.value.split('T')[0])
-                        
-                                                        # dans ce cas, il faut calculer la date
-                                                        # d'échéance de l'observation qui est
-                                                        # la date unique qui se trouve dans lst_dates
-                                                        # + MAX_DELAI_ENTRE_OBSERVATIONS
-                                                        #
-                                                        #debug dth_echeance_utc = str_dt_isot_a_TimeIsot(dt=dtUTC_acquisition_sep) + MAX_DELAI_ENTRE_OBSERVATIONS
                                                         
+                                                        '''
+                                                        dans ce cas, il faut calculer la date
+                                                        d'échéance de l'observation qui est
+                                                        la date unique qui se trouve dans lst_dates
+                                                        + MAX_DELAI_ENTRE_OBSERVATIONS
+                                                        '''
                                                         dth_echeance_utc = dtUTC_acquisition_sep + MAX_DELAI_ENTRE_OBSERVATIONS
-                                                        #debug str_dth_echeance_utc = dth_echeance_utc.value.split('T')[0]
+
                                                         #vérifier si OK
                                                         str_dth_echeance_utc = dth_echeance_utc.to_value('isot').split('T')[0]
                                                         if s.lstObjSession[index_session].au_moins_un_bloc_valide:
@@ -4245,6 +4252,9 @@ def produire_liste_programmes(ch):
                                                         #debug nbr_etat_P += 1
                                                         delai = np.nan
                                                 
+                                                # vérifier si programme annulé
+                                                if s.bool_programme_annule:
+                                                    etat = 'ANL'
                                                 # construire l'enregistrement
                                                 data = [obs_prog, id_system, paire, id_WDS, const, lst_sessions, Dates_UTC, delai, str_dth_echeance_utc, etat]
                                                 # ajouter à la liste des programmes
@@ -4307,7 +4317,7 @@ def suivi(chemin='', tri=0, impr_table_etat=True, sortie='T'):
         sys.stdout = f
     
     ### parcourir le répertoire racine
-    print("Liste des programmes d'observations dans : " + chemin + '\n')
+    print("Suivi des programmes d'observations dans : " + chemin + '\n')
 
     # produire la liste et transformer résultat en df
     programmes_df = produire_liste_programmes(chemin)
@@ -4376,7 +4386,7 @@ def suivi(chemin='', tri=0, impr_table_etat=True, sortie='T'):
     print("  {0:>3d} (?) sans programme | paire assigné.".format(nbr_etat_NA))
     print("  {0:>3d} (C) en cours.".format(nbr_etat_C))
     print("  {0:>3d} (R) avec données prêtes pour la pré-réduction.".format(nbr_etat_R))
-    print("  {0:>3d} (X) avec données inutilisables (voir journal de réduction).".format(nbr_etat_X))
+    print("  {0:>3d} (X) avec données inutilisables (voir journal de réduction) et|ou fichier annulation.txt.".format(nbr_etat_X))
     
     if impr_table_etat:    
         ### Liste dictionnaire des codes de notes d'observations
@@ -4441,9 +4451,12 @@ codes_etat_obs_dict = {
     '.S.': ["Nouvelle session d'observation à planifier."],
     '.R.': ["Il peut y avoir des données prêtes pour la pré-déduction."],
     '.X.': ['Données inutilisables! Voir journal de post-réduction.'],
+    'ANL': ['Programme ANNULÉ! Voir journal de réduction et fichier annulation.txt'],
     '..L': ['Lucky Imaging.'],
     '..I': ['Interférométrie des tavelures.']
 }
+
+#(voir journal de réduction) et|ou fichier annulation.txt
 
 # pour rech WDS (source seulement) formater src avec un espace entre découvreur et no
 # alors len(src) <= WDS_SRC_LEN_NOTES
