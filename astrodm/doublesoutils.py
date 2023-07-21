@@ -788,8 +788,8 @@ class DoubleSessionsComplete:
         self.nbrS = 0
         self.nbrRlogs = 0
         
-        # lstObjSession contiendra la liste des objets Session
-        self.lstObjSession = []
+        # lstDesSessions contiendra la liste des objets Session
+        self.lstDesSessions = []
         
         # checksum (md5) de l'ensemble des fichiers logs utilisés pour
         # la post-réduction
@@ -918,8 +918,8 @@ class DoubleSessionsComplete:
             print("           Réduction")
             print(" Session   complétée?")
             print(" ----------------------")
-            for idx in range(len(self.lstObjSession)):
-                print(" Session {0} {1}".format(self.lstObjSession[idx].noSession, self.lstObjSession[idx].reductionCompletee))
+            for idx in range(len(self.lstDesSessions)):
+                print(" Session {0} {1}".format(self.lstDesSessions[idx].noSession, self.lstDesSessions[idx].reductionCompletee))
             print(" ======================")
             
             #debug print("\n Nombre de Rlogs : {0}".format(self.nbrRlogs))
@@ -927,8 +927,8 @@ class DoubleSessionsComplete:
             #debug print("\n\n Résultats pour publication dans s.resultats_pour_publication_df")
 
     def toutes_les_sessions_reduites(self):
-        for idx in range(len(self.lstObjSession)):
-            tlsr = (True and self.lstObjSession[idx].reductionCompletee)
+        for idx in range(len(self.lstDesSessions)):
+            tlsr = (True and self.lstDesSessions[idx].reductionCompletee)
         return tlsr
 
 
@@ -1044,7 +1044,7 @@ class DoubleSessionsComplete:
                 # inscrire nom complet fichier log réduction (ncflr)
                 lstSessions[0].lstBlocs[0].reduc.ncflr_sep = lst_ncflr[0]
                 
-                self.lstObjSession = lstSessions
+                self.lstDesSessions = lstSessions
             
     
         else:
@@ -1058,7 +1058,7 @@ class DoubleSessionsComplete:
             
             if len(lstDesRepS) == 0:
                 # il n'y a aucune session N
-                self.lstObjSession = None
+                self.lstDesSessions = None
                 tampon = "doublesoutils.cree_liste_Session :: pas de session (S) dans " + self.cheminProgramme
                 inscrire_dans_log(tampon)
             else:
@@ -1191,7 +1191,7 @@ class DoubleSessionsComplete:
                                 lstSessions[index_S].lstBlocs[index_bloc].reduc.valide = False
                             index_bloc += 1
                     index_S += 1
-            self.lstObjSession = lstSessions
+            self.lstDesSessions = lstSessions
             self.nbrS = index_S
 
 
@@ -1204,8 +1204,8 @@ class DoubleSessionsComplete:
         # au départ, len(self.reductions_des_observations_df) == 0
         
         # pour chacune des sessions
-        for ses in self.lstObjSession:
-            #print('Session no. {0}'.format(ses.lstObjSession))
+        for ses in self.lstDesSessions:
+            #print('Session no. {0}'.format(ses.lstDesSessions))
             # pour chacun des bloc
             for b in ses.lstBlocs:
                 # produire un df avec les données
@@ -1455,7 +1455,7 @@ class DoubleSessionsComplete:
                 else:
                     # dans le cas d'une session avec N==1, il faut calculer la date d'échéance
                     # reprendre la date d'acquisition du bloc no 1 de sep pour calcul de l'échéance
-                    dtUTC_acquisition_sep = self.lstObjSession[0].lstBlocs[0].sep.dtime_utc_acq
+                    dtUTC_acquisition_sep = self.lstDesSessions[0].lstBlocs[0].sep.dtime_utc_acq
                     
                     # calculer échéance par rapport à MAX_DELAI_ENTRE_OBSERVATIONS
                     dt_echeance = dtUTC_acquisition_sep + MAX_DELAI_ENTRE_OBSERVATIONS
@@ -1533,7 +1533,7 @@ class DoubleSessionsComplete:
                            lst_str_dates = '[' + self.moyennes_par_session_df.loc[idx_session, 'Date_UTC'] + ']'
                            
                            # reprendre la date d'acquisition du bloc no 1 de sep pour calcul de l'échéance
-                           dtUTC_acquisition_sep = self.lstObjSession[idx_session].lstBlocs[0].sep.dtime_utc_acq
+                           dtUTC_acquisition_sep = self.lstDesSessions[idx_session].lstBlocs[0].sep.dtime_utc_acq
                            lst_int_sessions_du_groupe = '[' + str(no_ses) + ']'
                            
                            dt_echeance = dtUTC_acquisition_sep + MAX_DELAI_ENTRE_OBSERVATIONS
@@ -1842,8 +1842,8 @@ class DoubleSessionsComplete:
             # puisqu'ils ne change pas durant les observations, tirer typeSession,
             # et le nom de la paire de la première observation de la liste
             
-            if len(self.lstObjSession) != 0:
-                if self.lstObjSession[0].typeSession == 'complete':
+            if len(self.lstDesSessions) != 0:
+                if self.lstDesSessions[0].typeSession == 'complete':
                     print('              Paire : {0}'.format(self.paire))
                     print('          Programme : {0}'.format(self.prog))
                     print('  reductionExecutee : {0}'.format(self.reductionExecutee))
@@ -1876,7 +1876,7 @@ class DoubleSessionsComplete:
             
             print('\r')
             
-            for ses in self.lstObjSession:
+            for ses in self.lstDesSessions:
                 print('#'*64)
                 print('Session no {0} de type «{1}», contenant {2} bloc{3}'.format(\
                              ses.noSession, ses.typeSession, ses.nbrBloc, 's' if ses.nbrBloc > 1 else '') )
@@ -1932,14 +1932,14 @@ class DoubleSessionsComplete:
 
     def liste_fichiers_logs(self):
         fichiers = list()
-        for index_session in range(len(self.lstObjSession)):
-            for index_bloc in range(len(self.lstObjSession[index_session].lstBlocs)):
-                fichiers.append(self.lstObjSession[index_session].lstBlocs[index_bloc].sep.ncfle)
-                fichiers.append(self.lstObjSession[index_session].lstBlocs[index_bloc].sep.ncfla)
-                fichiers.append(self.lstObjSession[index_session].lstBlocs[index_bloc].reduc.ncflr_sep)
-                fichiers.append(self.lstObjSession[index_session].lstBlocs[index_bloc].pos.ncfle)
-                fichiers.append(self.lstObjSession[index_session].lstBlocs[index_bloc].pos.ncfla)
-                fichiers.append(self.lstObjSession[index_session].lstBlocs[index_bloc].reduc.ncflr_pos)
+        for index_session in range(len(self.lstDesSessions)):
+            for index_bloc in range(len(self.lstDesSessions[index_session].lstBlocs)):
+                fichiers.append(self.lstDesSessions[index_session].lstBlocs[index_bloc].sep.ncfle)
+                fichiers.append(self.lstDesSessions[index_session].lstBlocs[index_bloc].sep.ncfla)
+                fichiers.append(self.lstDesSessions[index_session].lstBlocs[index_bloc].reduc.ncflr_sep)
+                fichiers.append(self.lstDesSessions[index_session].lstBlocs[index_bloc].pos.ncfle)
+                fichiers.append(self.lstDesSessions[index_session].lstBlocs[index_bloc].pos.ncfla)
+                fichiers.append(self.lstDesSessions[index_session].lstBlocs[index_bloc].reduc.ncflr_pos)
         return fichiers
 
             
@@ -2149,7 +2149,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         # retourner None en cas d'erreur fatale
         return None
     
-    resultatOK, observatoires_df = lire_fichier_observatoires()
+    resultatOK, observatoires_df = lire_fichier_observatoires(ch_prog)
     if not resultatOK:
         ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
         # retourner None en cas d'erreur fatale
@@ -2196,7 +2196,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         # créer la liste des sessions
         objet_sessions.cree_liste_Session()
 
-        if len(objet_sessions.lstObjSession) == 0:
+        if len(objet_sessions.lstDesSessions) == 0:
             # il n'y a pas de S
             inscrire_dans_log("Aucune sessions (répertoire S*) présente dans ce programme.")
             ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
@@ -2207,7 +2207,7 @@ def post_reduction(type_session='complete', ch_prog=''):
         ######################################################################
         
         ses_actuelle = 0
-        for ses in objet_sessions.lstObjSession:
+        for ses in objet_sessions.lstDesSessions:
             # debug
             for bloc in ses.lstBlocs:
                 # lire et extraire données du log d'acquisition et
@@ -2300,7 +2300,7 @@ def post_reduction(type_session='complete', ch_prog=''):
 
         #debug lstObservations, n = cree_liste_Session(type_session, ch_prog)
 
-        if len(sessions.lstObjSession) == 0:
+        if len(sessions.lstDesSessions) == 0:
             ecrire_log_sur_disque(ncflog=ncfichier_log_post_reduction)
             # retourner None en cas d'erreur fatale
             return None
@@ -2311,8 +2311,8 @@ def post_reduction(type_session='complete', ch_prog=''):
         # comme pour le type de mesure 'sep' et extraire et exporter
         # les mesures brutes à partir du log de REDUC dans un csv
         
-        session = sessions.lstObjSession[0]
-        bloc = sessions.lstObjSession[0].lstBlocs[0]
+        session = sessions.lstDesSessions[0]
+        bloc = sessions.lstDesSessions[0].lstBlocs[0]
         extraire_Log_acq_env(session, bloc, 'sep')
         extraire_mesure_brutes_logReduc(session, bloc, 'sep')
         
@@ -3237,12 +3237,24 @@ def UTCaHeureLocale(dhl):
     # datetime(year, month, day[, hour[, minute[, second[, microsecond[,tzinfo]]]]])
     return datetime(a, m, j, h, mi, s, ms, tzinfo=utc_dhl)
 
-def lire_fichier_observatoires():
+def lire_fichier_observatoires(chemin_prog):
     boolResultatOK = True
+    # localiser les fichiers de supports
+    # il faut distinguer l'environnement de développement de celui de production
+    # si 'dev' dans chemin_prog, alors développement
+    # sinon si 'data' dans chemin_prog, alors production
+    #
+
+    if 'dev' in chemin_prog:
+        # on est dans le dossier de développement (dev)
+        ncfobs = r'D:/DOCUMENTS/Astronomie/dev/observatoires.csv'
+    else:
+        # on est dans le dossier de production
+        ncfobs = r'D:/DOCUMENTS/Astronomie/data/observatoires.csv'
     # dataframe vide
     observ_df = None
     try:
-        observ_df =  pd.read_csv('D:/DOCUMENTS/Astronomie/dev/astrodm/observatoires.csv')
+        observ_df =  pd.read_csv(ncfobs)
     except FileNotFoundError:
         tampon = 'doubleOutils.lire_fichier_observatoires :: fichier observatoires.csv non trouvé.'
         inscrire_dans_log(tampon)
@@ -3275,16 +3287,16 @@ def lire_fichiers_support(typeSession, chemin_prog):
     global boolResultatOK
     boolResultatOK = True
     
-    # localisation des fichiers de supports
+    # localiser les fichiers de supports
     # il faut distinguer l'environnement de développement de celui de production
     # si 'dev' dans chemin_prog, alors développement
     # sinon si 'data' dans chemin_prog, alors production
     #
     if 'dev' in chemin_prog:
-        # en développement
+        # on est dans le dossier de développement (dev)
         ch_rep_cal = r'D:\\DOCUMENTS\\Astronomie\\dev\med\\cal_e\\'
     else:
-        # en production
+        # on est dans le dossier de production
         ch_rep_cal = r'D:\\DOCUMENTS\\Astronomie\\Data\\med\\cal_e\\'
     
     # lire le fichier maître des calibrations
@@ -4191,8 +4203,8 @@ def produire_liste_programmes(ch):
                                         # les information d'état et le cas échéant, l'échéance ont été calculée lors de la post-réduction
                                         # et se trouvent donc dans l'objet session
                                         
-                                        for index_session in range(len(s.lstObjSession)):
-                                            if not s.lstObjSession[index_session].reductionCompletee:
+                                        for index_session in range(len(s.lstDesSessions)):
+                                            if not s.lstDesSessions[index_session].reductionCompletee:
                                                 '''
                                                 il s'agit des cas qui ont des acquisitions non pré-réduites
                                                 donc avec un R ou un X si aucun bloc valide
@@ -4205,10 +4217,10 @@ def produire_liste_programmes(ch):
                                                 blocs valide
                                                 '''
                                                 #
-                                                lst_sessions = '[' + str(s.lstObjSession[index_session].noSession) + ']'
-                                                for index_bloc in range(len(s.lstObjSession[index_session].lstBlocs)):
-                                                    if s.lstObjSession[index_session].lstBlocs[index_bloc].sep.valide:
-                                                        Dates_UTC = s.lstObjSession[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq.value.split('T')[0]
+                                                lst_sessions = '[' + str(s.lstDesSessions[index_session].noSession) + ']'
+                                                for index_bloc in range(len(s.lstDesSessions[index_session].lstBlocs)):
+                                                    if s.lstDesSessions[index_session].lstBlocs[index_bloc].sep.valide:
+                                                        Dates_UTC = s.lstDesSessions[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq.value.split('T')[0]
                                                         '''
                                                         # calculer la date d'échéance
                                                         # si moins de MAX_DELAI_ENTRE_OBSERVATIONS jours alors etat = 'CRL' ou 'CEL'
@@ -4216,7 +4228,7 @@ def produire_liste_programmes(ch):
                                                         #debug str_dth_echeance_utc = 'à calculer selon les blocs'
                                                         # calculer le délai
                                                         '''
-                                                        dtUTC_acquisition_sep = s.lstObjSession[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq
+                                                        dtUTC_acquisition_sep = s.lstDesSessions[index_session].lstBlocs[index_bloc].sep.dtime_utc_acq
                                                         lst_dates = []
                                                         lst_dates.append(dtUTC_acquisition_sep.value.split('T')[0])
                                                         
@@ -4230,7 +4242,7 @@ def produire_liste_programmes(ch):
 
                                                         #vérifier si OK
                                                         str_dth_echeance_utc = dth_echeance_utc.to_value('isot').split('T')[0]
-                                                        if s.lstObjSession[index_session].au_moins_un_bloc_valide:
+                                                        if s.lstDesSessions[index_session].au_moins_un_bloc_valide:
                                                             if maintenant > dth_echeance_utc:
                                                                 etat = 'TRL'
                                                                 #debug nbr_etat_T += 1
