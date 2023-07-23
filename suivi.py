@@ -29,19 +29,19 @@ if __name__ == '__main__':
     sortir_ici = input("\n t Sortie au terminal (par défaut) ou fichier (f) : ").upper() or 'T'
     assert sortir_ici in ('T', 'F'), 'Mauvaise valeur!'
     print(" Sortie vers {0}".format(sortir_ici))
-
-    # demander si impression de la légende des codes d'état
-    #
-    impr_codes = True
-    rep =  input("\nImprimer légende des codes d'état (o|n) o par défaut ? : ").upper() or 'O'
-    if rep == 'N':
-        impr_codes = False
-    print(" Imprimer légende {0}".format(rep))
-    print()
-
+    
     if int(tri) in range(len(do.liste_de_tri_prog)):
         # dernier paramètre == True, imprime tables des notes
         ch = chemin=os.getcwd() + '/med'
-        suivi_df = do.suivi(ch, tri=int(tri), impr_table_etat=impr_codes, sortie=sortir_ici)
+        suivi_df = do.suivi(ch, tri=int(tri), impr_table_etat=True, sortie=sortir_ici)
     else:
         print('Oups «{0}» is illégal! Bye!'.format(tri))
+
+    # la variable programme permet de filtrer suivi_df au besoin
+    # if programme is not None:
+    #    suivi_df.query("obs_prog == @programme")
+    print('\n\nAfin de filtrer pour un programme spécifique,\n veuillez définir la variable programme\n et exécuter :\n')
+    print("q1 = suivi_df.query('obs_prog == @programme')")
+    print("q2 = suivi_df.query('obs_prog == @programme and État != \"P L\"')")
+          
+

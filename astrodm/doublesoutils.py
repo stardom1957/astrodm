@@ -2211,9 +2211,11 @@ def post_reduction(type_session='complete', ch_prog=''):
             # debug
             for bloc in ses.lstBlocs:
                 # lire et extraire données du log d'acquisition et
-                # d'environnement sep et pos
+                # d'environnement
+                # sep
                 extraire_Log_acq_env(ses, bloc, 'sep')
                 extraire_mesure_brutes_logReduc(ses, bloc, 'sep')
+                # pos
                 extraire_Log_acq_env(ses, bloc, 'pos')
                 extraire_mesure_brutes_logReduc(ses, bloc, 'pos')
                 
@@ -2946,7 +2948,7 @@ def extraire_mesure_brutes_logReduc(ses, bloc, typeMesure):
                     break
             nligne += 1
         
-        # extraction des données brutes de séparation en px à partir de nligne_depart_data
+        # extraction des données brutes de séparation en pixels à partir de nligne_depart_data
         if typeMesure == 'sep':
             # nligne_depart_data
             # liste servant de tampon de ligne pour les lignes qui iront dans reduc_brut.csv
