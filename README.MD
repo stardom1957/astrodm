@@ -239,9 +239,9 @@ PROCÉDURE
 
     4.1.1. pos : voir logigramme PRÉ-RÉDUCTION-POS
 
-    4.1.2. sep :  voir logigramme PRÉ-RÉDUCTION-SEP-ECH
+    4.1.2. sep :  voir logigramme PRÉ-RÉDUCTION SEP ou ECH
 
-4.2. Pré-réduction d'échelle (‘ech’) : voir logigramme PRÉ-RÉDUCTION-SEP-ECH
+4.2. Pré-réduction d'échelle (‘ech’) : voir logigramme PRÉ-RÉDUCTION SEP ou ECH
 
 ## 5.0 Travail de post-réduction
 
