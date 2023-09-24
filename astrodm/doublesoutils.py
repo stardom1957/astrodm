@@ -4518,7 +4518,7 @@ root.withdraw()
 # construire la liste de tri pour les listes
 liste_de_tri_prog = [['obs_prog', 'id_system'],\
                ['id_system', 'obs_prog'],
-               ['const']]
+               ['const'], ['obs_prog']]
 
     
 liste_de_tri_reduc = [['obs_prog', 'id_system'],\
